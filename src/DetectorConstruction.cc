@@ -135,7 +135,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////////////////////////////
     ////    CLOVER SETUP
     
-    CLOVER_AllPresent_Override = true;
+    CLOVER_AllPresent_Override = false;
     CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
@@ -145,56 +145,56 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     //  CLOVER 1
     CLOVER_Presence[0] = true;
     CLOVER_Shield_Presence[0] = true;
-    CLOVER_Distance[0] = 0*cm;
+    CLOVER_Distance[0] = 21*cm;
     CLOVER_phi[0] = 90*deg;
     CLOVER_theta[0] = 135*deg;
     CLOVER_rotm[0].rotateX(45.*deg);
     
     //  CLOVER 2
-    CLOVER_Presence[1] = false;
+    CLOVER_Presence[1] = true;
     CLOVER_Shield_Presence[1] = false;
-    CLOVER_Distance[1] = 10*cm;
+    CLOVER_Distance[1] = 21.*cm;
     CLOVER_phi[1] = 0*deg;
     CLOVER_theta[1] = 135*deg;
     CLOVER_rotm[1].rotateY(-45.0*deg);
     
     //  CLOVER 3
-    CLOVER_Presence[2] = false;
+    CLOVER_Presence[2] = true;
     CLOVER_Shield_Presence[2] = false;
-    CLOVER_Distance[2] = 10*cm;
+    CLOVER_Distance[2] = 21.*cm;
     CLOVER_phi[2] = 270*deg;
     CLOVER_theta[2] = 135*deg;
     CLOVER_rotm[2].rotateX(-45.0*deg);
     
     //  CLOVER 4
-    CLOVER_Presence[3] = false;
+    CLOVER_Presence[3] = true;
     CLOVER_Shield_Presence[3] = false;
-    CLOVER_Distance[3] = 10*cm;
+    CLOVER_Distance[3] = 21.*cm;
     CLOVER_phi[3] = 180*deg;
     CLOVER_theta[3] = 135*deg;
     CLOVER_rotm[3].rotateY(45.0*deg);
     
     //  CLOVER 5
-    CLOVER_Presence[4] = false;
+    CLOVER_Presence[4] = true;
     CLOVER_Shield_Presence[4] = false;
-    CLOVER_Distance[4] = 10*cm;
+    CLOVER_Distance[4] = 21.*cm;
     CLOVER_phi[4] = 45*deg;
     CLOVER_theta[4] = 90*deg;
     CLOVER_rotm[4].rotateY(90.0 *deg);
     CLOVER_rotm[4].rotateZ(-135.0*deg);
     
     //  CLOVER 6
-    CLOVER_Presence[5] = false;
+    CLOVER_Presence[5] = true;
     CLOVER_Shield_Presence[5] = false;
-    CLOVER_Distance[5] = 10*cm;
+    CLOVER_Distance[5] = 21.*cm;
     CLOVER_phi[5] = 0*deg;
     CLOVER_theta[5] = 90*deg;
     CLOVER_rotm[5].rotateY(-90.0*deg);
     
     //  CLOVER 7
-    CLOVER_Presence[6] = false;
+    CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = false;
-    CLOVER_Distance[6] = 10*cm;
+    CLOVER_Distance[6] = 21.*cm;
     CLOVER_phi[6] = 180*deg;
     CLOVER_theta[6] = 90*deg;
     CLOVER_rotm[6].rotateY(90.0*deg);
@@ -701,7 +701,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //             CLOVER DEFINITION           //
     /////////////////////////////////////////////
     
-    G4double CLOVERtoShield_displacement = 10.;  // cm
+    G4double CLOVERtoShield_displacement = 21.;  // cm
     
     G4ThreeVector offset_CLOVERInternalVacuum = G4ThreeVector(0*cm, 0*cm, -CLOVERtoShield_displacement*cm);
     G4ThreeVector offset_CLOVEREncasement = G4ThreeVector(0*cm, 0*cm, -CLOVERtoShield_displacement*cm);
