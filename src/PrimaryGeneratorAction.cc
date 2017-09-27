@@ -67,16 +67,16 @@ fParticleGun(0)
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("He3");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("mu-");
-    //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
+    G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("proton");
-    G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
+    // G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
     
     //fParticleGun->SetParticleDefinition(particleDefinition);
     
-    fParticleGun->SetParticleEnergy(1.*MeV);
-    //fParticleGun->SetParticleEnergy(1.332*MeV);
+    // fParticleGun->SetParticleEnergy(1.*MeV);
+    fParticleGun->SetParticleEnergy(1.332*MeV);
     //fParticleGun->SetParticleEnergy(7.0*MeV);
     
     //fParticleGun->SetParticleEnergy(200.*MeV);
