@@ -203,8 +203,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     ////    Alternative Method for ISOTROPY
     
     G4double theta = 2*M_PI*G4UniformRand();
-    //G4double mz = -1.0 + 2*G4UniformRand();
-    G4double mz = -1.0 + G4UniformRand();
+    G4double mz = -1.0 + 2*G4UniformRand();
+    // G4double mz = -1.0 + G4UniformRand();
     
     G4double a = sqrt(1-(mz*mz));
     
