@@ -473,7 +473,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = false;
+    AFRODITE_MathisTC_Presence = true;
     
     /////////////////////////////////////
     ////    AFRODITE Target
