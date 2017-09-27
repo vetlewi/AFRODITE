@@ -234,8 +234,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////////////////
     ////        PlasticScint SETUP
     
-    PlasticScint_AllPresent_Override = true;
-    PlasticScint_AllAbsent_Override = false;
+    PlasticScint_AllPresent_Override = false;
+    PlasticScint_AllAbsent_Override = true;
     
     
     //  PlasticScint 1
