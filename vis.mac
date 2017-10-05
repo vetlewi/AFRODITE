@@ -77,6 +77,12 @@
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
 /vis/verbose warnings
+
+# To get nice view of LaBr3 Detectors
+#/vis/geometry/set/visibility World 0 false
+#/vis/viewer/set/style surface
+/vis/viewer/set/auxiliaryEdge true
+
 #
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
