@@ -53,6 +53,8 @@
 #include "G4PropagatorInField.hh"
 #include "G4FieldManager.hh"
 
+#include "OCLLaBr3.hh"
+
 
 class G4VPhysicalVolume;
 class G4GlobalMagFieldMessenger;
@@ -92,6 +94,8 @@ const G4int     numberOf_PlasticScint = 12;
 ///////////////     LEPS DETECTORS     ///////////////////
 const G4int     numberOf_LEPS = 6;
 
+///////////////     OCL LaBr3            ///////////////////
+const G4int     numberOf_OCLLaBr3 = 2;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -242,7 +246,29 @@ private:
     G4RotationMatrix    LEPS_HPGeCrystal_rotm[4];
     
     
+    /////////////////////////////////////
+    //          OCL LaBr3 DETECTORS
+    /////////////////////////////////////
     
+    OCLLaBr3*           labr3[numberOf_OCLLaBr3];
+
+    G4bool              OCLLaBr3_AllPresent_Override;
+    G4bool              OCLLaBr3_AllAbsent_Override;
+    G4bool              OCLLaBr3_Presence[numberOf_OCLLaBr3];
+    G4double            OCLLaBr3_Distance[numberOf_OCLLaBr3];
+    G4RotationMatrix    OCLLaBr3_rotm[numberOf_OCLLaBr3];
+    G4Transform3D       OCLLaBr3_transform[numberOf_OCLLaBr3];
+    G4ThreeVector       OCLLaBr3_position[numberOf_OCLLaBr3];
+    G4double            OCLLaBr3_phi[numberOf_OCLLaBr3];
+    G4double            OCLLaBr3_theta[numberOf_OCLLaBr3];
+    
+
+    //////////////////////////////////////
+    //          Vacuum Chamber
+    //////////////////////////////////////
+
+    G4VPhysicalVolume* PhysiVacuumChamber;
+
     //////////////////////////////////////
     //          Magnetic Fields
     //////////////////////////////////////

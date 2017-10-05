@@ -136,7 +136,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    CLOVER SETUP
     
     CLOVER_AllPresent_Override = true;
-    CLOVER_AllAbsent_Override = false;
+    CLOVER_AllAbsent_Override = true;
     
     CLOVER_Shield_AllPresent_Override = false;
     CLOVER_Shield_AllAbsent_Override = true;
@@ -413,8 +413,39 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if( LEPS_AllPresent_Override == true && LEPS_AllAbsent_Override == true ) LEPS_Presence[i] = false;
     }
     
+
+    ////////////////////////////
+    ////    OCL LaBr3 Detectors
+    
+    OCLLaBr3_AllPresent_Override = true;
+    OCLLaBr3_AllAbsent_Override = false;
     
     
+    // LaBr3 Detector 1
+    OCLLaBr3_Presence[0] = true;
+    OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
+    OCLLaBr3_phi[0] = 140.*deg;
+    OCLLaBr3_theta[0] = 90.*deg;
+    OCLLaBr3_rotm[0].rotateY(OCLLaBr3_theta[0]);
+    OCLLaBr3_rotm[0].rotateZ(OCLLaBr3_phi[0]);
+    
+    //  LaBr3 Detector 2
+    OCLLaBr3_Presence[1] = true;
+    OCLLaBr3_Distance[1] = 10.*cm+14.*cm;
+    OCLLaBr3_phi[1] = 90.*deg;
+    OCLLaBr3_theta[1] = 45.*deg;
+    OCLLaBr3_rotm[1].rotateY(OCLLaBr3_theta[1]);
+    OCLLaBr3_rotm[1].rotateZ(OCLLaBr3_phi[1]);
+
+    
+    for (G4int i=0; i<numberOf_OCLLaBr3; i++)
+    {
+        if(OCLLaBr3_AllPresent_Override) OCLLaBr3_Presence[i] = true;
+        if(OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
+        if(OCLLaBr3_AllPresent_Override && OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
+    }
+
+
     ////////////////////////////
     ////    HAGAR SETUP
     
@@ -627,15 +658,15 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(SolidVacuumChamber, G4_Galactic_Material,"VacuumChamber",0,0,0);
     
-    
-    new G4PVPlacement(0,               // no rotation
-                      positionVacuumChamber, // at (x,y,z)
-                      LogicVacuumChamber,       // its logical volume
-                      "VacuumChamber",       // its name
-                      LogicWorld,         // its mother  volume
-                      false,           // no boolean operations
-                      0,               // copy number
-                      fCheckOverlaps); // checking overlaps
+    PhysiVacuumChamber =
+        new G4PVPlacement(0,               // no rotation
+                          positionVacuumChamber, // at (x,y,z)
+                          LogicVacuumChamber,       // its logical volume
+                          "VacuumChamber",       // its name
+                          LogicWorld,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
     
     
     
@@ -1386,7 +1417,31 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         }
         
     }
+
+
+    ////////////////////////////////////////////////////
+    //            OCL LaBr3 INITIALIZATION            //
+    ////////////////////////////////////////////////////
     
+    G4int copynumber;
+
+    for(G4int i=0; i<numberOf_OCLLaBr3; i++)
+    {
+        OCLLaBr3_position[i] = (OCLLaBr3_Distance[i])*G4ThreeVector( sin(OCLLaBr3_theta[i]) * cos(OCLLaBr3_phi[i]), sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]), cos(OCLLaBr3_theta[i]));
+        
+        // OCLLaBr3_transform[i] = G4Transform3D(OCLLaBr3_rotm[i],OCLLaBr3_position[i]);
+                
+        /////////////////////////////
+        //          LaBr3 Detectors
+        if(OCLLaBr3_Presence[i])
+        {
+           labr3[i] = new OCLLaBr3();
+           labr3[i]->SetRotation(OCLLaBr3_rotm[i]);
+           labr3[i]->SetPosition(OCLLaBr3_position[i]);
+           labr3[i]->Placement(copynumber = i,  PhysiVacuumChamber, fCheckOverlaps);           
+        }
+
+    }
     
     
     //////////////////////////////////
