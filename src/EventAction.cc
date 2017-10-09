@@ -66,7 +66,9 @@ OffsetCLOVER(0.0),
 GainPlasticScint(1.0),
 OffsetPlasticScint(0.0),
 GainLEPS(1.0),
-OffsetLEPS(0.0)
+OffsetLEPS(0.0),
+GainLABR(1.0),
+OffsetLABR(0.0)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

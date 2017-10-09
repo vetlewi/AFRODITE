@@ -116,6 +116,12 @@ const G4double      PlasticScint_ThresholdEnergy = 0.5;  //  MeV
 const G4bool        Activate_CyclotronBeam_Timing = false;
 const G4int         Particles_per_Bunch = 100;  // Particles per Bunch
 
+///////////////     LaBr3 Detectors - PIXIE16 Sampling     ///////////////////
+const G4double      LABR_SamplingTime = 10; // ns
+const G4int         LABR_TotalTimeSamples = 10; //
+const G4double      LABR_TotalSampledTime = LABR_SamplingTime * LABR_TotalTimeSamples; // ns
+
+
 
 class EventAction : public G4UserEventAction
 {
@@ -221,7 +227,13 @@ public:
     void AddEnergyLEPS_HPGeCrystals(G4int i, G4int j, G4int k, G4double a)	{LEPS_HPGeCrystal_EDep[i][j][k] += a; };
     
     
+    ////////////////////////
+    //      LABRs
+    G4double GainLABR;
+    G4double OffsetLABR;
+    G4double LABR_EDep[2][LABR_TotalTimeSamples];
     
+    void AddEnergyLABR_HPGeCrystal(G4int i, G4int j, G4double a) {LABR_EDep[i][j] += a; };
     
     /////////////////////////////////
     //      GEOMETRY ANALYSIS
