@@ -16,6 +16,7 @@ The current implemented detectors include the following:
 - LEPS HPGe detectors, manufactured by Eurisys.
 - A neutron wall, composed of a total of 12 plastic scintillators (NE102).
 - The "new" scattering chamber built for AFRODITE
+- LaBr3 Detectors from Oslo
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
