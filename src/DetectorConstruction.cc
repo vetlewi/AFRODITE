@@ -192,7 +192,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_rotm[5].rotateY(-90.0*deg);
     
     //  CLOVER 7
-    CLOVER_Presence[6] = false;
+    CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = false;
     CLOVER_Distance[6] = 21.*cm;
     CLOVER_phi[6] = 180*deg;
@@ -200,7 +200,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_rotm[6].rotateY(90.0*deg);
     
     //  CLOVER 8
-    CLOVER_Presence[7] = false;
+    CLOVER_Presence[7] = true;
     CLOVER_Shield_Presence[7] = false;
     CLOVER_Distance[7] = 21.*cm;
     CLOVER_phi[7] = 135*deg;
@@ -424,18 +424,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // LaBr3 Detector 1
     OCLLaBr3_Presence[0] = true;
     OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
-    OCLLaBr3_phi[0] = 140.*deg;
+    OCLLaBr3_phi[0] = 135.*deg;
     OCLLaBr3_theta[0] = 90.*deg;
-    OCLLaBr3_rotm[0].rotateY(OCLLaBr3_theta[0]);
-    OCLLaBr3_rotm[0].rotateZ(OCLLaBr3_phi[0]);
+    OCLLaBr3_rotm[0].rotateX(270*deg);
+    OCLLaBr3_rotm[0].rotateZ(OCLLaBr3_theta[0]);
+    OCLLaBr3_rotm[0].rotateY(OCLLaBr3_phi[0]);
     
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
     OCLLaBr3_Distance[1] = 10.*cm+14.*cm;
     OCLLaBr3_phi[1] = 90.*deg;
     OCLLaBr3_theta[1] = 45.*deg;
-    OCLLaBr3_rotm[1].rotateY(OCLLaBr3_theta[1]);
-    OCLLaBr3_rotm[1].rotateZ(OCLLaBr3_phi[1]);
+    OCLLaBr3_rotm[1].rotateX(270*deg);
+    OCLLaBr3_rotm[1].rotateZ(OCLLaBr3_theta[1]);
+    OCLLaBr3_rotm[1].rotateY(OCLLaBr3_phi[1]);
 
     
     for (G4int i=0; i<numberOf_OCLLaBr3; i++)
@@ -1427,7 +1429,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
     for(G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
-        OCLLaBr3_position[i] = (OCLLaBr3_Distance[i])*G4ThreeVector( sin(OCLLaBr3_theta[i]) * cos(OCLLaBr3_phi[i]), sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]), cos(OCLLaBr3_theta[i]));
+        OCLLaBr3_position[i] = (OCLLaBr3_Distance[i])
+                                *G4ThreeVector( -sin(OCLLaBr3_theta[i]) * cos(OCLLaBr3_phi[i]), 
+                                                cos(OCLLaBr3_theta[i]),
+                                                sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]) 
+                                                 );
         
         // OCLLaBr3_transform[i] = G4Transform3D(OCLLaBr3_rotm[i],OCLLaBr3_position[i]);
                 
