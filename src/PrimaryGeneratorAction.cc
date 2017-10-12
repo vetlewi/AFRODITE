@@ -68,7 +68,7 @@ fParticleGun(0)
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("mu-");
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-    //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+    // G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("e-");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("alpha");
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("proton");
     // G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
@@ -76,7 +76,7 @@ fParticleGun(0)
     //fParticleGun->SetParticleDefinition(particleDefinition);
     
     // fParticleGun->SetParticleEnergy(1.*MeV);
-    fParticleGun->SetParticleEnergy(1.332*MeV);
+    fParticleGun->SetParticleEnergy(1332.*keV);
     //fParticleGun->SetParticleEnergy(7.0*MeV);
     
     //fParticleGun->SetParticleEnergy(200.*MeV);
@@ -211,7 +211,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     mx = a*cos(theta);
     my = a*sin(theta);
     
-    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(mx, my, mz));
+    // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(mx, my, mz));
+
+    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 1., -1.));
     
     
     
