@@ -73,7 +73,7 @@ fParticleGun(0)
     //G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("proton");
     // G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
     
-    //fParticleGun->SetParticleDefinition(particleDefinition);
+    fParticleGun->SetParticleDefinition(particleDefinition);
     
     // fParticleGun->SetParticleEnergy(1.*MeV);
     fParticleGun->SetParticleEnergy(1332.*keV);
