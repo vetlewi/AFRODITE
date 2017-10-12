@@ -201,6 +201,14 @@ RunAction::RunAction()
     analysisManager->CreateNtupleDColumn(2, "PhiDist");
     
     analysisManager->FinishNtuple(2);
+
+    ////////////////////////////////////////////////////
+    ////    LABR Detectors
+    // Creating ntuple
+    analysisManager->CreateNtuple("LaBrTree", "OCL LABR simulated data");
+    analysisManager->CreateNtupleDColumn(3, "LABR_Energy[0]");
+    analysisManager->CreateNtupleDColumn(3, "LABR_Energy[1]");
+    analysisManager->FinishNtuple(3);
     
     
 }

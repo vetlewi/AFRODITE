@@ -191,6 +191,14 @@ void EventAction::BeginOfEventAction(const G4Event* evt)
         }
     }
     
+    //Initializing LABR-array
+    for(G4int i=0; i<2; i++)
+    {
+        for (G4int k=0; k<LABR_TotalSampledTime; k++)
+        {
+            LABR_EDep[i][k] = 0.;
+        }
+    }
     
     ////    Input Variables
     InputDist[0] = 0;
@@ -353,6 +361,26 @@ void EventAction::EndOfEventAction(const G4Event* event)
         analysisManager->AddNtupleRow(0);
     }
     
+    ////////////////////////////////////////////////////
+    //
+    //              OCL LABR detectors
+    //
+    ////////////////////////////////////////////////////
+
+    GainLABR = 1.0;
+    OffsetLABR = 0.0;
+    
+    for(G4int i=0; i<2; i++)
+    {
+        for(G4int k=0; k<LABR_TotalTimeSamples; k++)
+        {
+            
+        analysisManager->FillNtupleDColumn(3, i, GainLABR*LABR_EDep[i][k] + OffsetLABR);
+
+        }
+        
+        analysisManager->AddNtupleRow(3);
+    }
 
     ////////////////////////////////////////////////////
     //
