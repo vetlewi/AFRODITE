@@ -122,7 +122,6 @@ const G4int         LABR_TotalTimeSamples = 10; //
 const G4double      LABR_TotalSampledTime = LABR_SamplingTime * LABR_TotalTimeSamples; // ns
 
 
-
 class EventAction : public G4UserEventAction
 {
 public:
@@ -175,6 +174,10 @@ public:
     G4double    CLOVER_HPGeCrystal_EDep[9][4][CLOVER_TotalTimeSamples];
     G4bool      CLOVER_HPGeCrystal_EDepVETO[9][4][CLOVER_TotalTimeSamples];
     G4double    CLOVER_EDep[9][CLOVER_TotalTimeSamples];
+
+    G4double CLOVER_energy[9];
+    G4double LABR_energy[2];
+
     
     void AddEnergyCLOVER_HPGeCrystal(G4int i, G4int j, G4int k, G4double a)	{CLOVER_HPGeCrystal_EDep[i][j][k] += a; };
     
@@ -233,7 +236,7 @@ public:
     G4double OffsetLABR;
     G4double LABR_EDep[2][LABR_TotalTimeSamples];
     
-    void AddEnergyLABR_HPGeCrystal(G4int i, G4int j, G4double a) {LABR_EDep[i][j] += a; };
+    void AddEnergyLABR_Crystal(G4int i, G4int k, G4double a) {LABR_EDep[i][k] += a; };
     
     /////////////////////////////////
     //      GEOMETRY ANALYSIS
