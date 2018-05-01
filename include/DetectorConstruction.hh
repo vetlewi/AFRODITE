@@ -81,8 +81,8 @@ class G4UniformMagField;
 //////////////////////////////////////////////////////////
 
 ///////////////     CLOVER DETECTORS     ///////////////////
-const G4int     numberOf_CLOVER = 9;
-const G4int     numberOf_CLOVER_Shields = 9;
+const G4int     numberOf_CLOVER = 8;
+const G4int     numberOf_CLOVER_Shields = 8;
 
 ///////////////     TIGRESS DETECTORS     ///////////////////
 const G4int     numberOf_TIGRESS = 1;

@@ -210,13 +210,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     
     //  CLOVER 9
-    CLOVER_Presence[8] = true;
-    CLOVER_Shield_Presence[8] = false;
-    CLOVER_Distance[8] = 21.*cm;
-    CLOVER_phi[8] = -45*deg;
-    CLOVER_theta[8] = 90*deg;
-    CLOVER_rotm[8].rotateY(-90.0 *deg);
-    CLOVER_rotm[8].rotateZ(-45.0 *deg);
+    // CLOVER_Presence[8] = true;
+    // CLOVER_Shield_Presence[8] = false;
+    // CLOVER_Distance[8] = 21.*cm;
+    // CLOVER_phi[8] = -45*deg;
+    // CLOVER_theta[8] = 90*deg;
+    // CLOVER_rotm[8].rotateY(-90.0 *deg);
+    // CLOVER_rotm[8].rotateZ(-45.0 *deg);
     
     
     for (G4int i=0; i<numberOf_CLOVER; i++)
@@ -230,194 +230,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if(CLOVER_Shield_AllPresent_Override && CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
     }
     
-    
-    /////////////////////////////////////////
-    ////        PlasticScint SETUP
-    
-    PlasticScint_AllPresent_Override = false;
-    PlasticScint_AllAbsent_Override = true;
-    
-    
-    //  PlasticScint 1
-    PlasticScint_Presence[0] = true;
-    PlasticScint_CentrePositionX[0] = 0.; // cm
-    PlasticScint_CentrePositionY[0] = 28.75; // cm
-    PlasticScint_CentrePositionZ[0] = 180.; // cm
-    PlasticScint_CentrePosition[0] = G4ThreeVector(PlasticScint_CentrePositionX[0]*cm, PlasticScint_CentrePositionY[0]*cm, PlasticScint_CentrePositionZ[0]*cm);
-    //PlasticScint_RotationY[0] = -14.03; // deg
-    //PlasticScint_rotm[0].rotateY(PlasticScint_RotationY[0]*deg);
-    
-    //  PlasticScint 2
-    PlasticScint_Presence[1] = true;
-    PlasticScint_CentrePositionX[1] = 0.; // cm
-    PlasticScint_CentrePositionY[1] = 17.25; // cm
-    PlasticScint_CentrePositionZ[1] = 180.; // cm
-    PlasticScint_CentrePosition[1] = G4ThreeVector(PlasticScint_CentrePositionX[1]*cm, PlasticScint_CentrePositionY[1]*cm, PlasticScint_CentrePositionZ[1]*cm);
-    //PlasticScint_RotationY[1] = -14.13; // deg
-    //PlasticScint_rotm[1].rotateY(PlasticScint_RotationY[1]*deg);
-    
-    //  PlasticScint 3
-    PlasticScint_Presence[2] = true;
-    PlasticScint_CentrePositionX[2] = 0.; // cm
-    PlasticScint_CentrePositionY[2] = 5.75; // cm
-    PlasticScint_CentrePositionZ[2] = 180.; // cm
-    PlasticScint_CentrePosition[2] = G4ThreeVector(PlasticScint_CentrePositionX[2]*cm, PlasticScint_CentrePositionY[2]*cm, PlasticScint_CentrePositionZ[2]*cm);
-    //PlasticScint_RotationY[2] = -14.23; // deg
-    //PlasticScint_rotm[2].rotateY(PlasticScint_RotationY[2]*deg);
-    
-    //  PlasticScint 4
-    PlasticScint_Presence[3] = true;
-    PlasticScint_CentrePositionX[3] = 0.; // cm
-    PlasticScint_CentrePositionY[3] = -5.75; // cm
-    PlasticScint_CentrePositionZ[3] = 180.; // cm
-    PlasticScint_CentrePosition[3] = G4ThreeVector(PlasticScint_CentrePositionX[3]*cm, PlasticScint_CentrePositionY[3]*cm, PlasticScint_CentrePositionZ[3]*cm);
-    //PlasticScint_RotationY[3] = -14.33; // deg
-    //PlasticScint_rotm[3].rotateY(PlasticScint_RotationY[3]*deg);
-    
-    //  PlasticScint 5
-    PlasticScint_Presence[4] = true;
-    PlasticScint_CentrePositionX[4] = 0.; // cm
-    PlasticScint_CentrePositionY[4] = -17.25; // cm
-    PlasticScint_CentrePositionZ[4] = 180.; // cm
-    PlasticScint_CentrePosition[4] = G4ThreeVector(PlasticScint_CentrePositionX[4]*cm, PlasticScint_CentrePositionY[4]*cm, PlasticScint_CentrePositionZ[4]*cm);
-    //PlasticScint_RotationY[4] = -14.43; // deg
-    //PlasticScint_rotm[4].rotateY(PlasticScint_RotationY[4]*deg);
-    
-    //  PlasticScint 6
-    PlasticScint_Presence[5] = true;
-    PlasticScint_CentrePositionX[5] = 0.; // cm
-    PlasticScint_CentrePositionY[5] = -28.75; // cm
-    PlasticScint_CentrePositionZ[5] = 180.; // cm
-    PlasticScint_CentrePosition[5] = G4ThreeVector(PlasticScint_CentrePositionX[5]*cm, PlasticScint_CentrePositionY[5]*cm, PlasticScint_CentrePositionZ[5]*cm);
-    //PlasticScint_RotationY[5] = -14.53; // deg
-    //PlasticScint_rotm[5].rotateY(PlasticScint_RotationY[5]*deg);
-    
-    //  PlasticScint 7
-    PlasticScint_Presence[6] = true;
-    PlasticScint_CentrePositionX[6] = 0.; // cm
-    PlasticScint_CentrePositionY[6] = 28.75; // cm
-    PlasticScint_CentrePositionZ[6] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[6] = G4ThreeVector(PlasticScint_CentrePositionX[6]*cm, PlasticScint_CentrePositionY[6]*cm, PlasticScint_CentrePositionZ[6]*cm);
-    //PlasticScint_RotationY[6] = -14.63; // deg
-    //PlasticScint_rotm[6].rotateY(PlasticScint_RotationY[6]*deg);
-    
-    //  PlasticScint 8
-    PlasticScint_Presence[7] = true;
-    PlasticScint_CentrePositionX[7] = 0.; // cm
-    PlasticScint_CentrePositionY[7] = 17.25; // cm
-    PlasticScint_CentrePositionZ[7] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[7] = G4ThreeVector(PlasticScint_CentrePositionX[7]*cm, PlasticScint_CentrePositionY[7]*cm, PlasticScint_CentrePositionZ[7]*cm);
-    //PlasticScint_RotationY[7] = -14.73; // deg
-    //PlasticScint_rotm[7].rotateY(PlasticScint_RotationY[7]*deg);
-    
-    //  PlasticScint 9
-    PlasticScint_Presence[8] = true;
-    PlasticScint_CentrePositionX[8] = 0.; // cm
-    PlasticScint_CentrePositionY[8] = 5.75; // cm
-    PlasticScint_CentrePositionZ[8] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[8] = G4ThreeVector(PlasticScint_CentrePositionX[8]*cm, PlasticScint_CentrePositionY[8]*cm, PlasticScint_CentrePositionZ[8]*cm);
-    //PlasticScint_RotationY[8] = -14.83; // deg
-    //PlasticScint_rotm[8].rotateY(PlasticScint_RotationY[8]*deg);
-    
-    //  PlasticScint 10
-    PlasticScint_Presence[9] = true;
-    PlasticScint_CentrePositionX[9] = 0.; // cm
-    PlasticScint_CentrePositionY[9] = -5.75; // cm
-    PlasticScint_CentrePositionZ[9] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[9] = G4ThreeVector(PlasticScint_CentrePositionX[9]*cm, PlasticScint_CentrePositionY[9]*cm, PlasticScint_CentrePositionZ[9]*cm);
-    //PlasticScint_RotationY[9] = -14.93; // deg
-    //PlasticScint_rotm[9].rotateY(PlasticScint_RotationY[9]*deg);
-    
-    //  PlasticScint 11
-    PlasticScint_Presence[10] = true;
-    PlasticScint_CentrePositionX[10] = 0.; // cm
-    PlasticScint_CentrePositionY[10] = -17.25; // cm
-    PlasticScint_CentrePositionZ[10] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[10] = G4ThreeVector(PlasticScint_CentrePositionX[10]*cm, PlasticScint_CentrePositionY[10]*cm, PlasticScint_CentrePositionZ[10]*cm);
-    //PlasticScint_RotationY[10] = -14.103; // deg
-    //PlasticScint_rotm[10].rotateY(PlasticScint_RotationY[10]*deg);
-    
-    //  PlasticScint 12
-    PlasticScint_Presence[11] = true;
-    PlasticScint_CentrePositionX[11] = 0.; // cm
-    PlasticScint_CentrePositionY[11] = -28.75; // cm
-    PlasticScint_CentrePositionZ[11] = 180. + 11.0; // cm
-    PlasticScint_CentrePosition[11] = G4ThreeVector(PlasticScint_CentrePositionX[11]*cm, PlasticScint_CentrePositionY[11]*cm, PlasticScint_CentrePositionZ[11]*cm);
-    //PlasticScint_RotationY[11] = -14.113; // deg
-    //PlasticScint_rotm[11].rotateY(PlasticScint_RotationY[11]*deg);
-    
-    for(G4int i=0; i<numberOf_PlasticScint; i++)
-    {
-        if(PlasticScint_AllPresent_Override) PlasticScint_Presence[i] = true;
-        if(PlasticScint_AllAbsent_Override) PlasticScint_Presence[i] = false;
-        if(PlasticScint_AllPresent_Override && PlasticScint_AllAbsent_Override) PlasticScint_Presence[i] = false;
-    }
-    
-    
-    ////////////////////////////////
-    ////        LEPS SETUP
-    
-    LEPS_AllPresent_Override = false;
-    LEPS_AllAbsent_Override = true;
-    
-    
-    //  LEPS 1
-    LEPS_Presence[0] = true;
-    LEPS_Distance[0] = 4.5*cm;
-    LEPS_phi[0] = 0.*deg;
-    LEPS_theta[0] = 0.*deg;
-    LEPS_rotm[0].rotateX(180.*deg);
-    
-    //  LEPS 2
-    LEPS_Presence[1] = true;
-    LEPS_Distance[1] = 4.5*cm;
-    LEPS_phi[1] = 0.*deg;
-    LEPS_theta[1] = 90.*deg;
-    LEPS_rotm[1].rotateY(-90.*deg);
-    
-    //  LEPS 3
-    LEPS_Presence[2] = true;
-    LEPS_Distance[2] = 4.5*cm;
-    LEPS_phi[2] = 90.*deg;
-    LEPS_theta[2] = 90.*deg;
-    LEPS_rotm[2].rotateX(90.*deg);
-    
-    //  LEPS 4
-    LEPS_Presence[3] = true;
-    LEPS_Distance[3] = 4.5*cm;
-    LEPS_phi[3] = 180.*deg;
-    LEPS_theta[3] = 90*deg;
-    LEPS_rotm[3].rotateY(90.*deg);
-    
-    //  LEPS 5
-    LEPS_Presence[4] = true;
-    LEPS_Distance[4] = 4.5*cm;
-    LEPS_phi[4] = 270.*deg;
-    LEPS_theta[4] = 90*deg;
-    LEPS_rotm[4].rotateX(-90.*deg);
-    
-    
-    //  LEPS 6
-    LEPS_Presence[5] = true;
-    LEPS_Distance[5] = 4.5*cm;
-    LEPS_phi[5] = 0*deg;
-    LEPS_theta[5] = 180*deg;
-    LEPS_rotm[5].rotateY(0.*deg);
-    
-    
-    
-    for (G4int i=0; i<numberOf_LEPS; i++)
-    {
-        if( LEPS_AllPresent_Override == true ) LEPS_Presence[i] = true;
-        if( LEPS_AllAbsent_Override == true ) LEPS_Presence[i] = false;
-        if( LEPS_AllPresent_Override == true && LEPS_AllAbsent_Override == true ) LEPS_Presence[i] = false;
-    }
-    
+   
 
     ////////////////////////////
     ////    OCL LaBr3 Detectors
     
-    OCLLaBr3_AllPresent_Override = true;
+    OCLLaBr3_AllPresent_Override = false;
     OCLLaBr3_AllAbsent_Override = false;
     
     
@@ -448,22 +266,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     }
 
 
-    ////////////////////////////
-    ////    HAGAR SETUP
-    
-    //  HAGAR NaI Crystal
-    HAGAR_NaICrystal_Presence = false;
-    HAGAR_NaICrystal_CentrePosition = G4ThreeVector(-100.*cm, 0.*cm, 0.*cm);
-    HAGAR_rotm.rotateY(-90*deg);
-    
-    //  HAGAR Annulus
-    HAGAR_Annulus_Presence = false;
-    HAGAR_Annulus_CentrePosition = G4ThreeVector(-105.*cm, 0.*cm, 0.*cm);
-    
-    //  HAGAR Front
-    HAGAR_FrontDisc_Presence = false;
-    HAGAR_FrontDisc_CentrePosition = HAGAR_Annulus_CentrePosition + G4ThreeVector((61./2 +8/2)*cm, 0.*cm, 0.*cm);
-    
     
     
     ////////////////////////////////////////////////////
