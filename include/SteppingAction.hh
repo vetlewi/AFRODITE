@@ -108,6 +108,10 @@ private:
     G4double    edepLEPS_HPGeCrystal;
     G4int       LEPSNo;
     G4int       LEPS_HPGeCrystalNo;
+
+    ////    LABR DETECTOR
+    G4double    edepLABR_Crystal;
+    G4int       LABRNo;
     
     ////////////////////////////////////////////
     G4double    interactiontime;
