@@ -41,7 +41,7 @@
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 
-class G4ParticleGun;
+class G4GeneralParticleSource;
 class G4Event;
 
 /// The primary generator action class with particle gum.
@@ -63,26 +63,7 @@ public:
     void SetRandomFlag(G4bool value);
     
 private:
-    G4ParticleGun*  fParticleGun; // G4 particle gun
-    
-    
-    G4double    mx;
-    G4double    my;
-    G4double    mz;
-    
-    G4double    theta;
-    G4double    phi;
-    
-    G4double    beamEnergy;
-    G4double    energy;
-    G4double    recoilExcitationEnergy;
-    G4double    alphaSeperationEnergy;
-    G4double    protonSeperationEnergy;
-    G4double    daughterExcitationEnergy;
-    G4int       alphaDecayMode;
-    
-    G4ThreeVector ejectileDirection;
-    G4ThreeVector recoilDirection;
+    G4GeneralParticleSource*  fParticleGun; // G4 particle gun 
     
     
 };
