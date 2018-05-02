@@ -130,19 +130,24 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     
     if((interactiontime < LABR_TotalSampledTime) && (volumeName == "Crystal"))
     {
-        LABRNo = volume->GetCopyNo();
-        
-        
-        iTS = interactiontime/LABR_SamplingTime;
-        edepLABR_Crystal = aStep->GetTotalEnergyDeposit()/keV;
+        point = aStep->GetPreStepPoint();
+        touch = point->GetTouchableHandle();
 
-        fEventAction->LABR_energy[LABRNo] += edepLABR_Crystal;
+        depth = 5;                        // Copy nr in caes it really is the DetectorVolume
+        GrandMotherPhysicalName = touch->GetVolume(depth)->GetName();
+        LABRNo = touch->GetCopyNumber(depth); // of depth=5 mother: "OCLDetector"
         
-        // fEventAction->AddEnergyLABR_Crystal(LABRNo, iTS, edepLABR_Crystal);
+        if (GrandMotherPhysicalName =="OCLDetector") {
+            iTS = interactiontime/LABR_SamplingTime;
+            edepLABR_Crystal = aStep->GetTotalEnergyDeposit()/keV;
 
-        // G4cout<<"We are inside volume "<<volumeName<<" ID is "<<LABRNo<<" time "<<iTS<<" energy "<<edepLABR_Crystal<<G4endl;
-        // G4cout<<"The function: "<< (fEventAction->AddEnergyLABR_Crystal(channelID, iTS, edepLABR_Crystal))<<G4endl;
-        
+            fEventAction->LABR_energy[LABRNo] += edepLABR_Crystal;
+            
+            // fEventAction->AddEnergyLABR_Crystal(LABRNo, iTS, edepLABR_Crystal);
+
+            G4cout<<"We are inside volume "<<volumeName<<" ID is "<<LABRNo<<" time "<<iTS<<" energy "<<edepLABR_Crystal<<G4endl;
+            // G4cout<<"The function: "<< (fEventAction->AddEnergyLABR_Crystal(channelID, iTS, edepLABR_Crystal))<<G4endl;
+        }
     }
 
     

@@ -38,6 +38,7 @@
 #define SteppingAction_h 1
 
 #include "G4UserSteppingAction.hh"
+#include "G4SteppingManager.hh"
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 
@@ -67,7 +68,9 @@ private:
     G4double    fMass;
     G4ThreeVector worldPosition;
     G4ThreeVector localPosition;
-    
+
+    G4StepPoint* point;
+    G4TouchableHandle touch;
     
     ////    PlasticScint Detector
     G4double    edepPlasticScint;
@@ -112,6 +115,8 @@ private:
     ////    LABR DETECTOR
     G4double    edepLABR_Crystal;
     G4int       LABRNo;
+    G4int       depth;
+    G4String    GrandMotherPhysicalName;
     
     ////////////////////////////////////////////
     G4double    interactiontime;
