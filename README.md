@@ -1,5 +1,8 @@
 AFRODITE
 ========
+[![DOI](https://zenodo.org/badge/104993422.svg)](https://zenodo.org/badge/latestdoi/104993422)
+
+(The DOI above is always for the latest release. Earlier verions can be cited by a specific "version" DOI, if necessary)
 
 A GEANT4 simulation of the AFRODITE vault at iThemba LABS, composed of the AFRODITE array of HPGe clover detectors along with various ancillary detectors
 
