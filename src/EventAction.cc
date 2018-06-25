@@ -68,7 +68,7 @@ OffsetPlasticScint(0.0),
 GainLEPS(1.0),
 OffsetLEPS(0.0),
 GainLABR(1.0),
-OffsetLABR(0.0), CLOVER_energy{-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.}, LABR_energy{-9.,-9.}
+OffsetLABR(0.0), CLOVER_energy{-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.}, BGO_energy{-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.}, LABR_energy{-9.,-9.}
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -139,6 +139,7 @@ void EventAction::BeginOfEventAction(const G4Event* evt)
     InputDist[1] = 0;
     
     for(G4int i=0; i<9; i++)CLOVER_energy[i]=0.0;
+    for(G4int i=0; i<9; i++)BGO_energy[i]=0.0;
     for(G4int i=0; i<2; i++) LABR_energy[i]=0.0;
     
 }
@@ -155,7 +156,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
     //Fill ntuple here
     for(G4int k=0; k<9; k++)analysisManager->FillNtupleDColumn(k,CLOVER_energy[k]);
-    for(G4int k=0; k<2; k++)analysisManager->FillNtupleDColumn(k+9,LABR_energy[k]);
+    for(G4int k=0; k<9; k++)analysisManager->FillNtupleDColumn(k+9,BGO_energy[k]);
+    for(G4int k=0; k<2; k++)analysisManager->FillNtupleDColumn(k+18,LABR_energy[k]);
     analysisManager->AddNtupleRow(0);
     
     

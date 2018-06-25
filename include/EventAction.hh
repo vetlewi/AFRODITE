@@ -176,6 +176,7 @@ public:
     G4double    CLOVER_EDep[9][CLOVER_TotalTimeSamples];
 
     G4double CLOVER_energy[9];
+    G4double BGO_energy[9];
     G4double LABR_energy[2];
 
     

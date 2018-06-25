@@ -60,7 +60,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     fParticleGun->SetCurrentSourceIntensity (1);
     fParticleGun->SetParticlePosition(G4ThreeVector());
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-    fParticleGun->SetParticleDefinition(particleDefinition);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

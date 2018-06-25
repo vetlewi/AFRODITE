@@ -121,6 +121,21 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         // fEventAction->AddEnergyCLOVER_HPGeCrystal(CLOVERNo, CLOVER_HPGeCrystalNo, iTS, edepCLOVER_HPGeCrystal);
     }
     
+    if((interactiontime < CLOVER_Shield_BGO_TotalSampledTime) && (volumeName == "CLOVER_Shield_BGOCrystal"))
+    {
+        channelID = volume->GetCopyNo();
+        
+        CLOVER_BGOCrystalNo = channelID%16;
+        
+        edepCLOVER_BGOCrystal= aStep->GetTotalEnergyDeposit()/keV;
+
+
+        fEventAction->BGO_energy[CLOVERNo] +=edepCLOVER_BGOCrystal; 
+
+        // G4cout<<"We are inside volume "<<volumeName<<" ID is "<<channelID<<" time "<<iTS<<" energy "<<edepCLOVER_HPGeCrystal<<G4endl;
+        
+        // fEventAction->AddEnergyCLOVER_HPGeCrystal(CLOVERNo, CLOVER_HPGeCrystalNo, iTS, edepCLOVER_HPGeCrystal);
+    }
 
 
     ////////////////////////////////////////////////
@@ -144,8 +159,8 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
             fEventAction->LABR_energy[LABRNo] += edepLABR_Crystal;
             
             // fEventAction->AddEnergyLABR_Crystal(LABRNo, iTS, edepLABR_Crystal);
-
-            G4cout<<"We are inside volume "<<volumeName<<" ID is "<<LABRNo<<" time "<<iTS<<" energy "<<edepLABR_Crystal<<G4endl;
+// 
+            // G4cout<<"We are inside volume "<<volumeName<<" ID is "<<LABRNo<<" time "<<iTS<<" energy "<<edepLABR_Crystal<<G4endl;
             // G4cout<<"The function: "<< (fEventAction->AddEnergyLABR_Crystal(channelID, iTS, edepLABR_Crystal))<<G4endl;
         }
     }

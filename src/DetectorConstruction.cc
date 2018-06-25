@@ -144,7 +144,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 1
     CLOVER_Presence[0] = true;
-    CLOVER_Shield_Presence[0] = false;
+    CLOVER_Shield_Presence[0] = true;
     CLOVER_Distance[0] = 21.*cm;
     CLOVER_phi[0] = 90*deg;
     CLOVER_theta[0] = 135*deg;
@@ -152,7 +152,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 2
     CLOVER_Presence[1] = true;
-    CLOVER_Shield_Presence[1] = false;
+    CLOVER_Shield_Presence[1] = true;
     CLOVER_Distance[1] = 21.*cm;
     CLOVER_phi[1] = 0*deg;
     CLOVER_theta[1] = 135*deg;
@@ -160,7 +160,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 3
     CLOVER_Presence[2] = true;
-    CLOVER_Shield_Presence[2] = false;
+    CLOVER_Shield_Presence[2] = true;
     CLOVER_Distance[2] = 21.*cm;
     CLOVER_phi[2] = 270*deg;
     CLOVER_theta[2] = 135*deg;
@@ -168,7 +168,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 4
     CLOVER_Presence[3] = true;
-    CLOVER_Shield_Presence[3] = false;
+    CLOVER_Shield_Presence[3] = true;
     CLOVER_Distance[3] = 21.*cm;
     CLOVER_phi[3] = 180*deg;
     CLOVER_theta[3] = 135*deg;
@@ -176,7 +176,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 5
     CLOVER_Presence[4] = true;
-    CLOVER_Shield_Presence[4] = false;
+    CLOVER_Shield_Presence[4] = true;
     CLOVER_Distance[4] = 21.*cm;
     CLOVER_phi[4] = 45*deg;
     CLOVER_theta[4] = 90*deg;
@@ -185,7 +185,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 6
     CLOVER_Presence[5] = true;
-    CLOVER_Shield_Presence[5] = false;
+    CLOVER_Shield_Presence[5] = true;
     CLOVER_Distance[5] = 21.*cm;
     CLOVER_phi[5] = 0*deg;
     CLOVER_theta[5] = 90*deg;
@@ -193,7 +193,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 7
     CLOVER_Presence[6] = true;
-    CLOVER_Shield_Presence[6] = false;
+    CLOVER_Shield_Presence[6] = true;
     CLOVER_Distance[6] = 21.*cm;
     CLOVER_phi[6] = 180*deg;
     CLOVER_theta[6] = 90*deg;
@@ -201,7 +201,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     //  CLOVER 8
     CLOVER_Presence[7] = true;
-    CLOVER_Shield_Presence[7] = false;
+    CLOVER_Shield_Presence[7] = true;
     CLOVER_Distance[7] = 21.*cm;
     CLOVER_phi[7] = 135*deg;
     CLOVER_theta[7] = 90*deg;
@@ -610,7 +610,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4LogicalVolume* Logic_CLOVER_Shield_BGOCrystal[16];
     G4LogicalVolume* Logic_CLOVER_Shield_PMT[16];
     
-    if( CLOVER_Shield_Presence[0] || CLOVER_Shield_Presence[1] || CLOVER_Shield_Presence[2] || CLOVER_Shield_Presence[3] || CLOVER_Shield_Presence[4] || CLOVER_Shield_Presence[5] || CLOVER_Shield_Presence[6] || CLOVER_Shield_Presence[7] || CLOVER_Shield_Presence[8])
+    if( CLOVER_Shield_Presence[0] || CLOVER_Shield_Presence[1] || CLOVER_Shield_Presence[2] || CLOVER_Shield_Presence[3] || CLOVER_Shield_Presence[4] || CLOVER_Shield_Presence[5] || CLOVER_Shield_Presence[6] || CLOVER_Shield_Presence[7] )
     {
         
         ///////////////////////////////////////////////////////

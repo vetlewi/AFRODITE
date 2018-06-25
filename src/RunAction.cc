@@ -79,6 +79,17 @@ RunAction::RunAction()
     analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy7");
     analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy8");
     
+     ////////////////////////////////////////////////////
+    ////    BGO Detectors
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy0");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy1");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy2");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy3");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy4");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy5");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy6");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy7");
+    analysisManager->CreateNtupleDColumn(0, "BGO_Energy8");
     
     ////////////////////////////////////////////////////
     ////    LABR Detectors
@@ -111,6 +122,9 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
     // Open an output file
     //
     G4String fileName = "AFRODITE";
+    //Requesting filename from terminal. This is because it takes so long to load the geometry and I want to be able to change files without having to reload the geometry.
+    //Comment out the line below if you want to just use the file name "AFRODITE.root"
+    // G4cin>>fileName;
     analysisManager->OpenFile(fileName);
 }
 
