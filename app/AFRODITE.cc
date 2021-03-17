@@ -121,7 +121,7 @@ int main(int argc,char** argv)
     runManager->SetNumberOfThreads(1);
 
      if ( nThreads > 0 ) {
-        runManager->SetNumberOfThreads(4);
+        runManager->SetNumberOfThreads(nThreads);
      }
 #else
     G4RunManager * runManager = new G4RunManager;
