@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(CADMesh VERSION 1.1.0 LANGUAGES CXX)
 
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 # ---- Include guards ----
 
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
@@ -30,12 +28,11 @@ else()
 endif()
 
 include(${Geant4_USE_FILE})
-find_package(assimp REQUIRED)
-
-if ( NOT assimp_FOUND )
+find_package(ASSIMP REQUIRED)
+if ( NOT ASSIMP_FOUND )
     message(FATAL_ERROR "Could not find assimp")
 else()
-    message(STATUS "Found assimp: " ${assimp_INCLUDE_PATH})
+    message(STATUS "Found assimp: " ${ASSIMP_LIBRARIES})
 endif()
 
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.4.1")
@@ -77,5 +74,5 @@ target_include_directories(CADMesh
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     PRIVATE
         ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh)
-target_link_libraries(CADMesh PUBLIC tet::tet assimp::assimp ${Geant4_LIBRARIES})
+target_link_libraries(CADMesh PUBLIC tet::tet ASSIMP::ASSIMP ${Geant4_LIBRARIES})
 

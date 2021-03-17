@@ -3,6 +3,7 @@ project(AFRODITE VERSION 1.0.0 LANGUAGES C CXX)
 
 # Make sure CMake finds the CMake scripts
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/qt@5/5.15.2/lib/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/Users/vetlewi/prog/lib/Geant4-10.7.1")
 
