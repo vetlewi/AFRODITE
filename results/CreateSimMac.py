@@ -8,6 +8,10 @@ from pathlib import Path
 
 import numpy as np
 
+# TODO:
+# 1) Add option to use multiple threads (ie. using agrument -t)
+# 2) Add a function that will start ROOT and merge files from each thread.
+
 
 def MakeHeader(filename, num_energies):
     return f"""#############################################################################
