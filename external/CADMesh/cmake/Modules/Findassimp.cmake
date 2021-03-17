@@ -2,13 +2,13 @@
 
 find_path(
 	assimp_INCLUDE_PATH
-	NAMES postprocess.h scene.h version.h config.h cimport.h
-	PATHS /Users/vetlewi/prog/include /Users/vetlewi/prog/include/assimp)
+	NAMES postprocess.h version.h config.h
+	PATHS /Users/vetlewi/prog/include /Users/vetlewi/prog/include/assimp /usr/include /usr/include/assimp)
 
 find_library(
 	assimp_LIBRARIES
 	NAMES assimp
-	PATHS /Users/vetlewi/prog/lib /Users/vetlewi/prog/lib/assimp)
+	PATHS /Users/vetlewi/prog/lib /Users/vetlewi/prog/lib/assimp /usr/lib /usr/lib64)
 
 if (NOT TARGET assimp::assimp)
 	add_library(assimp::assimp UNKNOWN IMPORTED)
