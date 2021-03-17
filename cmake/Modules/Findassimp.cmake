@@ -6,12 +6,16 @@ find_path(ASSIMP_INCLUDE_DIR NAMES postprocess.h HINTS
 		${PC_ASSIMP_INCLUDE_DIRS}
 		/Users/vetlewi/prog/include
 		/Users/vetlewi/prog/include/assimp
+		/usr/include
+		/usr/include/assimp
 )
 
 # Find the library
 find_library(ASSIMP_LIBRARY NAMES assimp NAMES_PER_DIR HINTS
 		${PC_ASSIMP_LIBRARY_DIRS}
 		/Users/vetlewi/prog/lib
+		/usr/lib
+		/usr/lib64
 )
 
 include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
