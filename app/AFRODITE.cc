@@ -120,11 +120,9 @@ int main(int argc,char** argv)
     G4MTRunManager * runManager = new G4MTRunManager;
     runManager->SetNumberOfThreads(1);
 
-    /*
      if ( nThreads > 0 ) {
         runManager->SetNumberOfThreads(4);
      }
-     */
 #else
     G4RunManager * runManager = new G4RunManager;
 #endif

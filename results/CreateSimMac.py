@@ -122,6 +122,6 @@ if __name__ == '__main__':
 
     energies = [10, 20, 30, 40]
     energies += list(np.arange(50, 10050, 50))
-    rm = Geant4_RunManager(np.array(energies), 10000)
+    rm = Geant4_RunManager(np.array(energies), 10000000)
     rm.generate_all()
     rm.run_all()
