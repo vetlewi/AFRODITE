@@ -119,7 +119,7 @@ class Geant4_RunManager:
 
 
 if __name__ == '__main__':
-    #rm = Geant4_RunManager(np.arange(50, 10050, 50), 10000, 1)
+
     energies = [10, 20, 30, 40]
     energies += list(np.arange(50, 10050, 50))
     rm = Geant4_RunManager(np.array(energies), 10000)

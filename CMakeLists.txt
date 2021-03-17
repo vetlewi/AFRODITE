@@ -44,13 +44,9 @@ add_executable(AFRODITE
         src/RunAction.cc
         src/SteppingAction.cc)
 
-add_executable(test_speed
-    app/test_speed.cc)
-
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh)
-target_link_libraries(test_speed ${Geant4_LIBRARIES} CADMesh::CADMesh)
 
 target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${PROJECT_SOURCE_DIR}/")
 
@@ -59,25 +55,9 @@ target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${P
 # build B4a. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-#set(AFRODITE_SCRIPTS
-#  AFRODITE.out
-#  AFRODITE.in
-#  icons.mac
-#  gui.mac
-#  run.png
-#  init_vis.mac
-#  run1.mac
-#  run2.mac
-#  vis.mac
-# )
 
-#foreach(_script ${AFRODITE_SCRIPTS})
-#  configure_file(
-#    ${PROJECT_SOURCE_DIR}/${_script}
-#    ${PROJECT_BINARY_DIR}/${_script}
-#    COPYONLY
-#    )
-#endforeach()
+add_custom_command(TARGET AFRODITE POST_BUILD
+        COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/macros/* ${CMAKE_CURRENT_BINARY_DIR})
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

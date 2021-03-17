@@ -147,7 +147,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = true;
+    CLOVER_Shield_AllAbsent_Override = false;
     
     
     //  CLOVER 1
