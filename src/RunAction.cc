@@ -41,12 +41,19 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4GenericMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 RunAction::RunAction()
 : G4UserRunAction()
+, fMessenger( new G4GenericMessenger(this, "/FilePath/", "Output file path") )
+, fOutput_file( "AFRODITE.root" )
 {
+    G4GenericMessenger::Command& outputCmd =
+            fMessenger->DeclareProperty("output", fOutput_file, "Path to output file");
+    outputCmd.SetDefaultValue("AFRODITE.root");
+
     // set printing event number per 10 000 event
     G4RunManager::GetRunManager()->SetPrintProgress(10000);
     
@@ -121,10 +128,11 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
     
     // Open an output file
     //
-    G4String fileName = "AFRODITE";
+    G4String fileName = fOutput_file;
     //Requesting filename from terminal. This is because it takes so long to load the geometry and I want to be able to change files without having to reload the geometry.
     //Comment out the line below if you want to just use the file name "AFRODITE.root"
     // G4cin>>fileName;
+    G4cout << "Writing to file: " << fileName << G4endl;
     analysisManager->OpenFile(fileName);
 }
 

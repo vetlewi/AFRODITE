@@ -87,12 +87,20 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4AutoDelete.hh"
 
-#include "CADMesh.hh"
+#include "CADMesh/CADMesh.hh"
 #include "MagneticFieldMapping.hh"
 //#include "G4BlineTracer.hh"
 
 #include <fstream>
 #include <string>
+
+#ifndef SRC_PATH
+#define SRC_PATH "../"
+#endif // SRC_PATH
+
+#ifndef PLY_PATH
+#define PLY_PATH SRC_PATH"Mesh-Models"
+#endif // PLY_PATH
 
 using namespace std;
 
@@ -139,7 +147,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
+    CLOVER_Shield_AllAbsent_Override = true;
     
     
     //  CLOVER 1
@@ -483,8 +491,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     if(AFRODITE_MathisTC_Presence)
     {
         G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        
-        CADMesh * mesh_MathisTC = new CADMesh("../AFRODITE/Mesh-Models/STRUCTURES/MathisTC/MathisTC.ply", "PLY", mm, offset_MathisTC, false);
+        G4cout << "Reading TC from " << PLY_PATH"/STRUCTURES/MathisTC/MathisTC.ply" << G4endl;
+        CADMesh * mesh_MathisTC = new CADMesh(PLY_PATH"/STRUCTURES/MathisTC/MathisTC.ply", "PLY", mm, offset_MathisTC, false);
         
         G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
         
@@ -553,8 +561,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     {
         //////////////////////////////////////////////////////////
         //              CLOVER Internal Vacuum - CADMesh
-        
-        CADMesh * mesh_CLOVERInternalVacuum = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/CLOVER-InternalVacuum/CloverInternalVacuum.ply", "PLY", mm, offset_CLOVERInternalVacuum, false);
+        G4cout << "Reading CLOVER internal vacuum from " << PLY_PATH"/DETECTORS/CLOVER/CLOVER-InternalVacuum/CloverInternalVacuum.ply" << G4endl;
+        CADMesh * mesh_CLOVERInternalVacuum = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/CLOVER-InternalVacuum/CloverInternalVacuum.ply", "PLY", mm, offset_CLOVERInternalVacuum, false);
         
         G4VSolid * Solid_CLOVERInternalVacuum = mesh_CLOVERInternalVacuum->TessellatedMesh();
         
@@ -566,8 +574,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         
         ///////////////////////////////////////////////////////
         //              CLOVER Encasement - CADMesh
-        
-        CADMesh * mesh_CLOVEREncasement = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/CloverEncasement/CloverEncasement.ply", "PLY", mm, offset_CLOVEREncasement, false);
+        G4cout << "Reading CLOVER encasement from " << PLY_PATH"/DETECTORS/CLOVER/CloverEncasement/CloverEncasement.ply" << G4endl;
+        CADMesh * mesh_CLOVEREncasement = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/CloverEncasement/CloverEncasement.ply", "PLY", mm, offset_CLOVEREncasement, false);
         
         G4VSolid * Solid_CLOVEREncasement = mesh_CLOVEREncasement->TessellatedMesh();
         
@@ -576,11 +584,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         
         //////////////////////////////////////////////////////////
         //              CLOVER HPGeCrystals - CADMesh
-        
-        CADMesh * mesh_CLOVERHPGeCrystal1 = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal1.ply", "PLY", mm, offset_CLOVERHPGeCrystal1, false);
-        CADMesh * mesh_CLOVERHPGeCrystal2 = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal2.ply", "PLY", mm, offset_CLOVERHPGeCrystal2, false);
-        CADMesh * mesh_CLOVERHPGeCrystal3 = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal3.ply", "PLY", mm, offset_CLOVERHPGeCrystal3, false);
-        CADMesh * mesh_CLOVERHPGeCrystal4 = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal4.ply", "PLY", mm, offset_CLOVERHPGeCrystal4, false);
+
+        G4cout << "Reading CLOVER crystals from " << PLY_PATH"/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal[1-4].ply" << G4endl;
+        CADMesh * mesh_CLOVERHPGeCrystal1 = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal1.ply", "PLY", mm, offset_CLOVERHPGeCrystal1, false);
+        CADMesh * mesh_CLOVERHPGeCrystal2 = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal2.ply", "PLY", mm, offset_CLOVERHPGeCrystal2, false);
+        CADMesh * mesh_CLOVERHPGeCrystal3 = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal3.ply", "PLY", mm, offset_CLOVERHPGeCrystal3, false);
+        CADMesh * mesh_CLOVERHPGeCrystal4 = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/HPGeCrystals/HPGeCrystal4.ply", "PLY", mm, offset_CLOVERHPGeCrystal4, false);
         
         G4VSolid * Solid_HPGeCrystal1 = mesh_CLOVERHPGeCrystal1->TessellatedMesh();
         G4VSolid * Solid_HPGeCrystal2 = mesh_CLOVERHPGeCrystal2->TessellatedMesh();
@@ -616,8 +625,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         ///////////////////////////////////////////////////////
         //              CLOVER Shield Body - CADMesh
         ///////////////////////////////////////////////////////
-        
-        CADMesh * mesh_CLOVER_Shield_Body = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/Shield/Body/Body.ply", "PLY", mm, offset_CLOVER_Shield_Body, false);
+
+        G4cout << "Reading CLOVER shield body from " << PLY_PATH"/DETECTORS/CLOVER/Shield/Body/Body.ply" << G4endl;
+        G4cout << "This WILL take approx. 6 minutes, depending on CPU speed" << G4endl;
+        CADMesh * mesh_CLOVER_Shield_Body = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/Shield/Body/Body.ply", "PLY", mm, offset_CLOVER_Shield_Body, false);
         
         G4VSolid * Solid_CLOVER_Shield_Body = mesh_CLOVER_Shield_Body->TessellatedMesh();
         
@@ -627,8 +638,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         ///////////////////////////////////////////////////////
         //              CLOVER Shield Heavimet - CADMesh
         ///////////////////////////////////////////////////////
-        
-        CADMesh * mesh_CLOVER_Shield_Heavimet = new CADMesh("../AFRODITE/Mesh-Models/DETECTORS/CLOVER/Shield/Heavimet/Heavimet.ply", "PLY", mm, offset_CLOVER_Shield_Heavimet, false);
+
+        G4cout << "Reading CLOVER shield body from " << PLY_PATH"/DETECTORS/CLOVER/Shield/Heavimet/Heavimet.ply" << G4endl;
+        CADMesh * mesh_CLOVER_Shield_Heavimet = new CADMesh(PLY_PATH"/DETECTORS/CLOVER/Shield/Heavimet/Heavimet.ply", "PLY", mm, offset_CLOVER_Shield_Heavimet, false);
         
         G4VSolid * Solid_CLOVER_Shield_Heavimet = mesh_CLOVER_Shield_Heavimet->TessellatedMesh();
         
@@ -1386,7 +1398,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             
             G4double z_Q_Offset = 4.4*mm+ 100*cm;
             
-            G4MagneticField* PurgMagField = new MagneticFieldMapping("../AFRODITE/MagneticFieldMaps/Quadrupole_MagneticFieldMap.TABLE", z_Q_Offset);
+            G4MagneticField* PurgMagField = new MagneticFieldMapping(SRC_PATH"/MagneticFieldMaps/Quadrupole_MagneticFieldMap.TABLE", z_Q_Offset);
             fEquationMagneticField_AFRODITE_Q = new G4Mag_UsualEqRhs(PurgMagField);
             
             fieldManagerMagneticField_AFRODITE_Q = new G4FieldManager(PurgMagField);

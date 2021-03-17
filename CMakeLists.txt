@@ -1,8 +1,10 @@
-#----------------------------------------------------------------------------
-# Setup the project
-#
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(AFRODITE)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+project(AFRODITE VERSION 1.0.0 LANGUAGES C CXX)
+
+# Make sure CMake finds the CMake scripts
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/qt@5/5.15.2/lib/cmake")
+list(APPEND CMAKE_PREFIX_PATH "/Users/vetlewi/prog/lib/Geant4-10.7.1")
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -16,54 +18,66 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
-#----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
-#
 include(${Geant4_USE_FILE})
-include_directories(${PROJECT_SOURCE_DIR}/include)
 
 #----------------------------------------------------------------------------
-# Locate sources and headers for this project
-# NB: headers are included so they will show up in IDEs
-#
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+# Download and locate external dependencies
 
-# CADMesh
-find_package(cadmesh)
+include(cmake/CPM.cmake)
+
+CPMAddPackage(
+	NAME CADMesh
+	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/CADMesh)
+
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(AFRODITE AFRODITE.cc ${sources} ${headers})
-target_link_libraries(AFRODITE ${Geant4_LIBRARIES})
-target_link_libraries(AFRODITE ${cadmesh_LIBRARIES})
+add_executable(AFRODITE
+        app/AFRODITE.cc
+        src/ActionInitialization.cc
+        src/DetectorConstruction.cc
+        src/EventAction.cc
+        src/MagneticFieldMapping.cc
+        src/OCLLaBr3.cc
+        src/PrimaryGeneratorAction.cc
+        src/RunAction.cc
+        src/SteppingAction.cc)
+
+add_executable(test_speed
+    app/test_speed.cc)
+
+target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh)
+target_link_libraries(test_speed ${Geant4_LIBRARIES} CADMesh::CADMesh)
+
+target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${PROJECT_SOURCE_DIR}/")
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build B4a. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(AFRODITE_SCRIPTS
-  AFRODITE.out
-  AFRODITE.in
-  icons.mac
-  gui.mac
-  run.png
-  init_vis.mac
-  run1.mac
-  run2.mac
-  vis.mac
-  )
+#set(AFRODITE_SCRIPTS
+#  AFRODITE.out
+#  AFRODITE.in
+#  icons.mac
+#  gui.mac
+#  run.png
+#  init_vis.mac
+#  run1.mac
+#  run2.mac
+#  vis.mac
+# )
 
-foreach(_script ${AFRODITE_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
-    )
-endforeach()
+#foreach(_script ${AFRODITE_SCRIPTS})
+#  configure_file(
+#    ${PROJECT_SOURCE_DIR}/${_script}
+#    ${PROJECT_BINARY_DIR}/${_script}
+#    COPYONLY
+#    )
+#endforeach()
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

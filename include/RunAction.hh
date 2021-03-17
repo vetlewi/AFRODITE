@@ -38,13 +38,19 @@
 #define RunAction_h 1
 
 #include "G4UserRunAction.hh"
+#include "G4String.hh"
 #include "globals.hh"
 
 class G4Run;
+class G4GenericMessenger;
 
 
 class RunAction : public G4UserRunAction
 {
+private:
+    G4GenericMessenger *fMessenger;
+    G4String fOutput_file;
+
 public:
     RunAction();
     virtual ~RunAction();
