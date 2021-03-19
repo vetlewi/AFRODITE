@@ -54,6 +54,7 @@
 #include "G4FieldManager.hh"
 
 #include "OCLLaBr3.hh"
+#include "FTALaBr3.hh"
 
 
 class G4VPhysicalVolume;
@@ -81,21 +82,24 @@ class G4UniformMagField;
 //////////////////////////////////////////////////////////
 
 ///////////////     CLOVER DETECTORS     ///////////////////
-const G4int     numberOf_CLOVER = 8;
-const G4int     numberOf_CLOVER_Shields = 8;
+constexpr G4int     numberOf_CLOVER = 8;
+constexpr G4int     numberOf_CLOVER_Shields = 8;
 
 ///////////////     TIGRESS DETECTORS     ///////////////////
-const G4int     numberOf_TIGRESS = 1;
-const G4int     numberOf_TIGRESS_BGO = 1;
+constexpr G4int     numberOf_TIGRESS = 1;
+constexpr G4int     numberOf_TIGRESS_BGO = 1;
 
 ///////////////     PLASTIC SCINTILLATOR DETECTORS     ///////////////////
-const G4int     numberOf_PlasticScint = 12;
+constexpr G4int     numberOf_PlasticScint = 12;
 
 ///////////////     LEPS DETECTORS     ///////////////////
-const G4int     numberOf_LEPS = 6;
+constexpr G4int     numberOf_LEPS = 6;
 
 ///////////////     OCL LaBr3            ///////////////////
-const G4int     numberOf_OCLLaBr3 = 2;
+constexpr G4int     numberOf_OCLLaBr3 = 2;
+
+///////////////     FTA LaBr3            ///////////////////
+constexpr G4int     numberOf_FTALaBr3 = 6;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -107,25 +111,12 @@ public:
     
 public:
     virtual G4VPhysicalVolume* Construct();
-    virtual void ConstructField();
-    
-    virtual void ConstructSDandField();
-
-    // get methods
-    //
-    //const G4VPhysicalVolume* GetAbsorberPV() const;
-    //const G4VPhysicalVolume* GetGapPV() const;
     
 private:
     // methods
     //
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
-    
-    // data members
-    //
-    static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
-    // magnetic field messenger
     
     // get methods
     //
@@ -176,76 +167,6 @@ private:
     G4VPhysicalVolume*  PhysiCLOVER_Shield_PMT;
     
     
-    ///////////////////////////////
-    //      PlasticScint DETECTORS
-    ///////////////////////////////
-    
-    G4bool              PlasticScint_AllPresent_Override;
-    G4bool              PlasticScint_AllAbsent_Override;
-    G4bool              PlasticScint_Presence[numberOf_PlasticScint];
-    G4RotationMatrix    PlasticScint_rotm[numberOf_PlasticScint];
-    G4Transform3D       PlasticScint_transform[numberOf_PlasticScint];
-    G4ThreeVector       PlasticScint_CentrePosition[numberOf_PlasticScint];
-    G4double            PlasticScint_CentrePositionX[numberOf_PlasticScint];
-    G4double            PlasticScint_CentrePositionY[numberOf_PlasticScint];
-    G4double            PlasticScint_CentrePositionZ[numberOf_PlasticScint];
-    G4double            PlasticScint_RotationY[numberOf_PlasticScint];
-    
-    G4VPhysicalVolume*  PhysiPlasticScint;
-    
-    
-    /////////////////////////////////////
-    //              HAGAR
-    /////////////////////////////////////
-    
-    G4bool              HAGAR_NaICrystal_Presence;
-    G4bool              HAGAR_Annulus_Presence;
-    G4bool              HAGAR_FrontDisc_Presence;
-    
-    G4ThreeVector       HAGAR_NaICrystal_CentrePosition;
-    G4ThreeVector       HAGAR_Annulus_CentrePosition;
-    G4ThreeVector       HAGAR_FrontDisc_CentrePosition;
-    G4RotationMatrix    HAGAR_rotm;
-    G4Transform3D       HAGAR_transform;
-    
-    //  HAGAR NaI Crystal
-    G4VPhysicalVolume*  PhysiHAGAR_NaICrystal;
-    
-    //  HAGAR Annulus
-    G4VPhysicalVolume*  PhysiHAGAR_Annulus;
-    
-    //  HAGAR Front Disc
-    G4VPhysicalVolume*  PhysiHAGAR_FrontDisc;
-    
-    
-    /////////////////////////////////////
-    //          LEPS DETECTORS
-    /////////////////////////////////////
-    
-    G4bool              LEPS_AllPresent_Override;
-    G4bool              LEPS_AllAbsent_Override;
-    G4bool              LEPS_Presence[numberOf_LEPS];
-    G4double            LEPS_Distance[numberOf_LEPS];
-    G4RotationMatrix    LEPS_rotm[numberOf_LEPS];
-    G4double            LEPS_phi[numberOf_LEPS];
-    G4double            LEPS_theta[numberOf_LEPS];
-    
-    G4Transform3D       LEPS_transform[numberOf_LEPS];
-    G4ThreeVector       LEPS_position[numberOf_LEPS];
-    
-    G4Transform3D       LEPS_InternalVacuum_transform[numberOf_LEPS];
-    G4ThreeVector       LEPS_InternalVacuum_position[numberOf_LEPS];
-    
-    G4Transform3D       LEPS_Window_transform[numberOf_LEPS];
-    G4ThreeVector       LEPS_Window_position[numberOf_LEPS];
-    
-    //      LEPS HPGe Crystals
-    G4VPhysicalVolume*  Physical_LEPS_HPGeCrystal;
-    G4LogicalVolume*    Logic_LEPS_HPGeCrystal[4];
-    G4Transform3D       LEPS_HPGeCrystal_transform[4];
-    G4RotationMatrix    LEPS_HPGeCrystal_rotm[4];
-    
-    
     /////////////////////////////////////
     //          OCL LaBr3 DETECTORS
     /////////////////////////////////////
@@ -261,6 +182,22 @@ private:
     G4ThreeVector       OCLLaBr3_position[numberOf_OCLLaBr3];
     G4double            OCLLaBr3_phi[numberOf_OCLLaBr3];
     G4double            OCLLaBr3_theta[numberOf_OCLLaBr3];
+
+    /////////////////////////////////////
+    //          FTA LaBr3 DETECTORS
+    /////////////////////////////////////
+
+    FTALaBr3*           ftalabr3[numberOf_FTALaBr3];
+
+    G4bool              FTALaBr3_AllPresent_Override;
+    G4bool              FTALaBr3_AllAbsent_Override;
+    G4bool              FTALaBr3_Presence[numberOf_FTALaBr3];
+    G4double            FTALaBr3_Distance[numberOf_FTALaBr3];
+    G4RotationMatrix    FTALaBr3_rotm[numberOf_FTALaBr3];
+    G4Transform3D       FTALaBr3_transform[numberOf_FTALaBr3];
+    G4ThreeVector       FTALaBr3_position[numberOf_FTALaBr3];
+    G4double            FTALaBr3_phi[numberOf_FTALaBr3];
+    G4double            FTALaBr3_theta[numberOf_FTALaBr3];
     
 
     //////////////////////////////////////
@@ -269,53 +206,6 @@ private:
 
     G4VPhysicalVolume* PhysiVacuumChamber;
 
-    //////////////////////////////////////
-    //          Magnetic Fields
-    //////////////////////////////////////
-    
-    //////////////////////////////////////
-    //      AFRODITE - QUADRUPOLE
-    G4bool              Ideal_Quadrupole;
-    G4bool              Mapped_Quadrupole;
-    G4bool              AFRODITE_Quadrupole;
-    
-    G4VPhysicalVolume*  PhysiAFRODITE_Quadrupole;
-    
-    G4ThreeVector       AFRODITE_Quadrupole_CentrePosition;
-    G4RotationMatrix    AFRODITE_Quadrupole_rotm;
-    G4Transform3D       AFRODITE_Quadrupole_transform;
-    
-    ////    MAGNETIC FIELD for QUADRUPOLE
-    static G4ThreadLocal G4FieldManager* fieldManagerMagneticField_AFRODITE_Q;
-    static G4ThreadLocal G4QuadrupoleMagField* MagneticField_AFRODITE_Q;
-    
-    G4double                dBdr_gradient_AFRODITE_Q;   // gradient = dB/dr
-    G4Mag_UsualEqRhs*       fEquationMagneticField_AFRODITE_Q;
-    G4MagIntegratorStepper* stepperMagneticField_AFRODITE_Q;
-    G4ChordFinder*          fChordFinder_AFRODITE_Q;
-    
-    
-    //////////////////////////////////////
-    //          AFRODITE - DIPOLE 1
-    G4bool              AFRODITE_Dipole1;
-    G4VPhysicalVolume*  PhysiAFRODITE_Dipole1;
-    
-    G4ThreeVector       AFRODITE_Dipole1_CentrePosition;
-    G4RotationMatrix    AFRODITE_Dipole1_rotm;
-    G4Transform3D       AFRODITE_Dipole1_transform;
-    
-    ////    MAGNETIC FIELD for DIPOLE 1
-    static G4ThreadLocal G4FieldManager* fieldManagerMagneticField_AFRODITE_D1;
-    static G4ThreadLocal G4UniformMagField* MagneticField_AFRODITE_D1;
-    
-    G4double                AFRODITE_Dipole1_BZ;
-    G4Mag_UsualEqRhs*       fEquationMagneticField_AFRODITE_D1;
-    G4double                minStepMagneticField;
-    G4MagIntegratorStepper* stepperMagneticField_AFRODITE_D1;
-    G4ChordFinder*          fChordFinder_AFRODITE_D1;
-    
-    
-    
     ////////////////////////////////
     ////        STRUCTURES      ////
     ////////////////////////////////
@@ -330,16 +220,6 @@ private:
     
     
 };
-
-// inline functions
-
-inline const G4VPhysicalVolume* DetectorConstruction::GetAbsorberPV() const {
-    return fAbsorberPV;
-}
-
-inline const G4VPhysicalVolume* DetectorConstruction::GetGapPV() const  {
-    return fGapPV;
-}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

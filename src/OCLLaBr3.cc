@@ -33,6 +33,8 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
+using namespace OCL;
+
 OCLLaBr3::OCLLaBr3()
 {
 	//some default Clover detector parameters

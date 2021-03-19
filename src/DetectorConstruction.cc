@@ -34,7 +34,9 @@
 //      email: likevincw@gmail.com
 //
 
+#include "CADMesh/CADMesh.hh"
 #include "DetectorConstruction.hh"
+
 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -87,7 +89,7 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4AutoDelete.hh"
 
-#include "CADMesh/CADMesh.hh"
+
 #include "MagneticFieldMapping.hh"
 //#include "G4BlineTracer.hh"
 
@@ -102,25 +104,18 @@
 #define PLY_PATH SRC_PATH"Mesh-Models"
 #endif // PLY_PATH
 
-using namespace std;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4ThreadLocal G4GlobalMagFieldMessenger* DetectorConstruction::fMagFieldMessenger = 0;
-
-G4ThreadLocal G4QuadrupoleMagField* DetectorConstruction::MagneticField_AFRODITE_Q = 0;
-G4ThreadLocal G4UniformMagField* DetectorConstruction::MagneticField_AFRODITE_D1 = 0;
-
-G4ThreadLocal G4FieldManager* DetectorConstruction::fieldManagerMagneticField_AFRODITE_Q = 0;
-G4ThreadLocal G4FieldManager* DetectorConstruction::fieldManagerMagneticField_AFRODITE_D1 = 0;
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstruction::DetectorConstruction()
-: G4VUserDetectorConstruction(),
-fAbsorberPV(0), fGapPV(0), fCheckOverlaps(false), PhysiCLOVER_HPGeCrystal(0), PhysiCLOVER_Shield_BGOCrystal(0), PhysiCLOVER_Shield_PMT(0), PhysiPlasticScint(0), PhysiHAGAR_NaICrystal(0), PhysiHAGAR_Annulus(0), PhysiHAGAR_FrontDisc(0), PhysiAFRODITE_Dipole1(0), PhysiAFRODITE_Quadrupole(0)
+    : G4VUserDetectorConstruction()
+    , fAbsorberPV(nullptr)
+    , fGapPV(nullptr)
+    , fCheckOverlaps(false)
+    , WorldSize( 15. * m )
+    , PhysiCLOVER_HPGeCrystal(nullptr)
+    , PhysiCLOVER_Shield_BGOCrystal(nullptr)
+    , PhysiCLOVER_Shield_PMT(nullptr)
 {
-    WorldSize = 15.*m;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -147,75 +142,76 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
+    CLOVER_Shield_AllAbsent_Override = true;
     
     
     //  CLOVER 1
     CLOVER_Presence[0] = true;
     CLOVER_Shield_Presence[0] = true;
     CLOVER_Distance[0] = 21.*cm;
-    CLOVER_phi[0] = 90*deg;
-    CLOVER_theta[0] = 135*deg;
-    CLOVER_rotm[0].rotateX(45.*deg);
+    CLOVER_phi[0] = 0*deg;
+    CLOVER_theta[0] = 90*deg;
+    CLOVER_rotm[0].rotateY(-90.*deg);
     
     //  CLOVER 2
     CLOVER_Presence[1] = true;
     CLOVER_Shield_Presence[1] = true;
     CLOVER_Distance[1] = 21.*cm;
-    CLOVER_phi[1] = 0*deg;
-    CLOVER_theta[1] = 135*deg;
-    CLOVER_rotm[1].rotateY(-45.0*deg);
+    CLOVER_phi[1] = 45*deg;
+    CLOVER_theta[1] = 90*deg;
+    CLOVER_rotm[1].rotateX(45.0*deg);
+    CLOVER_rotm[1].rotateY(-90.0*deg);
     
     //  CLOVER 3
     CLOVER_Presence[2] = true;
     CLOVER_Shield_Presence[2] = true;
     CLOVER_Distance[2] = 21.*cm;
-    CLOVER_phi[2] = 270*deg;
-    CLOVER_theta[2] = 135*deg;
-    CLOVER_rotm[2].rotateX(-45.0*deg);
-    
+    CLOVER_phi[2] = 135*deg;
+    CLOVER_theta[2] = 90*deg;
+    CLOVER_rotm[2].rotateX(45.0*deg);
+    CLOVER_rotm[2].rotateY(90.0*deg);
+
     //  CLOVER 4
     CLOVER_Presence[3] = true;
     CLOVER_Shield_Presence[3] = true;
     CLOVER_Distance[3] = 21.*cm;
     CLOVER_phi[3] = 180*deg;
-    CLOVER_theta[3] = 135*deg;
-    CLOVER_rotm[3].rotateY(45.0*deg);
+    CLOVER_theta[3] = 90*deg;
+    CLOVER_rotm[3].rotateY(90.0*deg);
     
     //  CLOVER 5
     CLOVER_Presence[4] = true;
     CLOVER_Shield_Presence[4] = true;
     CLOVER_Distance[4] = 21.*cm;
-    CLOVER_phi[4] = 45*deg;
+    CLOVER_phi[4] = 225*deg;
     CLOVER_theta[4] = 90*deg;
+    CLOVER_rotm[4].rotateX(-45.0*deg);
     CLOVER_rotm[4].rotateY(90.0 *deg);
-    CLOVER_rotm[4].rotateZ(-135.0*deg);
     
     //  CLOVER 6
     CLOVER_Presence[5] = true;
     CLOVER_Shield_Presence[5] = true;
     CLOVER_Distance[5] = 21.*cm;
     CLOVER_phi[5] = 0*deg;
-    CLOVER_theta[5] = 90*deg;
-    CLOVER_rotm[5].rotateY(-90.0*deg);
+    CLOVER_theta[5] = 45*deg;
+    CLOVER_rotm[5].rotateY(-135.0*deg);
     
     //  CLOVER 7
     CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = true;
     CLOVER_Distance[6] = 21.*cm;
-    CLOVER_phi[6] = 180*deg;
-    CLOVER_theta[6] = 90*deg;
-    CLOVER_rotm[6].rotateY(90.0*deg);
-    
+    CLOVER_phi[6] = 90*deg;
+    CLOVER_theta[6] = 45*deg;
+    CLOVER_rotm[6].rotateX(135.0*deg);
+
     //  CLOVER 8
     CLOVER_Presence[7] = true;
     CLOVER_Shield_Presence[7] = true;
     CLOVER_Distance[7] = 21.*cm;
-    CLOVER_phi[7] = 135*deg;
-    CLOVER_theta[7] = 90*deg;
-    CLOVER_rotm[7].rotateY(90.0*deg);
-    CLOVER_rotm[7].rotateZ(-45.0*deg);
-    
+    CLOVER_phi[7] = -90*deg;
+    CLOVER_theta[7] = 45*deg;
+    CLOVER_rotm[7].rotateX(225*deg);
+
     
     //  CLOVER 9
     // CLOVER_Presence[8] = true;
@@ -250,7 +246,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // LaBr3 Detector 1
     OCLLaBr3_Presence[0] = true;
     OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
-    OCLLaBr3_phi[0] = 135.*deg;
+    OCLLaBr3_phi[0] = -45.*deg;
     OCLLaBr3_theta[0] = 90.*deg;
     OCLLaBr3_rotm[0].rotateX(270*deg);
     OCLLaBr3_rotm[0].rotateZ(OCLLaBr3_theta[0]);
@@ -259,7 +255,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
     OCLLaBr3_Distance[1] = 10.*cm+14.*cm;
-    OCLLaBr3_phi[1] = 90.*deg;
+    OCLLaBr3_phi[1] = -(90.)*deg;
     OCLLaBr3_theta[1] = 45.*deg;
     OCLLaBr3_rotm[1].rotateX(270*deg);
     OCLLaBr3_rotm[1].rotateZ(OCLLaBr3_theta[1]);
@@ -273,6 +269,64 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if(OCLLaBr3_AllPresent_Override && OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
     }
 
+    ////////////////////////////
+    ////    FTA LaBr3 Detectors
+
+    FTALaBr3_AllPresent_Override = false;
+    FTALaBr3_AllAbsent_Override = false;
+
+
+    // LaBr3 Detector 1
+    FTALaBr3_Presence[0] = true;
+    FTALaBr3_Distance[0] = 14.*cm;
+    FTALaBr3_phi[0] = -135*deg;
+    FTALaBr3_theta[0] = 54.5*deg;
+
+
+    // LaBr3 Detector 2
+    FTALaBr3_Presence[1] = true;
+    FTALaBr3_Distance[1] = 14.*cm;
+    FTALaBr3_phi[1] = -45*deg;
+    FTALaBr3_theta[1] = 54.5*deg;
+
+    // LaBr3 Detector 3
+    FTALaBr3_Presence[2] = true;
+    FTALaBr3_Distance[2] = 14.*cm;
+    FTALaBr3_phi[2] = 45.*deg;
+    FTALaBr3_theta[2] = (180.-56.)*deg;
+
+    // LaBr3 Detector 4
+    FTALaBr3_Presence[3] = true;
+    FTALaBr3_Distance[3] = 14.*cm;
+    FTALaBr3_phi[3] = 45.*deg;
+    FTALaBr3_theta[3] = 54.5*deg;
+
+
+    // LaBr3 Detector 5
+    FTALaBr3_Presence[4] = true;
+    FTALaBr3_Distance[4] = 14.*cm;
+    FTALaBr3_phi[4] = 135.*deg;
+    FTALaBr3_theta[4] = 54.5*deg;
+
+    // LaBr3 Detector 6
+    FTALaBr3_Presence[5] = true;
+    FTALaBr3_Distance[5] = 14.*cm;
+    FTALaBr3_phi[5] = 135.*deg;
+    FTALaBr3_theta[5] = (180.-56.)*deg;
+
+
+    for (G4int i=0; i<numberOf_FTALaBr3; i++)
+    {
+
+        FTALaBr3_rotm[i].rotateX(270*deg);
+        FTALaBr3_rotm[i].rotateZ(FTALaBr3_theta[i]);
+        FTALaBr3_rotm[i].rotateY(FTALaBr3_phi[i]);
+
+        if(FTALaBr3_AllPresent_Override) FTALaBr3_Presence[i] = true;
+        if(FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
+        if(FTALaBr3_AllPresent_Override && FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
+    }
+
 
     
     
@@ -281,31 +335,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////            AFRODITE VAULT SETUP            ////
     ////                                            ////
     ////////////////////////////////////////////////////
-    
-    //  AFRODITE Quadrupole
-    AFRODITE_Quadrupole = false;
-    Ideal_Quadrupole = true;
-    Mapped_Quadrupole = false;
-    //dBdr_gradient_AFRODITE_Q = 0.030*tesla/cm;  // gradient = dB/dr for Ideal Quadrupole
-    dBdr_gradient_AFRODITE_Q = 0.001*tesla/cm;  // gradient = dB/dr for Ideal Quadrupole
-    AFRODITE_Quadrupole_CentrePosition = G4ThreeVector(0.*cm, 0.*cm,100.*cm);
-    //AFRODITE_Quadrupole_rotm.rotateZ(90.*deg);
-    //AFRODITE_Quadrupole_rotm.rotateY(90*deg);
-    //AFRODITE_Quadrupole_rotm.rotateX(90*deg);
-    
-    //  AFRODITE Dipole 1
-    AFRODITE_Dipole1 = false;
-    AFRODITE_Dipole1_BZ = -2.30*tesla;
-    //AFRODITE_Dipole1_BZ = -3.30*tesla;
-    AFRODITE_Dipole1_CentrePosition = G4ThreeVector(75*cm, 0.*cm,250*cm);
-    AFRODITE_Dipole1_rotm.rotateX(-90.*deg);
-    AFRODITE_Dipole1_rotm.rotateY(180.*deg);
-    
-    if(Ideal_Quadrupole && Mapped_Quadrupole || !Ideal_Quadrupole && !Mapped_Quadrupole)
-    {
-        Ideal_Quadrupole = false;
-        Mapped_Quadrupole = false;
-    }
+
     
     ////////////////////////////////////////////////////////
     ////                                                ////
@@ -320,7 +350,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     /////////////////////////////////////
     ////    AFRODITE Target
-    AFRODITE_Target_Presence = true;
+    AFRODITE_Target_Presence = false;
     
     
     // Define materials
@@ -556,7 +586,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4LogicalVolume * Logic_CLOVER_InternalVacuum[numberOf_CLOVER];
     G4LogicalVolume * Logic_CLOVER_Encasement;
     G4LogicalVolume * Logic_CLOVER_HPGeCrystal[4];
-    
+
     if( CLOVER_Presence[0] || CLOVER_Presence[1] || CLOVER_Presence[2] || CLOVER_Presence[3] || CLOVER_Presence[4] || CLOVER_Presence[5] || CLOVER_Presence[6] || CLOVER_Presence[7] )
     {
         //////////////////////////////////////////////////////////
@@ -618,7 +648,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4LogicalVolume* Logic_CLOVER_Shield_Heavimet;
     G4LogicalVolume* Logic_CLOVER_Shield_BGOCrystal[16];
     G4LogicalVolume* Logic_CLOVER_Shield_PMT[16];
-    
+
     if( CLOVER_Shield_Presence[0] || CLOVER_Shield_Presence[1] || CLOVER_Shield_Presence[2] || CLOVER_Shield_Presence[3] || CLOVER_Shield_Presence[4] || CLOVER_Shield_Presence[5] || CLOVER_Shield_Presence[6] || CLOVER_Shield_Presence[7] )
     {
         
@@ -1077,163 +1107,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             
         }
     }
-    
-    
-    //////////////////////////////////////
-    //      PlasticScint DEFINITION     //
-    //////////////////////////////////////
-    
-    G4LogicalVolume* Logic_PlasticScint[numberOf_PlasticScint];
-    G4Box* Solid_PlasticScint = new G4Box("Scintillator", (600/2)*mm, (100/2)*mm, (100/2)*mm);
-    
-    for(G4int i=0; i<numberOf_PlasticScint; i++)
-    {
-        Logic_PlasticScint[i] = new G4LogicalVolume(Solid_PlasticScint, BC408_Material,"Scintillator",0,0,0);
-    }
-    
-    
-    //////////////////////////////////////////
-    //      PlasticScint INITIALISATION     //
-    //////////////////////////////////////////
-    
-    for(G4int i=0; i<numberOf_PlasticScint; i++)
-    {
-        if(PlasticScint_Presence[i])
-        {
-            PlasticScint_transform[i] = G4Transform3D(PlasticScint_rotm[i],PlasticScint_CentrePosition[i]);
-            
-            PhysiPlasticScint = new G4PVPlacement(PlasticScint_transform[i],
-                                                  Logic_PlasticScint[i],    // its logical volume
-                                                  "PlasticScint",           // its name
-                                                  LogicWorld,         // its mother  volume
-                                                  false,              // no boolean operations
-                                                  i,                  // copy number
-                                                  fCheckOverlaps);    // checking overlaps
-            
-        }
-    }
-    
-    
-    
-    
-    ////////////////////////////////////////
-    ////        LEPS DEFINITION         ////
-    ////////////////////////////////////////
-    
-    //////////////////////////////////////////////////////////
-    //              LEPS Internal Vacuum - CADMesh
-    //////////////////////////////////////////////////////////
-    
-    G4Tubs* Solid_LEPS_InternalVacuum = new G4Tubs("Solid_LEPSInternalVacuum", 0.*mm, 38.4*mm, 45.0*mm, 0.*deg, 360*deg);
-    G4LogicalVolume* Logic_LEPS_InternalVacuum[numberOf_LEPS];
-    
-    for(G4int i=0; i<numberOf_LEPS; i++)
-    {
-        Logic_LEPS_InternalVacuum[i] = new G4LogicalVolume(Solid_LEPS_InternalVacuum, G4_Galactic_Material, "LogicLEPSInternalVacuum", 0, 0, 0);
-    }
-    
-    ///////////////////////////////////////////////////////
-    //              LEPS Encasement - CADMesh
-    ///////////////////////////////////////////////////////
-    
-    G4Tubs* Solid_LEPS_Encasement = new G4Tubs("Solid_LEPSEncasement", 38.5*mm, 40.0*mm, (90./2)*mm, 0.*deg, 360*deg);
-    
-    G4LogicalVolume* Logic_LEPS_Encasement = new G4LogicalVolume(Solid_LEPS_Encasement, G4_Al_Material, "LogicLEPSLEPSEncasement", 0, 0, 0);
-    
-    
-    ///////////////////////////////////////////////////////
-    //              LEPS Beryllium Window - CADMesh
-    ///////////////////////////////////////////////////////
-    
-    G4Tubs* Solid_LEPS_Window = new G4Tubs("Solid_LEPSWindow", 0.*mm, 38.5*mm, (0.3/2)*mm, 0.*deg, 360*deg);
-    
-    G4LogicalVolume* Logic_LEPS_Window = new G4LogicalVolume(Solid_LEPS_Window, G4_Be_Material, "Logic_LEPS_Window", 0, 0, 0);
-    
-    
-    //////////////////////////////////////////////////////////
-    //              LEPS HPGeCrystals - CADMesh
-    //////////////////////////////////////////////////////////
-    
-    G4Tubs* Solid_HPGeCrystal = new G4Tubs("Solid_HPGeCrystal1", 0.*mm, 33.0*mm, 5.5*mm, 0.*deg, 90.*deg);
-    
-    G4LogicalVolume* Logic_LEPS_HPGeCrystal;
-    Logic_LEPS_HPGeCrystal = new G4LogicalVolume(Solid_HPGeCrystal, G4_Ge_Material,"LogicLEPSHPGeCrystal",0,0,0);
-    
-    LEPS_HPGeCrystal_rotm[0].rotateZ(0.*deg);
-    LEPS_HPGeCrystal_rotm[1].rotateZ(90.*deg);
-    LEPS_HPGeCrystal_rotm[2].rotateZ(180.*deg);
-    LEPS_HPGeCrystal_rotm[3].rotateZ(270.*deg);
-    
-    for(G4int i=0; i<4; i++)
-    {
-        LEPS_HPGeCrystal_transform[i] = G4Transform3D(LEPS_HPGeCrystal_rotm[i], G4ThreeVector(0,0,(29.0-0.5)*mm));
-    }
-    
-    ////////////////////////////////////////////////////
-    //               LEPS INITIALIZATION
-    ////////////////////////////////////////////////////
-    
-    
-    for(G4int i=0; i<numberOf_LEPS; i++)
-    {
-        LEPS_position[i] = (LEPS_Distance[i] + 4.5*cm)*G4ThreeVector( std::sin(LEPS_theta[i]) * std::cos(LEPS_phi[i]), std::sin(LEPS_theta[i]) * std::sin(LEPS_phi[i]), std::cos(LEPS_theta[i]));
-        
-        LEPS_transform[i] = G4Transform3D(LEPS_rotm[i],LEPS_position[i]);
-        
-        LEPS_InternalVacuum_position[i] = (LEPS_Distance[i]+ 4.5*cm + 0.5*mm)*G4ThreeVector( std::sin(LEPS_theta[i]) * std::cos(LEPS_phi[i]), std::sin(LEPS_theta[i]) * std::sin(LEPS_phi[i]), std::cos(LEPS_theta[i]));
-        LEPS_InternalVacuum_transform[i] = G4Transform3D(LEPS_rotm[i],LEPS_InternalVacuum_position[i]);
-        
-        LEPS_Window_position[i] = (LEPS_Distance[i] + 4.5*cm +(-45.0+0.15)*mm)*G4ThreeVector( std::sin(LEPS_theta[i]) * std::cos(LEPS_phi[i]), std::sin(LEPS_theta[i]) * std::sin(LEPS_phi[i]), std::cos(LEPS_theta[i]));
-        LEPS_Window_transform[i] = G4Transform3D(LEPS_rotm[i],LEPS_Window_position[i]);
-        
-        /////////////////////////////
-        //          LEPS
-        if(LEPS_Presence[i] == true)
-        {
-            
-            new G4PVPlacement(LEPS_transform[i],   // transformation matrix
-                              Logic_LEPS_Encasement,       // its logical volume
-                              "LEPSEncasement",       // its name
-                              LogicVacuumChamber,         // its mother  volume
-                              false,           // no boolean operations
-                              i,               // copy number
-                              fCheckOverlaps); // checking overlaps
-            
-            new G4PVPlacement(LEPS_Window_transform[i],   // transformation matrix
-                              Logic_LEPS_Window,       // its logical volume
-                              "LEPSWindow",       // its name
-                              LogicVacuumChamber,         // its mother  volume
-                              false,           // no boolean operations
-                              i,               // copy number
-                              fCheckOverlaps); // checking overlaps
-            
-            
-            
-            for (int j=0; j<4; j++)
-            {
-                Physical_LEPS_HPGeCrystal = new G4PVPlacement(LEPS_HPGeCrystal_transform[j],
-                                                              Logic_LEPS_HPGeCrystal,       // its logical volume
-                                                              "LEPSHPGeCrystal",       // its name
-                                                              Logic_LEPS_InternalVacuum[i],    // its mother  volume
-                                                              false,           // no boolean operations
-                                                              j + (i*4),               // copy number
-                                                              fCheckOverlaps); // checking overlaps
-                
-            }
-            
-            new G4PVPlacement(LEPS_InternalVacuum_transform[i],
-                              Logic_LEPS_InternalVacuum[i],
-                              "LEPSInternalVacuum",       // its name
-                              LogicVacuumChamber,         // its mother  volume
-                              false,           // no boolean operations
-                              i,               // copy number
-                              fCheckOverlaps); // checking overlaps
-            
-            
-        }
-        
-    }
-
 
     ////////////////////////////////////////////////////
     //            OCL LaBr3 INITIALIZATION            //
@@ -1243,11 +1116,10 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
     for(G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
-        OCLLaBr3_position[i] = (OCLLaBr3_Distance[i])
+        OCLLaBr3_position[i] = OCLLaBr3_Distance[i]
                                 *G4ThreeVector( -sin(OCLLaBr3_theta[i]) * cos(OCLLaBr3_phi[i]), 
                                                 cos(OCLLaBr3_theta[i]),
-                                                sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]) 
-                                                 );
+                                                sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]));
         
         // OCLLaBr3_transform[i] = G4Transform3D(OCLLaBr3_rotm[i],OCLLaBr3_position[i]);
                 
@@ -1262,221 +1134,33 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         }
 
     }
-    
-    
-    //////////////////////////////////
-    //      HAGAR DEFINITION        //
-    //////////////////////////////////
-    
-    ////////////////////////////////
-    //      HAGAR - NaI Crystal
-    G4Tubs* Solid_HAGAR_NaICrystal = new G4Tubs("HAGAR_NaICrystal", 0.*cm, (23.8/2)*cm, (35.6/2)*cm, 0.*deg, 360.*deg);
-    
-    G4LogicalVolume* Logic_HAGAR_NaICrystal = new G4LogicalVolume(Solid_HAGAR_NaICrystal, G4_SODIUM_IODIDE_Material, "Logic_HAGAR_NaICrystal", 0, 0, 0);
-    
-    ////////////////////////////////
-    //      HAGAR - Annulus
-    G4Tubs* Solid_HAGAR_Anulus = new G4Tubs("HAGAR_Anulus", (28.86/2)*cm, ((28.86/2) + 9.84)*cm, (61/2)*cm, 0.*deg, 360.*deg);
-    
-    G4LogicalVolume* Logic_HAGAR_Annulus = new G4LogicalVolume(Solid_HAGAR_Anulus, BC408_Material, "Logic_HAGAR_Annulus", 0, 0, 0);
-    
-    ////////////////////////////////
-    //      HAGAR - Front Disc
-    G4Tubs* Solid_HAGAR_FrontDisc = new G4Tubs("HAGAR_FrontDisc", 0.*cm, (48.58/2)*cm, (8/2)*cm, 0.*deg, 360.*deg);
-    
-    G4LogicalVolume* Logic_HAGAR_FrontDisc = new G4LogicalVolume(Solid_HAGAR_FrontDisc, BC408_Material, "Logic_HAGAR_FrontDisc", 0, 0, 0);
-    
-    
-    
+
+
     ////////////////////////////////////////////////////
-    //               HAGAR INITIALIZATION             //
+    //            FTA LaBr3 INITIALIZATION            //
     ////////////////////////////////////////////////////
-    
-    
-    ///////////////////////////////
-    //      HAGAR - NaI Crystal
-    if(HAGAR_NaICrystal_Presence)
+
+    for(G4int i=0; i<numberOf_FTALaBr3; i++)
     {
-        HAGAR_transform = G4Transform3D(HAGAR_rotm, HAGAR_NaICrystal_CentrePosition);
-        
-        PhysiHAGAR_NaICrystal = new G4PVPlacement(HAGAR_transform,   // transformation matrix
-                                                  Logic_HAGAR_NaICrystal,       // its logical volume
-                                                  "HAGAR_NaICrystal",       // its name
-                                                  LogicWorld,         // its mother  volume
-                                                  false,           // no boolean operations
-                                                  0,               // copy number
-                                                  fCheckOverlaps); // checking overlaps
-    }
-    
-    /////////////////////////////
-    //      HAGAR - Annulus
-    if(HAGAR_Annulus_Presence)
-    {
-        HAGAR_transform = G4Transform3D(HAGAR_rotm, HAGAR_Annulus_CentrePosition);
-        
-        PhysiHAGAR_Annulus = new G4PVPlacement(HAGAR_transform,   // transformation matrix
-                                               Logic_HAGAR_Annulus,       // its logical volume
-                                               "HAGAR_Annulus",       // its name
-                                               LogicWorld,         // its mother  volume
-                                               false,           // no boolean operations
-                                               0,               // copy number
-                                               fCheckOverlaps); // checking overlaps
-    }
-    
-    ///////////////////////////////
-    //      HAGAR - Front Disc
-    if(HAGAR_FrontDisc_Presence)
-    {
-        HAGAR_transform = G4Transform3D(HAGAR_rotm, HAGAR_FrontDisc_CentrePosition);
-        
-        PhysiHAGAR_FrontDisc = new G4PVPlacement(HAGAR_transform,   // transformation matrix
-                                                 Logic_HAGAR_FrontDisc,       // its logical volume
-                                                 "HAGAR_FrontDisc",       // its name
-                                                 LogicWorld,         // its mother  volume
-                                                 false,           // no boolean operations
-                                                 0,               // copy number
-                                                 fCheckOverlaps); // checking overlaps
-    }
-    
-    
-    
-    
-    
-    
-    
-    //////////////////////////////////////////////////
-    //      AFRODITE SPECTROMETER INITIIALIZATION       //
-    //////////////////////////////////////////////////
-    
-    
-    // A field object is held by a field manager
-    // Find the global Field Manager
-    G4TransportationManager* tmanagerMagneticField = G4TransportationManager::GetTransportationManager();
-    tmanagerMagneticField->GetPropagatorInField()->SetLargestAcceptableStep(1*mm);
-    G4double minStepMagneticField = 0.0025*mm ;
-    
-    
-    //////////////////////////////////////////////////////
-    //              AFRODITE - QUADRUPOLE
-    //////////////////////////////////////////////////////
-    
-    if(AFRODITE_Quadrupole)
-    {
-        
-        G4RotationMatrix* AFRODITE_Q_MagField_rotm = new G4RotationMatrix;
-        //AFRODITE_Q_MagField_rotm->rotateX(90.*deg);
-        
-        AFRODITE_Quadrupole_transform = G4Transform3D(AFRODITE_Quadrupole_rotm, AFRODITE_Quadrupole_CentrePosition);
-        
-        G4Box* Solid_AFRODITE_Quadrupole = new G4Box("Solid_AFRODITE_Quadrupole", (50./2)*cm, (50./2)*cm, (30./2)*cm);
-        
-        G4LogicalVolume* Logic_AFRODITE_Quadrupole = new G4LogicalVolume(Solid_AFRODITE_Quadrupole, G4_Galactic_Material,"Logic_AFRODITE_Quadrupole",0,0,0);
-        
-        ////    IDEAL MAGNETIC FIELD for QUADRUPOLE
-        if(Ideal_Quadrupole)
+        FTALaBr3_position[i] = (FTALaBr3_Distance[i])
+                               *G4ThreeVector( -sin(FTALaBr3_theta[i]) * cos(FTALaBr3_phi[i]),
+                                               cos(FTALaBr3_theta[i]),
+                                               sin(FTALaBr3_theta[i]) * sin(FTALaBr3_phi[i])
+        );
+
+        // OCLLaBr3_transform[i] = G4Transform3D(OCLLaBr3_rotm[i],OCLLaBr3_position[i]);
+
+        /////////////////////////////
+        //          LaBr3 Detectors
+        if(FTALaBr3_Presence[i])
         {
-            MagneticField_AFRODITE_Q = new G4QuadrupoleMagField(dBdr_gradient_AFRODITE_Q, AFRODITE_Quadrupole_CentrePosition, AFRODITE_Q_MagField_rotm);
-            fEquationMagneticField_AFRODITE_Q = new G4Mag_UsualEqRhs(MagneticField_AFRODITE_Q);
-            
-            fieldManagerMagneticField_AFRODITE_Q = new G4FieldManager(MagneticField_AFRODITE_Q);
-            
-            stepperMagneticField_AFRODITE_Q = new G4ClassicalRK4( fEquationMagneticField_AFRODITE_Q );
-            fieldManagerMagneticField_AFRODITE_Q -> SetDetectorField(MagneticField_AFRODITE_Q);
-            
-            fChordFinder_AFRODITE_Q = new G4ChordFinder( MagneticField_AFRODITE_Q, minStepMagneticField, stepperMagneticField_AFRODITE_Q);
-            
-            Logic_AFRODITE_Quadrupole -> SetFieldManager(fieldManagerMagneticField_AFRODITE_Q, true) ;
-            
-            
-            //G4BlineTracer* theBlineTool = new G4BlineTracer();
-            //theBlineTool->ComputeBlines();
+            ftalabr3[i] = new FTALaBr3();
+            ftalabr3[i]->SetRotation(FTALaBr3_rotm[i]);
+            ftalabr3[i]->SetPosition(FTALaBr3_position[i]);
+            ftalabr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);
         }
-        
-        ////    MAPPED MAGNETIC FIELD for QUADRUPOLE
-        if(Mapped_Quadrupole)
-        {
-            
-            G4double z_Q_Offset = 4.4*mm+ 100*cm;
-            
-            G4MagneticField* PurgMagField = new MagneticFieldMapping(SRC_PATH"/MagneticFieldMaps/Quadrupole_MagneticFieldMap.TABLE", z_Q_Offset);
-            fEquationMagneticField_AFRODITE_Q = new G4Mag_UsualEqRhs(PurgMagField);
-            
-            fieldManagerMagneticField_AFRODITE_Q = new G4FieldManager(PurgMagField);
-            
-            stepperMagneticField_AFRODITE_Q = new G4ClassicalRK4( fEquationMagneticField_AFRODITE_Q );
-            fieldManagerMagneticField_AFRODITE_Q -> SetDetectorField(PurgMagField);
-            
-            fChordFinder_AFRODITE_Q = new G4ChordFinder( PurgMagField, minStepMagneticField, stepperMagneticField_AFRODITE_Q);
-            
-            Logic_AFRODITE_Quadrupole -> SetFieldManager(fieldManagerMagneticField_AFRODITE_Q, true) ;
-            
-            
-            //G4BlineTracer* theBlineTool = new G4BlineTracer();
-            
-        }
-        
-        PhysiAFRODITE_Quadrupole = new G4PVPlacement(AFRODITE_Quadrupole_transform,
-                                                     Logic_AFRODITE_Quadrupole,       // its logical volume
-                                                     "AFRODITE_Quadrupole",       // its name
-                                                     LogicWorld,         // its mother  volume
-                                                     false,           // no boolean operations
-                                                     0,               // copy number
-                                                     fCheckOverlaps); // checking overlaps
-        
+
     }
-    
-    //////////////////////////////////////////////////////
-    //              AFRODITE - DIPOLE 1
-    //////////////////////////////////////////////////////
-    
-    /*
-     // magnetic field ----------------------------------------------------------
-     MagneticField_AFRODITE_D1 = new G4UniformMagField(G4ThreeVector(0., AFRODITE_Dipole1_BZ, 0.));
-     fieldManagerMagneticField_AFRODITE_D1 = new G4FieldManager();
-     fieldManagerMagneticField_AFRODITE_D1->SetDetectorField(MagneticField_AFRODITE_D1);
-     fieldManagerMagneticField_AFRODITE_D1->CreateChordFinder(MagneticField_AFRODITE_D1);
-     G4bool forceToAllDaughters = true;
-     */
-    
-    if(AFRODITE_Dipole1)
-    {
-        ////    MAGNETIC FIELD for DIPOLE 1
-        MagneticField_AFRODITE_D1 = new G4UniformMagField(G4ThreeVector(0., AFRODITE_Dipole1_BZ, 0.));
-        fEquationMagneticField_AFRODITE_D1 = new G4Mag_UsualEqRhs(MagneticField_AFRODITE_D1);
-        
-        fieldManagerMagneticField_AFRODITE_D1 = new G4FieldManager(MagneticField_AFRODITE_D1);
-        
-        stepperMagneticField_AFRODITE_D1 = new G4ClassicalRK4( fEquationMagneticField_AFRODITE_D1 );
-        fieldManagerMagneticField_AFRODITE_D1 -> SetDetectorField(MagneticField_AFRODITE_D1);
-        
-        fChordFinder_AFRODITE_D1 = new G4ChordFinder( MagneticField_AFRODITE_D1, minStepMagneticField, stepperMagneticField_AFRODITE_D1);
-        
-        
-        /////////////////////////////////////////////
-        
-        AFRODITE_Dipole1_transform = G4Transform3D(AFRODITE_Dipole1_rotm, AFRODITE_Dipole1_CentrePosition);
-        
-        //G4Box* Solid_AFRODITE_Dipole1 = new G4Box("Solid_AFRODITE_Dipole1", (50./2)*cm, (50./2)*cm, (30./2)*cm);
-        //G4Tubs* Solid_AFRODITE_Dipole1 = new G4Tubs("Solid_AFRODITE_Dipole1", 50.*cm, 100.0*cm, 30.*cm, 0.*deg, 40.*deg);
-        G4Tubs* Solid_AFRODITE_Dipole1 = new G4Tubs("Solid_AFRODITE_Dipole1", 30.*cm, 150.0*cm, 30.*cm, 0.*deg, 40.*deg);
-        
-        G4LogicalVolume* Logic_AFRODITE_Dipole1 = new G4LogicalVolume(Solid_AFRODITE_Dipole1, G4_Galactic_Material,"Logic_AFRODITE_Dipole1",0,0,0);
-        Logic_AFRODITE_Dipole1 -> SetFieldManager(fieldManagerMagneticField_AFRODITE_D1, true) ;
-        
-        // Register the field and its manager for deleting
-        //G4AutoDelete::Register(MagneticField_AFRODITE_D1);
-        //G4AutoDelete::Register(fieldManagerMagneticField_AFRODITE_D1);
-        
-        PhysiAFRODITE_Dipole1 = new G4PVPlacement(AFRODITE_Dipole1_transform,
-                                                  Logic_AFRODITE_Dipole1,       // its logical volume
-                                                  "AFRODITE_Dipole1",       // its name
-                                                  LogicWorld,         // its mother  volume
-                                                  false,           // no boolean operations
-                                                  0,               // copy number
-                                                  fCheckOverlaps); // checking overlaps
-        
-    }
-    
     
     
     
@@ -1503,70 +1187,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     LogicVacuumChamber->SetVisAttributes(VacuumChamber_VisAtt);
     
     
-    //////////////////////////////////
-    //      PlasticScint VISUALIZATION
-    //////////////////////////////////
-    
-    G4VisAttributes* scintillatorVisAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
-    for(G4int i=0; i<numberOf_PlasticScint; i++)
-    {Logic_PlasticScint[i] -> SetVisAttributes(scintillatorVisAtt);}
-    
-    
-    //////////////////////////////////
-    //      HAGAR VISUALIZATION
-    //////////////////////////////////
-    
-    //  HAGAR - NaI Crystal
-    G4VisAttributes* HAGAR_NaICrystal_VisAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
-    HAGAR_NaICrystal_VisAtt->SetForceSolid(true);
-    Logic_HAGAR_NaICrystal->SetVisAttributes(HAGAR_NaICrystal_VisAtt);
-    
-    //  HAGAR - Annulus
-    G4VisAttributes* HAGAR_Annulus_VisAtt = new G4VisAttributes(G4Colour(0.0, 0.7, 0.0));
-    Logic_HAGAR_Annulus->SetVisAttributes(HAGAR_Annulus_VisAtt);
-    
-    //  HAGAR - Front Disc
-    G4VisAttributes* HAGAR_FrontDisc_VisAtt = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
-    HAGAR_FrontDisc_VisAtt->SetForceSolid(true);
-    Logic_HAGAR_FrontDisc->SetVisAttributes(HAGAR_FrontDisc_VisAtt);
-    
-    
-    
     //
     //always return the physical World
     //
     return PhysiWorld;
     
     
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void DetectorConstruction::ConstructSDandField()
-{
-    // Create global magnetic field messenger.
-    // Uniform magnetic field is then created automatically if
-    // the field value is not zero.
-    G4ThreeVector fieldValue = G4ThreeVector();
-    fMagFieldMessenger = new G4GlobalMagFieldMessenger(fieldValue);
-    fMagFieldMessenger->SetVerboseLevel(1);
-    
-    // Register the field messenger for deleting
-    G4AutoDelete::Register(fMagFieldMessenger);
-}
-
-void DetectorConstruction::ConstructField()
-{
-    // Create global magnetic field messenger.
-    // Uniform magnetic field is then created automatically if
-    // the field value is not zero.
-    G4ThreeVector fieldValue = G4ThreeVector();
-    //G4ThreeVector fieldValue = G4ThreeVector(0., 5*tesla, 0.);
-    
-    fMagFieldMessenger = new G4GlobalMagFieldMessenger(fieldValue);
-    fMagFieldMessenger->SetVerboseLevel(1);
-    
-    // Register the field messenger for deleting
-    G4AutoDelete::Register(fMagFieldMessenger);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
