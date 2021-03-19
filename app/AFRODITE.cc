@@ -118,7 +118,9 @@ int main(int argc,char** argv)
     //
 #ifdef G4MULTITHREADED
     G4MTRunManager * runManager = new G4MTRunManager;
-    runManager->SetNumberOfThreads(1);
+
+    if ( nThreads == 0 )
+        runManager->SetNumberOfThreads(1);
 
      if ( nThreads > 0 ) {
         runManager->SetNumberOfThreads(nThreads);
@@ -169,7 +171,7 @@ int main(int argc,char** argv)
     // Get the pointer to the User Interface manager
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-    if ( macro.size() ) {
+    if ( !macro.empty() ) {
         // batch mode
         G4String command = "/control/execute ";
         UImanager->ApplyCommand(command+macro);
