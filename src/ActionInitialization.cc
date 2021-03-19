@@ -43,11 +43,8 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-ActionInitialization::ActionInitialization
-(DetectorConstruction* detConstruction)
-: G4VUserActionInitialization(),
-fDetConstruction(detConstruction)
-{}
+ActionInitialization::ActionInitialization()
+    : G4VUserActionInitialization(){}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -69,7 +66,7 @@ void ActionInitialization::Build() const
     SetUserAction(new RunAction);
     EventAction* eventAction = new EventAction;
     SetUserAction(eventAction);
-    SetUserAction(new SteppingAction(fDetConstruction,eventAction));
+    SetUserAction(new SteppingAction(eventAction));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -145,14 +145,14 @@ void FTALaBr3::CreateSolids()
     //
     // Material: LaBr3(Ce)
 
-    G4VSolid* LaBr3_Crystal_Solid = new G4Tubs("Crystal",
+    G4VSolid* LaBr3_Crystal_Solid = new G4Tubs("FTA_Crystal",
                                                0.,
                                                50.8*mm/2,
                                                50.8*mm/2,
                                                0.,
                                                360.*deg);
 
-    LaBr3_Crystal_Logical = new G4LogicalVolume(LaBr3_Crystal_Solid, LaBr3_Ce, "Crystal");
+    LaBr3_Crystal_Logical = new G4LogicalVolume(LaBr3_Crystal_Solid, LaBr3_Ce, "FTA_Crystal");
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector Light Guide
@@ -217,7 +217,7 @@ void FTALaBr3::SetRotation(G4RotationMatrix thisRot) {
 void FTALaBr3::Placement(G4int copyNo, G4VPhysicalVolume *physiMother, G4bool checkOverlaps)
 {
     G4Transform3D transDetector = G4Transform3D(rotation,translatePos);
-    G4int copyNoSub = 0; // copy number for the sub elements (could also be copyNo)
+    G4int copyNoSub = copyNo; // copy number for the sub elements (could also be copyNo)
 
     auto posHousing = G4ThreeVector(0,-1.5*25.4*mm,-2.5*25.4*mm);
 
@@ -250,7 +250,7 @@ void FTALaBr3::Placement(G4int copyNo, G4VPhysicalVolume *physiMother, G4bool ch
     new G4PVPlacement(0,
                       G4ThreeVector(0, 0, -(5.0*mm-1.5*mm)/2),
                       LaBr3_Crystal_Logical,			// Logical volume
-                      "LaBr3_Crystal_Physical",			// Name
+                      "FTA_Crystal",			// Name
                       LaBr3_Reflector_Logical,			// Mother volume
                       false,							// Unused boolean parameter
                       copyNoSub,								// Copy number

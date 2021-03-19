@@ -52,6 +52,7 @@ target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh)
 
 target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${PROJECT_SOURCE_DIR}/")
 
+
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build B4a. This is so that we can run the executable directly because it

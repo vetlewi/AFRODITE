@@ -63,7 +63,6 @@ private:
   G4Material* Aluminium;
   G4Material* PlexiGlass;
 
-  G4Material* Sili;
   G4Material* SiO2;
   G4Material* Na2O ;
   G4Material* K2O ;

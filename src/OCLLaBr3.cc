@@ -423,14 +423,14 @@ void  OCLLaBr3::CreateSolids()
 	// Crystal
 
   	solidCrystal = 
-  		new G4Tubs("Crystal",
+  		new G4Tubs("OCL_Crystal",
   					crystalInnerR,
   					crystalOuterR,
   					crystalHalfLength,
   					startPhi,
   					deltaPhi);
 
-    logicCrystal = new G4LogicalVolume(solidCrystal, LaBr3_Ce, "Crystal");
+    logicCrystal = new G4LogicalVolume(solidCrystal, LaBr3_Ce, "OCL_Crystal");
 
 
 	// Plexiglas Window on Detector
@@ -486,7 +486,7 @@ void OCLLaBr3::Placement(G4int copyNo, G4VPhysicalVolume* physiMother, G4bool ch
 	// Create the transformation vector to mother volume
 	G4Transform3D transDetector = G4Transform3D(rotation,translatePos);
 
-	G4int copyNoSub = 0; // copy number for the sub elements (could also be copyNo)
+	G4int copyNoSub = copyNo; // copy number for the sub elements (could also be copyNo)
 
  	//
 	// Detector Geometry
@@ -579,7 +579,7 @@ void OCLLaBr3::Placement(G4int copyNo, G4VPhysicalVolume* physiMother, G4bool ch
 	physiCrystal = 
 		new G4PVPlacement(0,					// Rotation
 						  positionCrystal,	// Transformation (Rot&Transl)
-						  "Crystal",			// its logical volume
+						  "OCL_Crystal",			// its logical volume
 						  logicCrystal,		// its name
 						  physiReflector,	// its physical mother volume
 						  false,				// unknown "pMany"; def: false

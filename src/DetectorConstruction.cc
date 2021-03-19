@@ -211,16 +211,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_phi[7] = -90*deg;
     CLOVER_theta[7] = 45*deg;
     CLOVER_rotm[7].rotateX(225*deg);
-
-    
-    //  CLOVER 9
-    // CLOVER_Presence[8] = true;
-    // CLOVER_Shield_Presence[8] = false;
-    // CLOVER_Distance[8] = 21.*cm;
-    // CLOVER_phi[8] = -45*deg;
-    // CLOVER_theta[8] = 90*deg;
-    // CLOVER_rotm[8].rotateY(-90.0 *deg);
-    // CLOVER_rotm[8].rotateZ(-45.0 *deg);
     
     
     for (G4int i=0; i<numberOf_CLOVER; i++)

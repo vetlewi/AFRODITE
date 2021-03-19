@@ -131,8 +131,7 @@ int main(int argc,char** argv)
 
     // Set mandatory initialization classes
     //
-    DetectorConstruction* detConstruction = new DetectorConstruction();
-    runManager->SetUserInitialization(detConstruction);
+    runManager->SetUserInitialization(new DetectorConstruction);
 
     /*
      G4VModularPhysicsList* physicsList = new QGSP_BERT;
@@ -153,7 +152,7 @@ int main(int argc,char** argv)
 
 
     ActionInitialization* actionInitialization
-            = new ActionInitialization(detConstruction);
+            = new ActionInitialization();
     runManager->SetUserInitialization(actionInitialization);
 
     // Initialize G4 kernel

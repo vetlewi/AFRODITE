@@ -99,10 +99,20 @@ RunAction::RunAction()
     analysisManager->CreateNtupleDColumn(0, "BGO_Energy8");
     
     ////////////////////////////////////////////////////
-    ////    LABR Detectors
+    ////    OCL LABR Detectors
 
-    analysisManager->CreateNtupleDColumn(0, "LABR_Energy0");
-    analysisManager->CreateNtupleDColumn(0, "LABR_Energy1");
+    analysisManager->CreateNtupleDColumn(0, "OCLLABR_Energy0");
+    analysisManager->CreateNtupleDColumn(0, "OCLLABR_Energy1");
+
+    ////////////////////////////////////////////////////
+    ////    FTA LABR Detectors
+
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy0");
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy1");
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy2");
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy3");
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy4");
+    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy5");
     
     analysisManager->FinishNtuple(0);
     

@@ -1,6 +1,10 @@
 #ifndef FTALABR3_HH
 #define FTALABR3_HH
 
+/*!
+ * Sizes and measurements of the FTA LaBr detector is based on https://github.com/AndreiHanu/G4McMasterTDS
+ */
+
 class G4OpticalSurface;
 class G4Element;
 class G4Material;

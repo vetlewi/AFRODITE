@@ -54,84 +54,14 @@ class EventAction;
 class SteppingAction : public G4UserSteppingAction
 {
 public:
-    SteppingAction(const DetectorConstruction* detectorConstruction,
-                   EventAction* eventAction);
-    virtual ~SteppingAction();
+    SteppingAction(EventAction* eventAction);
+    ~SteppingAction() override;
     
-    virtual void UserSteppingAction(const G4Step* step);
+    void UserSteppingAction(const G4Step* step) override;
     
 private:
-    const DetectorConstruction* fDetConstruction;
     EventAction*  fEventAction;
-    
-    G4double    fCharge;
-    G4double    fMass;
-    G4ThreeVector worldPosition;
-    G4ThreeVector localPosition;
 
-    G4StepPoint* point;
-    G4TouchableHandle touch;
-    
-    ////    PlasticScint Detector
-    G4double    edepPlasticScint;
-    G4int       PlasticScintNo;
-    
-    //  Local Position
-    G4double    xPosL;
-    G4double    yPosL;
-    G4double    zPosL;
-    
-    //  World Position
-    G4double    xPosW;
-    G4double    yPosW;
-    G4double    zPosW;
-    
-    G4double    xShift;
-    // Previous versions, leaving xShift undeclared, does not seem to be used
-    //G4double    xShift = 4*(cos(40) + tan(40)*cos(50));
-    G4double    xOffset;
-    
-    ////    TIARA DETECTOR
-    G4double    edepTIARA_AA;
-    G4int       TIARANo;
-    G4int       TIARA_RowNo;
-    G4int       TIARA_SectorNo;
-    
-    ////    CLOVER DETECTOR
-    G4double    edepCLOVER_HPGeCrystal;
-    G4int       CLOVERNo;
-    G4int       CLOVER_HPGeCrystalNo;
-    
-    ////    CLOVER BGO-Crystal, Compton Supression Shield
-    G4double    edepCLOVER_BGOCrystal;
-    G4int       CLOVER_BGOCrystalNo;
-    G4double    edepAttenuationParameter;
-    
-    ////    CLOVER BGO-Crystal, Compton Supression Shield
-    G4double    edepLEPS_HPGeCrystal;
-    G4int       LEPSNo;
-    G4int       LEPS_HPGeCrystalNo;
-
-    ////    LABR DETECTOR
-    G4double    edepLABR_Crystal;
-    G4int       LABRNo;
-    G4int       depth;
-    G4String    GrandMotherPhysicalName;
-    
-    ////////////////////////////////////////////
-    G4double    interactiontime;
-    G4int       iTS; // Interaction Time Sample
-    G4int       channelID;
-    G4String    volumeName;
-    
-    
-    //////////////////////////////////
-    //      GEOMETRY ANALYSIS
-    //////////////////////////////////
-    
-    G4double normVector, theta, phi;
-    
-    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
