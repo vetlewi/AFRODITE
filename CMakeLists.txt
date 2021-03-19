@@ -41,6 +41,7 @@ add_executable(AFRODITE
         src/EventAction.cc
         src/MagneticFieldMapping.cc
         src/OCLLaBr3.cc
+        src/FTALaBr3.cc
         src/PrimaryGeneratorAction.cc
         src/RunAction.cc
         src/SteppingAction.cc)
