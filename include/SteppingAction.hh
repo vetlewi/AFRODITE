@@ -37,13 +37,10 @@
 #ifndef SteppingAction_h
 #define SteppingAction_h 1
 
-#include "G4UserSteppingAction.hh"
-#include "G4SteppingManager.hh"
-#include "globals.hh"
-#include "G4ThreeVector.hh"
+#include <G4UserSteppingAction.hh>
 
-class DetectorConstruction;
 class EventAction;
+class G4Step;
 
 /// Stepping action class.
 ///

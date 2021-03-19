@@ -36,6 +36,7 @@
 
 #include "RunAction.hh"
 #include "Analysis.hh"
+#include "Constants.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -76,43 +77,35 @@ RunAction::RunAction()
     
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy0");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy1");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy2");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy3");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy4");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy5");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy6");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy7");
-    analysisManager->CreateNtupleDColumn(0, "CLOVER_Energy8");
+    for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
+        char tmp[512];
+        sprintf(tmp, "CLOVER_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, tmp);
+    }
     
      ////////////////////////////////////////////////////
     ////    BGO Detectors
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy0");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy1");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy2");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy3");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy4");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy5");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy6");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy7");
-    analysisManager->CreateNtupleDColumn(0, "BGO_Energy8");
+    for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
+        char tmp[512];
+        sprintf(tmp, "BGO_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, tmp);
+    }
     
     ////////////////////////////////////////////////////
     ////    OCL LABR Detectors
-
-    analysisManager->CreateNtupleDColumn(0, "OCLLABR_Energy0");
-    analysisManager->CreateNtupleDColumn(0, "OCLLABR_Energy1");
+    for ( G4int n = 0 ; n < numberOf_OCLLaBr3 ; ++n ){
+        char tmp[512];
+        sprintf(tmp, "OCLLABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, tmp);
+    }
 
     ////////////////////////////////////////////////////
     ////    FTA LABR Detectors
-
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy0");
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy1");
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy2");
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy3");
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy4");
-    analysisManager->CreateNtupleDColumn(0, "FTALABR_Energy5");
+    for ( G4int n = 0 ; n < numberOf_FTALaBr3 ; ++n ){
+        char tmp[512];
+        sprintf(tmp, "FTALABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, tmp);
+    }
     
     analysisManager->FinishNtuple(0);
     

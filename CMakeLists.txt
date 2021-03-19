@@ -39,7 +39,6 @@ add_executable(AFRODITE
         src/ActionInitialization.cc
         src/DetectorConstruction.cc
         src/EventAction.cc
-        src/MagneticFieldMapping.cc
         src/OCLLaBr3.cc
         src/FTALaBr3.cc
         src/PrimaryGeneratorAction.cc

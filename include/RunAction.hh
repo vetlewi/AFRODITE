@@ -37,9 +37,8 @@
 #ifndef RunAction_h
 #define RunAction_h 1
 
-#include "G4UserRunAction.hh"
-#include "G4String.hh"
-#include "globals.hh"
+#include <G4UserRunAction.hh>
+#include <G4String.hh>
 
 class G4Run;
 class G4GenericMessenger;
@@ -53,10 +52,10 @@ private:
 
 public:
     RunAction();
-    virtual ~RunAction();
+    ~RunAction() override;
     
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
+    void BeginOfRunAction(const G4Run*) override;
+    void EndOfRunAction(const G4Run*) override;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

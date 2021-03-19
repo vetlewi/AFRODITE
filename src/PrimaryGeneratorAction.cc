@@ -36,17 +36,12 @@
 
 #include "PrimaryGeneratorAction.hh"
 
-#include "G4RunManager.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
-#include "G4Event.hh"
-#include "G4GeneralParticleSource.hh" 
+#include <G4RunManager.hh>
+#include <G4Event.hh>
+#include <G4GeneralParticleSource.hh>
 
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ThreeVector.hh"
+#include <G4ParticleTable.hh>
+#include <G4ThreeVector.hh>
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,9 +52,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     // Default values  
     
     fParticleGun = new G4GeneralParticleSource();
-    fParticleGun->SetCurrentSourceIntensity (1);
+    fParticleGun->SetCurrentSourceIntensity(1);
     fParticleGun->SetParticlePosition(G4ThreeVector());
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
+    fParticleGun->SetParticleDefinition(particleDefinition);
 
 }
 
@@ -77,7 +73,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     
     
    //create vertex
-    
     fParticleGun->GeneratePrimaryVertex(event);
 }
 

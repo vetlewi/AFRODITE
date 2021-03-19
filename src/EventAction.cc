@@ -41,96 +41,46 @@
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 
-using namespace std;
+#include <algorithm>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::EventAction()
-: G4UserEventAction(),
-CLOVER_energy{-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.},
-BGO_energy{-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.,-9.},
-OCLLABR_energy{-9.,-9.},
-FTALABR_energy{-9.,-9.,-9.,-9.,-9.,-9.}
-{}
+EventAction::EventAction() : G4UserEventAction(){}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::~EventAction()
-{}
+EventAction::~EventAction(){}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::BeginOfEventAction(const G4Event* evt)
+void EventAction::BeginOfEventAction(const G4Event*)
 {
     ////////////////////////////////////////////////////////////////////
-    ////    Flushing all the arrays and resetting the boolean tests
-    
-    evtNb = evt->GetEventID();
-
-    for(G4int i=0; i<9; i++)
-    {
-        for (G4int k=0; k<CLOVER_TotalTimeSamples; k++)
-        {
-            CLOVER_EDep[i][k] = 0;
-            
-            for(G4int j=0; j<4; j++)
-            {
-                CLOVER_HPGeCrystal_EDep[i][j][k] = 0;
-                CLOVER_BGO_EDep[i][j][k] = 0;
-                CLOVER_HPGeCrystal_EDepVETO[i][j][k] = false;
-            }
-        }
-        
-        for (G4int k=0; k<CLOVER_Shield_BGO_TotalTimeSamples; k++)
-        {
-            for(G4int l=0; l<16; l++)
-            {
-                CLOVER_BGO_EDep[i][l][k] = 0;
-            }
-        }
-    }
-    
-    
-    
-    //Initializing LABR-array
-    for(G4int i=0; i<2; i++)
-    {
-        for (G4int k=0; k< OCLLABR_TotalSampledTime; k++)
-        {
-            OCLLABR_EDep[i][k] = 0.;
-        }
-    }
-
-    for(G4int i=0; i<6; i++)
-    {
-        for (G4int k=0; k< FTALABR_TotalSampledTime; k++)
-        {
-            FTALABR_EDep[i][k] = 0.;
-        }
-    }
-    
-    for(G4int i=0; i<9; i++) CLOVER_energy[i]=0.0;
-    for(G4int i=0; i<9; i++) BGO_energy[i]=0.0;
-    for(G4int i=0; i<2; i++) OCLLABR_energy[i]=0.0;
-    for(G4int i=0; i<6; i++) FTALABR_energy[i]=0.0;
-    
+    ////    Flushing all the arrays
+    memset(CLOVER_energy, 0, sizeof(CLOVER_energy));
+    memset(BGO_energy, 0, sizeof(CLOVER_energy));
+    memset(OCLLABR_energy, 0, sizeof(CLOVER_energy));
+    memset(FTALABR_energy, 0, sizeof(CLOVER_energy));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event*)
+void EventAction::EndOfEventAction(const G4Event *)
 {
-    // Accumulate statistics
-    //
-    
+
     // get analysis manager
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
     //Fill ntuple here
-    for(G4int k=0; k<9; k++)analysisManager->FillNtupleDColumn(k,CLOVER_energy[k]);
-    for(G4int k=0; k<9; k++)analysisManager->FillNtupleDColumn(k+9,BGO_energy[k]);
-    for(G4int k=0; k<2; k++)analysisManager->FillNtupleDColumn(k+18,OCLLABR_energy[k]);
-    for(G4int k=0; k<6; k++)analysisManager->FillNtupleDColumn(k+20,FTALABR_energy[k]);
+    G4int idx = 0;
+    for ( auto &clover : CLOVER_energy)
+        analysisManager->FillNtupleDColumn(idx++, clover);
+    for ( auto &bgo : BGO_energy )
+        analysisManager->FillNtupleDColumn(idx++, bgo);
+    for ( auto &labr : OCLLABR_energy)
+        analysisManager->FillNtupleDColumn(idx++, labr);
+    for ( auto &labr : FTALABR_energy )
+        analysisManager->FillNtupleDColumn(idx++, labr);
     analysisManager->AddNtupleRow(0);
 
 }

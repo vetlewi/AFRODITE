@@ -13,7 +13,7 @@
 #include "CADMesh/CADMesh.hh"
 
 
-CADMesh::CADMesh(char * file_name_)
+CADMesh::CADMesh(const char * file_name_)
 {
     this->scale = mm;
     this->offset = G4ThreeVector();
@@ -34,7 +34,7 @@ CADMesh::CADMesh(char * file_name_)
 }
 
 
-CADMesh::CADMesh(char * file_name_, char * file_type_)
+CADMesh::CADMesh(const char * file_name_, const char * file_type_)
 {
     this->scale = mm;
     this->offset = G4ThreeVector();
@@ -78,7 +78,7 @@ CADMesh::CADMesh(const aiScene* scene_)
 
 // TODO: The following constructors will be depricated in a future version.
 
-CADMesh::CADMesh(char * file_name_, double scale_,
+CADMesh::CADMesh(const char * file_name_, double scale_,
         G4ThreeVector offset_, G4bool reverse_)
 {
     this->scale = scale_;
@@ -100,7 +100,7 @@ CADMesh::CADMesh(char * file_name_, double scale_,
 }
 
 
-CADMesh::CADMesh(char * file_name_, char * file_type_, double scale_,
+CADMesh::CADMesh(const char * file_name_, const char * file_type_, double scale_,
         G4ThreeVector offset_, G4bool reverse_)
 {
     this->scale = scale_;
@@ -122,7 +122,7 @@ CADMesh::CADMesh(char * file_name_, char * file_type_, double scale_,
 }
 
 
-CADMesh::CADMesh(char * file_name_, char * file_type_,
+CADMesh::CADMesh(const char * file_name_, const char * file_type_,
         G4Material * material_, double quality_)
 {
     this->scale = mm;
@@ -144,7 +144,7 @@ CADMesh::CADMesh(char * file_name_, char * file_type_,
 }
 
 
-CADMesh::CADMesh(char * file_name_, char * file_type_, G4Material * material_)
+CADMesh::CADMesh(const char * file_name_, const char * file_type_, G4Material * material_)
 {
     this->scale = mm;
     this->offset = G4ThreeVector();
@@ -165,7 +165,7 @@ CADMesh::CADMesh(char * file_name_, char * file_type_, G4Material * material_)
 }
 
 
-CADMesh::CADMesh(char * file_name_, char * file_type_,
+CADMesh::CADMesh(const char * file_name_, const char * file_type_,
         G4Material * material_, double quality_, G4ThreeVector offset_)
 {
     this->scale = mm;

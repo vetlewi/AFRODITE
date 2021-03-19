@@ -37,69 +37,18 @@
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 
-#include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
-#include "G4RotationMatrix.hh"
-#include "G4Transform3D.hh"
+#include <G4VUserDetectorConstruction.hh>
+#include <G4RotationMatrix.hh>
+#include <G4Transform3D.hh>
 
-#include "G4UniformMagField.hh"
-#include "G4QuadrupoleMagField.hh"
-#include "G4Mag_UsualEqRhs.hh"
-#include "G4MagIntegratorStepper.hh"
-#include "G4ChordFinder.hh"
-
-//#include "TabulatedField3D.hh"
-#include "G4PropagatorInField.hh"
-#include "G4PropagatorInField.hh"
-#include "G4FieldManager.hh"
 
 #include "OCLLaBr3.hh"
 #include "FTALaBr3.hh"
+#include "Constants.hh"
 
 
 class G4VPhysicalVolume;
-class G4GlobalMagFieldMessenger;
 
-///////////////////////////////
-class G4LogicalVolume;
-class G4Material;
-class G4UserLimits;
-class G4Isotope;
-class G4Element;
-class G4LogicalBorderSurface;
-class G4LogicalSkinSurface;
-class G4Mag_UsualEqRhs;
-class G4MagIntegratorStepper;
-class G4ChordFinder;
-class G4PropagatorInField;
-class G4FieldManager;
-class G4UniformMagField;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-//////////////////////////////////////////////////////////
-//                  DETECTOR ARRAY SETUP                //
-//////////////////////////////////////////////////////////
-
-///////////////     CLOVER DETECTORS     ///////////////////
-constexpr G4int     numberOf_CLOVER = 8;
-constexpr G4int     numberOf_CLOVER_Shields = 8;
-
-///////////////     TIGRESS DETECTORS     ///////////////////
-constexpr G4int     numberOf_TIGRESS = 1;
-constexpr G4int     numberOf_TIGRESS_BGO = 1;
-
-///////////////     PLASTIC SCINTILLATOR DETECTORS     ///////////////////
-constexpr G4int     numberOf_PlasticScint = 12;
-
-///////////////     LEPS DETECTORS     ///////////////////
-constexpr G4int     numberOf_LEPS = 6;
-
-///////////////     OCL LaBr3            ///////////////////
-constexpr G4int     numberOf_OCLLaBr3 = 2;
-
-///////////////     FTA LaBr3            ///////////////////
-constexpr G4int     numberOf_FTALaBr3 = 6;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -117,14 +66,6 @@ private:
     //
     void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
-    
-    // get methods
-    //
-    const G4VPhysicalVolume* GetAbsorberPV() const;
-    const G4VPhysicalVolume* GetGapPV() const;
-    
-    G4VPhysicalVolume*   fAbsorberPV; // the absorber physical volume
-    G4VPhysicalVolume*   fGapPV;      // the gap physical volume
     
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
     

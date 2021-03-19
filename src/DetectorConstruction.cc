@@ -86,12 +86,7 @@
 #include "G4MagneticField.hh"
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
-#include "G4Mag_UsualEqRhs.hh"
-#include "G4AutoDelete.hh"
 
-
-#include "MagneticFieldMapping.hh"
-//#include "G4BlineTracer.hh"
 
 #include <fstream>
 #include <string>
@@ -108,8 +103,6 @@
 
 DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
-    , fAbsorberPV(nullptr)
-    , fGapPV(nullptr)
     , fCheckOverlaps(false)
     , WorldSize( 15. * m )
     , PhysiCLOVER_HPGeCrystal(nullptr)
@@ -404,16 +397,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4Element* Hydrogen = G4Element::GetElement("H");
     G4Element* Carbon = G4Element::GetElement("C");
-    G4Element* Nitrogen = G4Element::GetElement("N");
-    G4Element* Oxygen = G4Element::GetElement("O");
     G4Element* Iron = G4Element::GetElement("Fe");
     G4Element* Cobalt = G4Element::GetElement("Co");
     G4Element* Nickel = G4Element::GetElement("Ni");
     G4Element* Copper = G4Element::GetElement("Cu");
-    G4Element* Lead = G4Element::GetElement("Pb");
     G4Element* Tungsten = G4Element::GetElement("W");
-    G4Element* Lithium = G4Element::GetElement("Li");
-    
+
     
     //////////////////////////////////////
     //          Get Materials           //
@@ -422,19 +411,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////    NIST Defined Elemental Material
     G4Material* G4_Ge_Material = G4Material::GetMaterial("G4_Ge");
     G4Material* G4_Al_Material  = G4Material::GetMaterial("G4_Al");
-    G4Material* G4_Si_Material = G4Material::GetMaterial("G4_Si");
-    G4Material* G4_W_Material = G4Material::GetMaterial("G4_W");
     G4Material* G4_Ar_Material = G4Material::GetMaterial("G4_Ar");
-    G4Material* G4_Be_Material = G4Material::GetMaterial("G4_Be");
-    
+
     ////    NIST Defined Materials and Compounds
     G4Material* G4_Galactic_Material = G4Material::GetMaterial("G4_Galactic");
     G4Material* G4_AIR_Material = G4Material::GetMaterial("G4_AIR");
     G4Material* G4_BGO_Material = G4Material::GetMaterial("G4_BGO");
-    G4Material* G4_PLASTIC_SC_VINYLTOLUENE_Material = G4Material::GetMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-    G4Material* G4_Mylar_Material = G4Material::GetMaterial("G4_MYLAR");
     G4Material* G4_CARBON_DIOXIDE_Material = G4Material::GetMaterial("G4_CARBON_DIOXIDE");
-    G4Material* G4_SODIUM_IODIDE_Material = G4Material::GetMaterial("G4_SODIUM_IODIDE");
     G4Material* G4_LITHIUM_CARBONATE_Material = G4Material::GetMaterial("G4_LITHIUM_CARBONATE");
     
     ////    CLOVER Detector Shield, HEAVIMET Material
@@ -870,7 +853,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             for(G4int j=0; j<6; j++)
             {
                 sprintf(nameChar,"Solid_BGOCrystal%d_shear%d", i, j);
-                nameG4String = string(nameChar);
+                nameG4String = G4String(nameChar);
                 
                 if(j==0)
                 {
@@ -887,7 +870,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             ////    This scintillation still needs to be fully implemented
             
             sprintf(nameChar,"Solid_BGOCrystal%d", i);
-            nameG4String = string(nameChar);
+            nameG4String = G4String(nameChar);
             
             Solid_BGOCrystal_shear[i][6] = new G4SubtractionSolid(nameChar, Solid_BGOCrystal_shear[i][5], Solid_BGOCrystal_PMTrazor, rm_BGOCrystal_razor[i][6], position_BGOCrystal_razor[i][6]);
             
@@ -981,7 +964,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
             ////////////////////////////////////////////////////////////////////
             
             sprintf(nameChar,"Solid_CLOVER_Shield_PMT%d", i);
-            nameG4String = string(nameChar);
+            nameG4String = G4String(nameChar);
             
             ////    Selecting which quadrant of PMT's (X+, X-, Y+, Y-) that we are working with
             if(i==0 || i==1 || i==14 || i==15)  index2 = 0;

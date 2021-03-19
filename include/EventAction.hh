@@ -37,40 +37,13 @@
 #ifndef EventAction_h
 #define EventAction_h 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include <G4UserEventAction.hh>
+#include <G4Types.hh>
+#include "Constants.hh"
 
-#include <fstream>
-using namespace std;
+#include <SteppingAction.hh>
 
-//////////////////////////////////////////////////////////////////////////
-//                          OPERATION MODES
-//////////////////////////////////////////////////////////////////////////
-
-///////////////     CLOVER Detectors - PIXIE16 Sampling     ///////////////////
-const G4double      CLOVER_SamplingTime = 10; // ns
-const G4int         CLOVER_TotalTimeSamples = 10; //
-const G4double      CLOVER_TotalSampledTime = CLOVER_SamplingTime * CLOVER_TotalTimeSamples; // ns
-const G4int         CLOVER_ComptonSupression_TimeWindow = 3; // Amount of CLOVER Time Samples
-
-
-///////////////     CLOVER BGO Anti-Compton Shield - PIXIE16 Sampling    ///////////////////
-const G4double      CLOVER_Shield_BGO_SamplingTime = CLOVER_SamplingTime; // ns
-const G4int         CLOVER_Shield_BGO_TotalTimeSamples = CLOVER_TotalTimeSamples + CLOVER_ComptonSupression_TimeWindow; //
-const G4double      CLOVER_Shield_BGO_TotalSampledTime = CLOVER_Shield_BGO_SamplingTime * CLOVER_Shield_BGO_TotalTimeSamples; // ns
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-///////////////     OCL LaBr3 Detectors - PIXIE16 Sampling     ///////////////////
-const G4double      OCLLABR_SamplingTime = 10; // ns
-const G4int         OCLLABR_TotalTimeSamples = 10; //
-const G4double      OCLLABR_TotalSampledTime = OCLLABR_SamplingTime * OCLLABR_TotalTimeSamples; // ns
-
-///////////////     LaBr3 Detectors - PIXIE16 Sampling     ///////////////////
-const G4double      FTALABR_SamplingTime = 10; // ns
-const G4int         FTALABR_TotalTimeSamples = 10; //
-const G4double      FTALABR_TotalSampledTime = FTALABR_SamplingTime * FTALABR_TotalTimeSamples; // ns
-
+class G4Event;
 
 class EventAction : public G4UserEventAction
 {
@@ -83,40 +56,15 @@ public:
 
     virtual void EndOfEventAction(const G4Event *event);
 
-    G4int evtNb;
+protected:
 
+    G4double CLOVER_energy[numberOf_CLOVER];
+    G4double BGO_energy[numberOf_CLOVER];
 
-    ////////////////////////
-    //      CLOVERS
+    G4double OCLLABR_energy[numberOf_OCLLaBr3];
+    G4double FTALABR_energy[numberOf_FTALaBr3];
 
-    G4double CLOVER_HPGeCrystal_EDep[9][4][CLOVER_TotalTimeSamples];
-    G4bool CLOVER_HPGeCrystal_EDepVETO[9][4][CLOVER_TotalTimeSamples];
-    G4double CLOVER_EDep[9][CLOVER_TotalTimeSamples];
-
-    G4double CLOVER_energy[9];
-    G4double BGO_energy[9];
-    G4double OCLLABR_energy[2];
-    G4double FTALABR_energy[6];
-
-
-    void AddEnergyCLOVER_HPGeCrystal(G4int i, G4int j, G4int k, G4double a) { CLOVER_HPGeCrystal_EDep[i][j][k] += a; };
-
-
-    /////////////////////////////////////////
-    //      CLOVER Shield BGO Crystals
-    G4double CLOVER_BGO_EDep[9][16][CLOVER_Shield_BGO_TotalTimeSamples + CLOVER_ComptonSupression_TimeWindow];
-
-    void AddEnergyBGODetectors(G4int i, G4int j, G4int k, G4double a) { CLOVER_BGO_EDep[i][j][k] += a; };
-
-
-    ////////////////////////
-    //      LABRs
-    G4double OCLLABR_EDep[2][OCLLABR_TotalTimeSamples];
-    G4double FTALABR_EDep[6][FTALABR_TotalTimeSamples];
-
-    void AddEnergyOCLLABR_Crystal(G4int i, G4int k, G4double a) { OCLLABR_EDep[i][k] += a; };
-    void AddEnergyFTALABR_Crystal(G4int i, G4int k, G4double a) { FTALABR_EDep[i][k] += a; };
-
+    friend class SteppingAction;
 };
 
 

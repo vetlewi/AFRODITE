@@ -37,9 +37,8 @@
 #ifndef PrimaryGeneratorAction_h
 #define PrimaryGeneratorAction_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "globals.hh"
-#include "G4ThreeVector.hh"
+#include <G4VUserPrimaryGeneratorAction.hh>
+#include <G4Types.hh>
 
 class G4GeneralParticleSource;
 class G4Event;
@@ -55,12 +54,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
     PrimaryGeneratorAction();
-    virtual ~PrimaryGeneratorAction();
+    ~PrimaryGeneratorAction() override;
     
-    virtual void GeneratePrimaries(G4Event* event);
-    
-    // set methods
-    void SetRandomFlag(G4bool value);
+    void GeneratePrimaries(G4Event* event) override;
     
 private:
     G4GeneralParticleSource*  fParticleGun; // G4 particle gun 

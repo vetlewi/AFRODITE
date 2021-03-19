@@ -35,18 +35,18 @@
 
 class CADMesh {
   public:
-    CADMesh(char * file_);
-    CADMesh(char * file_, char * type_);
+    CADMesh(const char * file_);
+    CADMesh(const char * file_, const char * type_);
     CADMesh(const aiScene* scene);
 
     ~CADMesh();
     
     // TODO: The following constructors will be depricated in a future version.
-    CADMesh(char * file_, double scale_, G4ThreeVector offset_, G4bool reverse_);
-    CADMesh(char * file_, char * type_, double scale_, G4ThreeVector offset_, G4bool reverse_);
-    CADMesh(char * file_, char * type_, G4Material * material_, double quality_);
-    CADMesh(char * file_, char * type_, G4Material * material_, double quality_, G4ThreeVector offset_);
-    CADMesh(char * file_, char * type_, G4Material * material_);
+    CADMesh(const char * file_, double scale_, G4ThreeVector offset_, G4bool reverse_);
+    CADMesh(const char * file_, const char * type_, double scale_, G4ThreeVector offset_, G4bool reverse_);
+    CADMesh(const char * file_, const char * type_, G4Material * material_, double quality_);
+    CADMesh(const char * file_, const char * type_, G4Material * material_, double quality_, G4ThreeVector offset_);
+    CADMesh(const char * file_, const char * type_, G4Material * material_);
 
   public:
     // Load tessellated meshes using ASSIMP.
