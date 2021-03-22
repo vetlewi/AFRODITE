@@ -88,9 +88,6 @@ private:
     G4double            CLOVER_phi[numberOf_CLOVER];
     G4double            CLOVER_theta[numberOf_CLOVER];
     
-    //  CLOVER HPGe Crystals
-    G4VPhysicalVolume*  PhysiCLOVER_HPGeCrystal;
-    
     ///////////////////////////////////////////////////////////////
     //          CLOVER - BGO Shield   (Manufacturer: Cyberstar)
     ///////////////////////////////////////////////////////////////
@@ -98,14 +95,6 @@ private:
     G4bool              CLOVER_Shield_AllPresent_Override;
     G4bool              CLOVER_Shield_AllAbsent_Override;
     G4bool              CLOVER_Shield_Presence[numberOf_CLOVER_Shields];
-    G4ThreeVector       CLOVER_Shield_position[numberOf_CLOVER_Shields];
-    G4Transform3D       CLOVER_Shield_transform[numberOf_CLOVER_Shields];
-    
-    //  Shield BGO Crystal Scintillators
-    G4VPhysicalVolume*  PhysiCLOVER_Shield_BGOCrystal;
-    
-    //  Shield PMT Tubes
-    G4VPhysicalVolume*  PhysiCLOVER_Shield_PMT;
     
     
     /////////////////////////////////////

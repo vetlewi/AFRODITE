@@ -39,6 +39,9 @@ constexpr G4double zPlane_LaBr3_PMTInterior[]={2.29*25.4*mm + 1*mm, 4.11*25.4*mm
 constexpr G4double rInner_LaBr3_PMTInterior[]={0, 0, 0, 0};
 constexpr G4double rOuter_LaBr3_PMTInterior[]={3.0*25.4/2*mm - 0.5*mm - 1*mm, 3.0*25.4/2*mm - 0.5*mm - 1*mm, 2.31*25.4/2*mm - 0.5*mm - 1*mm, 2.31*25.4/2*mm - 0.5*mm - 1*mm};
 
+extern G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, const G4double &Zeff, const G4double &Aeff);
+
+
 FTALaBr3::FTALaBr3()
 {
     G4NistManager *nistManager = G4NistManager::Instance();
@@ -49,33 +52,38 @@ FTALaBr3::FTALaBr3()
     fMatLaBr3PMT = nistManager->FindOrBuildMaterial("G4_Pyrex_Glass");
     fMatLaBr3PMTInterior = nistManager->FindOrBuildMaterial("G4_Galactic");
 
-    vacuum = new G4Material("Vacuum",       //name as String
-                            1,		                    //atomic number (use 1 for Hydrogen)
-                            1.008*g/mole, 	            //molar mass (use 1.008*g/mole for Hydoren)
-                            1.e-25*g/cm3,  	            //density
-                            kStateGas,		            //kStateGas - the material is gas (see G4State)
-                            2.73*kelvin,	            //Temperature
-                            1.e-25*g/cm3);	            //pressure
+    // vacuum
+    vacuum = G4Material::GetMaterial("Vacuum");
+    if ( !vacuum ) {
+        vacuum = new G4Material("Vacuum", 1,1.008 * g / mole,1.e-25 * g / cm3,
+                                kStateGas,2.73 * kelvin, 1.e-25 * g / cm3);
+    }
 
     G4double a, z;                    //a=mass of a mole;
     G4double density;                 //z=mean number of protons;
     G4int ncomponents, natoms;
     G4double abundance, fractionmass;
 
-    Br = new G4Element("Bromium",    "Br",   z=35.,  a=79.904*g/mole);
-    La = new G4Element("Lanthanum",  "La",   z=57.,  a=138.90547*g/mole);
-    Ce = new G4Element("Cerium",     "Cl",   z=58.,  a=140.116*g/mole);
+    La = MakeIfNotFound("Lanthanum", "La", z=57.,  a=138.90547*g/mole);
+    Br = MakeIfNotFound("Bromium",    "Br",   z=35.,  a=79.904*g/mole);
+    Ce = MakeIfNotFound("Cerium",     "Cl",   z=58.,  a=140.116*g/mole);
 
     //LaBr3
-    LaBr3 =   new G4Material("LaBr3", density = 5.07*g/cm3, ncomponents=2);
-    LaBr3->AddElement(La, natoms=1);
-    LaBr3->AddElement(Br, natoms=3);
+    LaBr3 = G4Material::GetMaterial("LaBr3", false);
+    if ( !LaBr3 ){
+        LaBr3 =   new G4Material("LaBr3", density = 5.07*g/cm3, ncomponents=2);
+        LaBr3->AddElement(La, natoms=1);
+        LaBr3->AddElement(Br, natoms=3);
+    }
 
     //LaBr3_Ce
     //with 5% dopping, see technical note "BrilLanCe Scintillators Performance Summary"
-    LaBr3_Ce = new G4Material("LaBr3_Ce", density = 5.08*g/cm3, ncomponents=2);
-    LaBr3_Ce->AddMaterial(LaBr3,  fractionmass=95.*perCent);
-    LaBr3_Ce->AddElement(Ce,      fractionmass=5.*perCent);
+    LaBr3_Ce = G4Material::GetMaterial("LaBr3", false);
+    if ( !LaBr3_Ce ){
+        LaBr3_Ce = new G4Material("LaBr3_Ce", density = 5.08 * g / cm3, ncomponents = 2);
+        LaBr3_Ce->AddMaterial(LaBr3, fractionmass = 95. * perCent);
+        LaBr3_Ce->AddElement(Ce, fractionmass = 5. * perCent);
+    }
 
     CreateSolids();
 }

@@ -82,10 +82,11 @@ namespace Shields_Paths {
 
 G4Material *GetHeavimet()
 {
-    try {
-        return G4Material::GetMaterial("Heavimet_Material");
-    } catch ( ... ){
-        G4Material* Heavimet_Material = new G4Material("Heavimet_Material",19.25*g/cm3, 5);
+    G4Material* Heavimet_Material = G4Material::GetMaterial("Heavimet_Material", false);
+    if ( Heavimet_Material ){
+        return Heavimet_Material;
+    } else {
+        Heavimet_Material = new G4Material("Heavimet_Material",19.25*g/cm3, 5);
         Heavimet_Material->AddElement(G4Element::GetElement("W"), 94.20*perCent);
         Heavimet_Material->AddElement(G4Element::GetElement("Ni"), 4.35*perCent);
         Heavimet_Material->AddElement(G4Element::GetElement("Fe"), 0.85*perCent);
@@ -166,6 +167,7 @@ HPGeFactory::HPGeFactory(const char *vacuum_path, const char *encasement_path, c
 HPGeDetector HPGeFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
                                         const int &copy_no, const bool &overlap) const
 {
+    G4Transform3D transform = G4Transform3D(rot, pos);
     HPGeDetector detector;
     G4Material* G4_Galactic_Material = G4Material::GetMaterial("G4_Galactic");
     auto* CLOVER_InternalVacuum_VisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
@@ -174,10 +176,10 @@ HPGeDetector HPGeFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector
     detector.Logic_InternalVacuum = new G4LogicalVolume(internal_vacuum.solid, G4_Galactic_Material, "LogicCLOVERInternalVacuum");
     detector.Logic_InternalVacuum->SetVisAttributes(CLOVER_InternalVacuum_VisAtt);
 
-    detector.PhysEncasement = new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+    detector.PhysEncasement = new G4PVPlacement(transform,
                                                 Logic_CLOVER_Encasement,
                                                 "CLOVER_Encasement",
-                                                detector.Logic_InternalVacuum,
+                                                parent,
                                                 false,
                                                 copy_no,
                                                 overlap);
@@ -203,7 +205,6 @@ HPGeDetector HPGeFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector
                                                         overlap);
     }
 
-    G4Transform3D transform = G4Transform3D(rot, pos);
     detector.PhysInternalVacuum = new G4PVPlacement(transform,
                                                     detector.Logic_InternalVacuum,
                                                     "CLOVER_InternalVacuum",
@@ -293,13 +294,13 @@ ShieldDetector CloverShieldFactory::Construct(G4LogicalVolume *parent, const G4T
                                               overlap);
 
     sprintf(volName, "CLOVER_Shield_PMTConArray_%02d", copy_no);
-    detector.PhysPMTConArray = new G4PVPlacement(transform,
+    /*detector.PhysPMTConArray = new G4PVPlacement(transform,
                                                  Logic_Shield_PMTConArray,
                                                  volName,
                                                  parent,
                                                  false,
                                                  copy_no,
-                                                 overlap);
+                                                 overlap);*/
 
     for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ){
         detector.PhysBGOCrystal[i] = new G4PVPlacement(transform,
@@ -335,10 +336,10 @@ CloverFactory::~CloverFactory()
 }
 
 CloverDetector CloverFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                                        const int &copy_no, const bool &overlap) const
+                                        const int &copy_no, const bool &overlap, const bool &shield_presents) const
 {
     CloverDetector detector;
     detector.HPGe = crystalFactory->Construct(parent, pos, rot, copy_no, overlap);
-    detector.Shield = ( shieldConstruct ) ? shieldFactory->Construct(parent, pos, rot, copy_no, overlap) : ShieldDetector::getZero();
+    detector.Shield = ( shieldConstruct && shield_presents ) ? shieldFactory->Construct(parent, pos, rot, copy_no, overlap) : ShieldDetector::getZero();
     return detector;
 }

@@ -85,7 +85,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     if((interactiontime < CLOVER_Shield_BGO_TotalSampledTime) && (volumeName == "CLOVER_Shield_BGOCrystal"))
     {
         //G4int CLOVER_BGOCrystalNo = volume->GetCopyNo()%16;
-        fEventAction->BGO_energy[volume->GetCopyNo()%16] += aStep->GetTotalEnergyDeposit()/keV;
+        fEventAction->BGO_energy[volume->GetCopyNo()/16] += aStep->GetTotalEnergyDeposit()/keV;
 
     }
 

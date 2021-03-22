@@ -122,7 +122,7 @@ public:
 
 
     CloverDetector Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                             const int &copy_no, const bool &overlap) const;
+                             const int &copy_no, const bool &overlap, const bool &shield_present) const;
 
 
 };

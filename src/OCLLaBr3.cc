@@ -35,11 +35,16 @@
 
 using namespace OCL;
 
+G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, const G4double &Zeff, const G4double &Aeff)
+{
+    G4Element *element = G4Element::GetElement(name, false);
+    if ( element )
+        return element;
+    return new G4Element(name, symbol, Zeff, Aeff);
+}
+
 OCLLaBr3::OCLLaBr3()
 {
-	//some default Clover detector parameters
-	// --> Parameter file
-
 
 	//----------------------------------------------------
 	// Material definitions
@@ -49,25 +54,20 @@ OCLLaBr3::OCLLaBr3()
 	G4double density;                 //z=mean number of protons;
 
 	G4int ncomponents, natoms;
-	G4double abundance, fractionmass;
+	G4double /*abundance,*/ fractionmass;
 
 	// load NIST material database manager
 	G4NistManager * man = G4NistManager::Instance();
 
-	//
-	// Define Elements
-	//
+	La = MakeIfNotFound("Lanthanum", "La", z=57.,  a=138.90547*g/mole);
+	Br = MakeIfNotFound("Bromium",    "Br",   z=35.,  a=79.904*g/mole);
+	Ce = MakeIfNotFound("Cerium",     "Cl",   z=58.,  a=140.116*g/mole);
 
-	Br = new G4Element("Bromium",    "Br",   z=35.,  a=79.904*g/mole);
-	La = new G4Element("Lanthanum",  "La",   z=57.,  a=138.90547*g/mole);
-	Ce = new G4Element("Cerium",     "Cl",   z=58.,  a=140.116*g/mole);
-
-	// add more elements from NIST database
-	O  = man->FindOrBuildElement("O");
-	K  = man->FindOrBuildElement("K");
-	Sb = man->FindOrBuildElement("Sb");
-	Cs = man->FindOrBuildElement("Cs");
-	Mg = man->FindOrBuildElement("Mg");
+    O  = man->FindOrBuildElement("O");
+    K  = man->FindOrBuildElement("K");
+    Sb = man->FindOrBuildElement("Sb");
+    Cs = man->FindOrBuildElement("Cs");
+    Mg = man->FindOrBuildElement("Mg");
 
 	//
 	// define materials from elements.
@@ -82,58 +82,58 @@ OCLLaBr3::OCLLaBr3()
 	B2O3       = man->FindOrBuildMaterial("G4_BORON_OXIDE");
 
 	//LaBr3
-	LaBr3 =   new G4Material("LaBr3", density = 5.07*g/cm3, ncomponents=2);
-	LaBr3->AddElement(La, natoms=1);
-	LaBr3->AddElement(Br, natoms=3);
+    LaBr3 = G4Material::GetMaterial("LaBr3", false);
+	if ( !LaBr3 ){
+        LaBr3 =   new G4Material("LaBr3", density = 5.07*g/cm3, ncomponents=2);
+        LaBr3->AddElement(La, natoms=1);
+        LaBr3->AddElement(Br, natoms=3);
+	}
 
 	//LaBr3_Ce
 	//with 5% dopping, see technical note "BrilLanCe Scintillators Performance Summary"
-	LaBr3_Ce = new G4Material("LaBr3_Ce", density = 5.08*g/cm3, ncomponents=2);
-	LaBr3_Ce->AddMaterial(LaBr3,  fractionmass=95.*perCent);
-	LaBr3_Ce->AddElement(Ce,      fractionmass=5.*perCent);
+    LaBr3_Ce = G4Material::GetMaterial("LaBr3", false);
+	if ( !LaBr3_Ce ){
+        LaBr3_Ce = new G4Material("LaBr3_Ce", density = 5.08 * g / cm3, ncomponents = 2);
+        LaBr3_Ce->AddMaterial(LaBr3, fractionmass = 95. * perCent);
+        LaBr3_Ce->AddElement(Ce, fractionmass = 5. * perCent);
+    }
 
-	// MgO reflector
-	density = 2.0*g/cm3;
-	MgO = new G4Material("MgO", density, ncomponents=2);
-	MgO->AddElement(Mg, natoms=1);
-	MgO->AddElement(O, natoms=1);
+	MgO = G4Material::GetMaterial("MgO", false);
+	if ( !MgO ) {
+        MgO = new G4Material("MgO", density = 2.0*g/cm3, ncomponents=2);
+        MgO->AddElement(Mg, natoms=1);
+        MgO->AddElement(O, natoms=1);
+    }
 
-	// vacuum (non-STP)
-
-	vacuum = new G4Material("Vacuum",       //name as String
-							1,		                    //atomic number (use 1 for Hydrogen)
-	                		1.008*g/mole, 	            //molar mass (use 1.008*g/mole for Hydoren)
-							1.e-25*g/cm3,  	            //density
-							kStateGas,		            //kStateGas - the material is gas (see G4State)
-	                		2.73*kelvin,	            //Temperature
-							1.e-25*g/cm3);	            //pressure
-
-
-	// Steel as non-NIST material
-	// elFe = G4NistManager::Instance()->FindOrBuildElement("Fe");
-	// elNi = G4NistManager::Instance()->FindOrBuildElement("Ni");
-	// elCr = G4NistManager::Instance()->FindOrBuildElement("Cr");
-	// iron = new G4Material("StainlessSteel", 7.80 * g/cm3, 3 /* components */);
-	// iron -> AddElement(elFe, 70 * perCent);
-	// iron -> AddElement(elCr, 18 * perCent);
-	// iron -> AddElement(elNi, 12 * perCent);
+	// vacuum
+	vacuum = G4Material::GetMaterial("Vacuum");
+    if ( !vacuum ) {
+        vacuum = new G4Material("Vacuum", 1,1.008 * g / mole,1.e-25 * g / cm3,
+                                kStateGas,2.73 * kelvin, 1.e-25 * g / cm3);
+    }
 
 	// PMT-materials
 
 	// Borosilicate
-	Borosilicate = new G4Material("Borosilicate glass", density= 2.23*g/cm3, ncomponents=5);
-	Borosilicate->AddMaterial(SiO2,   fractionmass=80.6 * perCent);
-	Borosilicate->AddMaterial(B2O3,  fractionmass=13.0 * perCent);
-	Borosilicate->AddMaterial(Na2O,  fractionmass=2.   * perCent); // 1/2 of wt% for (Na20+K20)
-	Borosilicate->AddMaterial(K2O,   fractionmass=2.   * perCent); // 1/2 of wt% for (Na20+K20)
-	Borosilicate->AddMaterial(Al2O3, fractionmass=2.31  * perCent);
+    Borosilicate = G4Material::GetMaterial("Borosilicate glass");
+	if ( !Borosilicate ) {
+        Borosilicate = new G4Material("Borosilicate glass", density = 2.23 * g / cm3, ncomponents = 5);
+        Borosilicate->AddMaterial(SiO2, fractionmass = 80.6 * perCent);
+        Borosilicate->AddMaterial(B2O3, fractionmass = 13.0 * perCent);
+        Borosilicate->AddMaterial(Na2O, fractionmass = 2. * perCent); // 1/2 of wt% for (Na20+K20)
+        Borosilicate->AddMaterial(K2O, fractionmass = 2. * perCent); // 1/2 of wt% for (Na20+K20)
+        Borosilicate->AddMaterial(Al2O3, fractionmass = 2.31 * perCent);
+    }
 
 	// Bialkali
 	// (Bialkali KCsSb,  Density=?, Thickness=?)?
-	Bialkali = new G4Material("Bialkali", density= 2.*g/cm3, ncomponents=3);
-	Bialkali->AddElement(K,  natoms=2);
-	Bialkali->AddElement(Cs, natoms=1);
-	Bialkali->AddElement(Sb, natoms=1);
+	Bialkali = G4Material::GetMaterial("Bialkali");
+	if ( !Bialkali ) {
+        Bialkali = new G4Material("Bialkali", density = 2. * g / cm3, ncomponents = 3);
+        Bialkali->AddElement(K, natoms = 2);
+        Bialkali->AddElement(Cs, natoms = 1);
+        Bialkali->AddElement(Sb, natoms = 1);
+    }
 
 
 	//------------------------------------------------------
@@ -142,7 +142,7 @@ OCLLaBr3::OCLLaBr3()
 
 
 	// at the moment taken from the Scintiallator example
-		const G4int nEntries = 2;
+    const G4int nEntries = 2;
 
 	// 1eV -> 1.2399 µm; 7eV -> 0.1771µm // TODO more detailed; adopt all of them
 	G4double PhotonEnergy[nEntries] = {1.0*eV,7.0*eV}; 
@@ -197,16 +197,16 @@ OCLLaBr3::OCLLaBr3()
 
 	// PlexiGlas
 
-	G4double PhotonEnergy_PlexiGlass[nEntries] = {3.2626*eV, 3.4439*eV}; // 3.4439eV <- 360nm; 3.2626eV <- 380nm
+	//G4double PhotonEnergy_PlexiGlass[nEntries] = {3.2626*eV, 3.4439*eV}; // 3.4439eV <- 360nm; 3.2626eV <- 380nm
 
 	//info from: http://refractiveindex.info/?shelf=organic&book=poly%28methyl_methacrylate%29&page=Szczurowski
 	// Szczurowski 2013 - n 0.4047-1.083 µm; extrapolated with
 	// n=\sqrt( 1+\frac{0.99654λ^2}{λ^2-0.00787}+\frac{0.18964λ^2}{λ^2-0.02191}
 	//          +\frac{0.00411λ^2}{λ^2-3.85727} ), where λ is in µm
-	G4double PlexiGlasRefractionIndex[nEntries] = {1.47996,1.47996};
+	// G4double PlexiGlasRefractionIndex[nEntries] = {1.47996,1.47996};
 	// values from
 	// Polycast Acrylic Sheets. Davis Earle, Ron Deal and Earl Gaudette. 	SNO-STR-93-042	revised and expanded Jan 24, 1994
-	G4double PlexiGlasAbsorptionLength[nEntries] = {1./(0.04e-2)*m,1./(0.02e-2)*m};
+	// G4double PlexiGlasAbsorptionLength[nEntries] = {1./(0.04e-2)*m,1./(0.02e-2)*m};
 
 	PlexiGlasMPT = new G4MaterialPropertiesTable();
 	MgOMPT->AddProperty("RINDEX",
