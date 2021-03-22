@@ -29,6 +29,13 @@ struct HPGeDetector {
     G4PVPlacement *PhysEncasement;
     G4PVPlacement *PhysHPGeCrystal[numberOf_CLOVER_Crystals];
     G4PVPlacement *PhysHPGEContact[numberOf_CLOVER_Crystals];
+
+    HPGeDetector()
+        : Logic_InternalVacuum( nullptr )
+        , PhysInternalVacuum( nullptr )
+        , PhysEncasement( nullptr )
+        , PhysHPGeCrystal{ nullptr }
+        , PhysHPGEContact{ nullptr }{}
 };
 
 class HPGeFactory {
@@ -122,7 +129,8 @@ public:
 
 
     CloverDetector Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                             const int &copy_no, const bool &overlap, const bool &shield_present) const;
+                             const int &copy_no, const bool &overlap, const bool &HPGe_present,
+                             const bool &shield_present) const;
 
 
 };

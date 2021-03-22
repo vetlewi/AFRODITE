@@ -331,15 +331,16 @@ CloverFactory::CloverFactory(const bool &shield)
 
 CloverFactory::~CloverFactory()
 {
-    if ( crystalFactory ) delete crystalFactory;
-    if ( shieldFactory ) delete shieldFactory;
+    delete crystalFactory;
+    delete shieldFactory;
 }
 
 CloverDetector CloverFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                                        const int &copy_no, const bool &overlap, const bool &shield_presents) const
+                                        const int &copy_no, const bool &overlap,  const bool &HPGe_present,
+                                        const bool &shield_present) const
 {
     CloverDetector detector;
-    detector.HPGe = crystalFactory->Construct(parent, pos, rot, copy_no, overlap);
-    detector.Shield = ( shieldConstruct && shield_presents ) ? shieldFactory->Construct(parent, pos, rot, copy_no, overlap) : ShieldDetector::getZero();
+    detector.HPGe = ( HPGe_present ) ?  crystalFactory->Construct(parent, pos, rot, copy_no, overlap) : HPGeDetector();
+    detector.Shield = ( shieldConstruct && shield_present ) ? shieldFactory->Construct(parent, pos, rot, copy_no, overlap) : ShieldDetector::getZero();
     return detector;
 }
