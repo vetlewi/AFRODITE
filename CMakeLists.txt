@@ -37,6 +37,7 @@ CPMAddPackage(
 add_executable(AFRODITE
         app/AFRODITE.cc
         src/ActionInitialization.cc
+        src/CloverFactory.cc
         src/DetectorConstruction.cc
         src/EventAction.cc
         src/OCLLaBr3.cc

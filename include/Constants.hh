@@ -18,6 +18,7 @@
 constexpr G4int     numberOf_CLOVER = 8;
 constexpr G4int     numberOf_CLOVER_Crystals = 4;
 constexpr G4int     numberOf_CLOVER_Shields = numberOf_CLOVER;
+constexpr G4int     numberOf_BGO_Crystals = 16;
 
 ///////////////     OCL LaBr3            ///////////////////
 constexpr G4int     numberOf_OCLLaBr3 = 2;
