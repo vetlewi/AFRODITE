@@ -19,23 +19,22 @@ class G4LogicalVolume;
 struct Solids_t {
     CADMesh *mesh;
     G4VSolid *solid;
-
     Solids_t(const char *path, const G4ThreeVector &offset);
 };
 
-struct HPGeDetector {
-    G4LogicalVolume *Logic_InternalVacuum;
-    G4PVPlacement *PhysInternalVacuum;
-    G4PVPlacement *PhysEncasement;
-    G4PVPlacement *PhysHPGeCrystal[numberOf_CLOVER_Crystals];
-    G4PVPlacement *PhysHPGEContact[numberOf_CLOVER_Crystals];
+struct Volumes_t {
+    G4LogicalVolume *logicalVolume;
+    G4VPhysicalVolume *physicalVolume;
 
-    HPGeDetector()
-        : Logic_InternalVacuum( nullptr )
-        , PhysInternalVacuum( nullptr )
-        , PhysEncasement( nullptr )
-        , PhysHPGeCrystal{ nullptr }
-        , PhysHPGEContact{ nullptr }{}
+    Volumes_t() : logicalVolume( nullptr ), physicalVolume( nullptr ){}
+};
+
+struct HPGeDetector {
+    Volumes_t InternalVacuum;
+    Volumes_t Encasement;
+    Volumes_t HPGeCrystals[numberOf_CLOVER_Crystals];
+    Volumes_t HPGeContacts[numberOf_CLOVER_Crystals];
+    HPGeDetector() = default;
 };
 
 class HPGeFactory {
@@ -51,9 +50,10 @@ private:
     static G4ThreeVector offset_Encasement;
     static G4ThreeVector offset_Crystals[numberOf_CLOVER_Crystals];
 
-    G4LogicalVolume * Logic_CLOVER_Encasement;
-    G4LogicalVolume * Logic_CLOVER_HPGeCrystal[4];
-    G4LogicalVolume * Logic_CLOVER_HPGeCrystal_LithiumContact[4];
+    void SetupLogical(HPGeDetector *detector) const;
+    void SetupVis(HPGeDetector *detector) const;
+    void SetupPhysical(HPGeDetector *detector, G4LogicalVolume *parent, const G4ThreeVector &pos,
+                       const G4RotationMatrix &rot, const int &copy_no, const bool &overlap) const;
 
 public:
 
@@ -67,16 +67,16 @@ public:
 };
 
 struct ShieldDetector {
-    G4PVPlacement *PhysBody;
-    G4PVPlacement *PhysHeavimet;
-    G4PVPlacement *PhysPMTConArray;
-    G4PVPlacement *PhysBGOCrystal[numberOf_BGO_Crystals];
-    G4PVPlacement *PhysPMT[numberOf_BGO_Crystals];
+    Volumes_t Body;
+    Volumes_t Heavimet;
+    Volumes_t PMTConArray;
+    Volumes_t BGOCrystals[numberOf_BGO_Crystals];
+    Volumes_t PMT[numberOf_BGO_Crystals];
 
-    static ShieldDetector getZero();
+    ShieldDetector() = default;
 };
 
-class CloverShieldFactory {
+class ShieldFactory {
 
 private:
 
@@ -92,15 +92,14 @@ private:
     static G4ThreeVector offset_BGOCrystals;
     static G4ThreeVector offset_PMT;
 
-    G4LogicalVolume* Logic_Shield_Body;
-    G4LogicalVolume* Logic_Shield_Heavimet;
-    G4LogicalVolume* Logic_Shield_PMTConArray;
-    G4LogicalVolume* Logic_Shield_BGOCrystal[numberOf_BGO_Crystals];
-    G4LogicalVolume* Logic_Shield_PMT[numberOf_BGO_Crystals];
+    void SetupLogical(ShieldDetector *detector) const;
+    void SetupVis(ShieldDetector *detector) const;
+    void SetupPhysical(ShieldDetector *detector, G4LogicalVolume *parent, const G4ThreeVector &pos,
+                       const G4RotationMatrix &rot, const int &copy_no, const bool &overlap) const;
 
 public:
 
-    CloverShieldFactory(const char *body_path, const char *heavimet_path, const char *PMTConArray_path,
+    ShieldFactory(const char *body_path, const char *heavimet_path, const char *PMTConArray_path,
                         const char *BGOCrystal_path[], const char *PMT_path[]);
 
     ShieldDetector Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
@@ -119,7 +118,7 @@ private:
     bool shieldConstruct;
 
     HPGeFactory *crystalFactory;
-    CloverShieldFactory *shieldFactory;
+    ShieldFactory *shieldFactory;
 
 public:
 

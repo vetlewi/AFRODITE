@@ -106,7 +106,7 @@ OCLLaBr3::OCLLaBr3()
     }
 
 	// vacuum
-	vacuum = G4Material::GetMaterial("Vacuum");
+	vacuum = G4Material::GetMaterial("Vacuum", false);
     if ( !vacuum ) {
         vacuum = new G4Material("Vacuum", 1,1.008 * g / mole,1.e-25 * g / cm3,
                                 kStateGas,2.73 * kelvin, 1.e-25 * g / cm3);
@@ -115,7 +115,7 @@ OCLLaBr3::OCLLaBr3()
 	// PMT-materials
 
 	// Borosilicate
-    Borosilicate = G4Material::GetMaterial("Borosilicate glass");
+    Borosilicate = G4Material::GetMaterial("Borosilicate glass", false);
 	if ( !Borosilicate ) {
         Borosilicate = new G4Material("Borosilicate glass", density = 2.23 * g / cm3, ncomponents = 5);
         Borosilicate->AddMaterial(SiO2, fractionmass = 80.6 * perCent);
@@ -127,7 +127,7 @@ OCLLaBr3::OCLLaBr3()
 
 	// Bialkali
 	// (Bialkali KCsSb,  Density=?, Thickness=?)?
-	Bialkali = G4Material::GetMaterial("Bialkali");
+	Bialkali = G4Material::GetMaterial("Bialkali", false);
 	if ( !Bialkali ) {
         Bialkali = new G4Material("Bialkali", density = 2. * g / cm3, ncomponents = 3);
         Bialkali->AddElement(K, natoms = 2);
