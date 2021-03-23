@@ -149,6 +149,7 @@ int main(int argc,char** argv)
 #endif // G4UI_USE
     }
 
+    G4cout << "Segfaults after this message are not a problem" << G4endl;
 #ifdef G4VIS_USE
     delete visManager;
 #endif // G4VIS_USE
