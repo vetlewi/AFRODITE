@@ -114,10 +114,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    CLOVER SETUP
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = false;
+    CLOVER_AllAbsent_Override = true;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
+    CLOVER_Shield_AllAbsent_Override = true;
     
     
     //  CLOVER 1
@@ -205,7 +205,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
+    OCLLaBr3_AllAbsent_Override = true;
     
     
     // LaBr3 Detector 1
@@ -543,7 +543,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         //          LaBr3 Detectors
         if(FTALaBr3_Presence[i])
         {
-            ftalabr3[i] = new FTALaBr3();
+            ftalabr3[i] = new FTALaBr3(i, fCheckOverlaps);
             ftalabr3[i]->SetRotation(FTALaBr3_rotm[i]);
             ftalabr3[i]->SetPosition(FTALaBr3_position[i]);
             ftalabr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);

@@ -42,7 +42,8 @@ constexpr G4double rOuter_LaBr3_PMTInterior[]={3.0*25.4/2*mm - 0.5*mm - 1*mm, 3.
 extern G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, const G4double &Zeff, const G4double &Aeff);
 
 
-FTALaBr3::FTALaBr3()
+FTALaBr3::FTALaBr3(const G4int &dID, const bool &checkOverlaps)
+    : detectorID( dID )
 {
     G4NistManager *nistManager = G4NistManager::Instance();
     fMatLaBr3Housing = nistManager->FindOrBuildMaterial("G4_Al");
@@ -85,23 +86,11 @@ FTALaBr3::FTALaBr3()
         LaBr3_Ce->AddElement(Ce, fractionmass = 5. * perCent);
     }
 
-    CreateSolids();
+    CreateSolids(checkOverlaps);
 }
 
-void FTALaBr3::CreateSolids()
+void FTALaBr3::CreateSolids(const bool &checkOverlaps)
 {
-
-    /*LaBr3_Detector_Solid = new G4Polycone("LaBr3_Detector_Solid",
-                                          startPhi_LaBr3_Housing,
-                                          endPhi_LaBr3_Housing,
-                                          nrRZ_LaBr3_Housing,
-                                          zPlane_LaBr3_Housing,
-                                          rInner_LaBr3_Housing,
-                                          rOuter_LaBr3_Housing);
-
-    LaBr3_Detector_Logical = new G4LogicalVolume(LaBr3_Detector_Solid, vacuum, "LaBr3_Detector_Logical");*/
-
-
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector Housing
     //
@@ -115,6 +104,10 @@ void FTALaBr3::CreateSolids()
                                          rOuter_LaBr3_Housing);
 
     LaBr3_Housing_Logical = new G4LogicalVolume(LaBr3_Housing_Solid, fMatLaBr3Housing, "LaBr3_Housing_Logical");
+
+    auto* Vis_LaBr3_Housing = new G4VisAttributes(G4Colour(0.5,0.5,0.5,0.4));
+    Vis_LaBr3_Housing->SetForceWireframe(true);
+    LaBr3_Housing_Logical->SetVisAttributes(Vis_LaBr3_Housing);
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector Interior
@@ -130,6 +123,12 @@ void FTALaBr3::CreateSolids()
                                                     rOuter_LaBr3_Interior);
 
     LaBr3_Interior_Logical = new G4LogicalVolume(LaBr3_Interior_Solid, fMatLaBr3Interior, "LaBr3_Interior_Logical");
+    auto* Vis_LaBr3_Interior = new G4VisAttributes(G4Colour(0.,1.0,0.,0.1));
+    Vis_LaBr3_Interior->SetForceWireframe(false);
+    LaBr3_Interior_Logical->SetVisAttributes(Vis_LaBr3_Interior);
+
+    LaBr3_Interior_Physical = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), LaBr3_Interior_Logical, "LaBr3_Interior_Physical",
+                                                LaBr3_Housing_Logical, false, detectorID, checkOverlaps);
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -147,6 +146,14 @@ void FTALaBr3::CreateSolids()
                                                  360.*deg);
 
     LaBr3_Reflector_Logical = new G4LogicalVolume(LaBr3_Reflector_Solid, fMatLaBr3Reflector, "LaBr3_Reflector_Logical");
+    auto* Vis_LaBr3_Reflector = new G4VisAttributes(G4Colour(1.,1.,1.,0.5));
+    Vis_LaBr3_Reflector->SetForceWireframe(false);
+    LaBr3_Reflector_Logical->SetVisAttributes(Vis_LaBr3_Reflector);
+
+    LaBr3_Interior_Physical = new G4PVPlacement(0,
+                                                G4ThreeVector(0, 0, 0.5*mm + (50.8*mm + 1.5*mm + 5.0*mm)/2),
+                                                LaBr3_Reflector_Logical, "LaBr3_Interior_Physical",
+                                                LaBr3_Interior_Logical, false, detectorID, checkOverlaps);
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector Crystal
@@ -160,7 +167,16 @@ void FTALaBr3::CreateSolids()
                                                0.,
                                                360.*deg);
 
+    /*std::string crystal_name = "LaBr3_Crystal_Logical_" + std::to_string(detectorID);*/
     LaBr3_Crystal_Logical = new G4LogicalVolume(LaBr3_Crystal_Solid, LaBr3_Ce, "FTA_Crystal");
+    auto* Vis_LaBr3_Crystal = new G4VisAttributes(G4Colour(0.,0.,1.,0.5));
+    Vis_LaBr3_Crystal->SetForceWireframe(false);
+    LaBr3_Crystal_Logical->SetVisAttributes(Vis_LaBr3_Crystal);
+
+    LaBr3_Crystal_Physical = new G4PVPlacement(0,
+                                               G4ThreeVector(0, 0, -(5.0*mm-1.5*mm)/2),
+                                                LaBr3_Crystal_Logical, "FTA_Crystal",
+                                                LaBr3_Reflector_Logical, false, detectorID, checkOverlaps);
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector Light Guide
@@ -175,6 +191,14 @@ void FTALaBr3::CreateSolids()
                                                   360.*deg);
 
     LaBr3_LightGuide_Logical = new G4LogicalVolume(LaBr3_LightGuide_Solid, fMatLaBr3LightGuide, "LaBr3_LightGuide_Logical");
+    auto* Vis_LaBr3_LightGuide = new G4VisAttributes(G4Colour(0.,1.0,1.0,0.4));
+    Vis_LaBr3_LightGuide->SetForceWireframe(false);
+    LaBr3_LightGuide_Logical->SetVisAttributes(Vis_LaBr3_LightGuide);
+
+    LaBr3_LightGuide_Physical = new G4PVPlacement(0,
+                                                  G4ThreeVector(0, 0, +(50.8*mm+1.5*mm)/2),
+                                                  LaBr3_LightGuide_Logical, "LaBr3_LightGuide_Physical",
+                                                  LaBr3_Reflector_Logical, false, detectorID, checkOverlaps);
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector PMT
@@ -190,6 +214,14 @@ void FTALaBr3::CreateSolids()
                                                rOuter_LaBr3_PMT);
 
     LaBr3_PMT_Logical = new G4LogicalVolume(LaBr3_PMT_Solid, fMatLaBr3PMT, "LaBr3_PMT_Logical");
+    auto* Vis_LaBr3_PMT = new G4VisAttributes(G4Colour(1.,0.,1.,0.5));
+    Vis_LaBr3_PMT->SetForceWireframe(false);
+    LaBr3_PMT_Logical->SetVisAttributes(Vis_LaBr3_PMT);
+
+    LaBr3_PMT_Physical = new G4PVPlacement(0,
+                                           G4ThreeVector(0, 0, 0),
+                                           LaBr3_PMT_Logical, "LaBr3_PMT_Physical",
+                                           LaBr3_Interior_Logical, false, detectorID, checkOverlaps);
 
     ////////////////////////////////////////////////////////////////////////
     // LaBr3 - Detector PMT Interior
@@ -205,6 +237,14 @@ void FTALaBr3::CreateSolids()
                                                        rOuter_LaBr3_PMTInterior);
 
     LaBr3_PMTInterior_Logical = new G4LogicalVolume(LaBr3_PMTInterior_Solid, fMatLaBr3PMTInterior, "LaBr3_PMTInterior_Logical");
+    auto* Vis_LaBr3_PMTInterior = new G4VisAttributes(G4Colour(1.,1.,1.,0.5));
+    Vis_LaBr3_PMTInterior->SetForceWireframe(false);
+    LaBr3_PMTInterior_Logical->SetVisAttributes(Vis_LaBr3_PMTInterior);
+
+    LaBr3_PMTInterior_Physical = new G4PVPlacement(0,
+                                                   G4ThreeVector(0, 0, 0),
+                                                   LaBr3_PMTInterior_Logical, "LaBr3_PMTInterior_Physical",
+                                                   LaBr3_PMT_Logical, false, detectorID, checkOverlaps);
 
 }
 
@@ -236,93 +276,4 @@ void FTALaBr3::Placement(G4int copyNo, G4VPhysicalVolume *physiMother, G4bool ch
                       false,						// Unused boolean parameter
                       copyNo,							// Copy number
                       checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0, 0, 0),
-                      LaBr3_Interior_Logical,			// Logical volume
-                      "LaBr3_Interior_Physical",		// Name
-                      LaBr3_Housing_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      copyNoSub,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0, 0, 0.5*mm + (50.8*mm + 1.5*mm + 5.0*mm)/2),
-                      LaBr3_Reflector_Logical,			// Logical volume
-                      "LaBr3_Reflector_Physical",		// Name
-                      LaBr3_Interior_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      copyNoSub,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0, 0, -(5.0*mm-1.5*mm)/2),
-                      LaBr3_Crystal_Logical,			// Logical volume
-                      "FTA_Crystal",			// Name
-                      LaBr3_Reflector_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      copyNoSub,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0, 0, +(50.8*mm+1.5*mm)/2),
-                      LaBr3_LightGuide_Logical,			// Logical volume
-                      "LaBr3_LightGuide_Physical",		// Name
-                      LaBr3_Reflector_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      copyNoSub,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                      G4ThreeVector(0, 0, 0),
-                      LaBr3_PMT_Logical,			// Logical volume
-                      "LaBr3_PMT_Physical",		// Name
-                      LaBr3_Interior_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      copyNoSub,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    new G4PVPlacement(0,
-                    G4ThreeVector(0, 0, 0),
-                      LaBr3_PMTInterior_Logical,			// Logical volume
-                      "LaBr3_PMTInterior_Physical",		// Name
-                      LaBr3_PMT_Logical,			// Mother volume
-                      false,							// Unused boolean parameter
-                      0,								// Copy number
-                      checkOverlaps);					// Overlap Check
-
-    // LaBr3 - Housing (Gray)
-    G4VisAttributes* Vis_LaBr3_Housing = new G4VisAttributes(G4Colour(0.5,0.5,0.5,0.4));
-    Vis_LaBr3_Housing->SetForceWireframe(true);
-    LaBr3_Housing_Logical->SetVisAttributes(Vis_LaBr3_Housing);
-
-    // LaBr3 - Interior (Green)
-    G4VisAttributes* Vis_LaBr3_Interior = new G4VisAttributes(G4Colour(0.,1.0,0.,0.1));
-    Vis_LaBr3_Interior->SetForceWireframe(false);
-    LaBr3_Interior_Logical->SetVisAttributes(Vis_LaBr3_Interior);
-
-    // LaBr3 - Reflector (White)
-    G4VisAttributes* Vis_LaBr3_Reflector = new G4VisAttributes(G4Colour(1.,1.,1.,0.5));
-    Vis_LaBr3_Reflector->SetForceWireframe(false);
-    LaBr3_Reflector_Logical->SetVisAttributes(Vis_LaBr3_Reflector);
-
-    // LaBr3 - Crystal (Blue)
-    G4VisAttributes* Vis_LaBr3_Crystal = new G4VisAttributes(G4Colour(0.,0.,1.,0.5));
-    Vis_LaBr3_Crystal->SetForceWireframe(false);
-    LaBr3_Crystal_Logical->SetVisAttributes(Vis_LaBr3_Crystal);
-
-    // LaBr3 - Light Guide (Cyan)
-    G4VisAttributes* Vis_LaBr3_LightGuide = new G4VisAttributes(G4Colour(0.,1.0,1.0,0.4));
-    Vis_LaBr3_LightGuide->SetForceWireframe(false);
-    LaBr3_LightGuide_Logical->SetVisAttributes(Vis_LaBr3_LightGuide);
-
-    // LaBr3 - PMT (Magenta)
-    G4VisAttributes* Vis_LaBr3_PMT = new G4VisAttributes(G4Colour(1.,0.,1.,0.5));
-    Vis_LaBr3_PMT->SetForceWireframe(false);
-    LaBr3_PMT_Logical->SetVisAttributes(Vis_LaBr3_PMT);
-
-    // LaBr3 - PMT Interior (White)
-    G4VisAttributes* Vis_LaBr3_PMTInterior = new G4VisAttributes(G4Colour(1.,1.,1.,0.5));
-    Vis_LaBr3_PMTInterior->SetForceWireframe(false);
-    LaBr3_PMTInterior_Logical->SetVisAttributes(Vis_LaBr3_PMTInterior);
 }

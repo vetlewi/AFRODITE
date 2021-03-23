@@ -28,7 +28,7 @@ class G4UnionSolid;
 class FTALaBr3
 {
 public:
-    FTALaBr3();
+    FTALaBr3(const G4int &detectorID, const bool &checkOverlaps = false);
     ~FTALaBr3();
 
 public:
@@ -36,19 +36,30 @@ public:
     void SetRotation( G4RotationMatrix );
     void Placement(G4int, G4VPhysicalVolume*, G4bool);
 
+    G4LogicalVolume *GetLogical(){ return LaBr3_Housing_Logical; }
+    G4LogicalVolume *GetSensitive(){ return LaBr3_Crystal_Logical; }
+
 private:
     G4ThreeVector        translatePos;
     G4RotationMatrix     rotation;
+
+    G4int detectorID;
 
     G4VSolid *LaBr3_Housing_Solid;
 
     G4LogicalVolume* LaBr3_Housing_Logical;
     G4LogicalVolume* LaBr3_Interior_Logical;
+    G4VPhysicalVolume *LaBr3_Interior_Physical;
     G4LogicalVolume* LaBr3_Reflector_Logical;
+    G4VPhysicalVolume *LaBr3_Reflector_Physical;
     G4LogicalVolume* LaBr3_Crystal_Logical;
+    G4VPhysicalVolume *LaBr3_Crystal_Physical;
     G4LogicalVolume* LaBr3_LightGuide_Logical;
+    G4VPhysicalVolume *LaBr3_LightGuide_Physical;
     G4LogicalVolume* LaBr3_PMT_Logical;
+    G4VPhysicalVolume *LaBr3_PMT_Physical;
     G4LogicalVolume* LaBr3_PMTInterior_Logical;
+    G4VPhysicalVolume *LaBr3_PMTInterior_Physical;
 
     G4Material* fMatLaBr3Housing;
     G4Material* fMatLaBr3Interior;
@@ -72,7 +83,7 @@ private:
 
 
 private:
-    void CreateSolids();
+    void CreateSolids(const bool &checkOverlaps);
     // void MakeMaterials();
 
 };
