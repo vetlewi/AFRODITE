@@ -7,6 +7,10 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/qt@5/5.15.2/lib/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/Users/vetlewi/prog/lib/Geant4-10.7.1")
 
+#list(APPEND CMAKE_CXX_FLAGS "-flto")
+#list(APPEND CMAKE_EXE_LINK_FLAGS "-flto")
+#list(APPEND CMAKE_SHARED_LINK_FLAGS "-flto")
+
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
@@ -27,6 +31,14 @@ include(${Geant4_USE_FILE})
 include(cmake/CPM.cmake)
 
 CPMAddPackage(
+        GITHUB_REPOSITORY jarro2783/cxxopts
+        VERSION 2.2.1
+        OPTIONS "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_BUILD_EXAMPLES NO"
+)
+
+CPMAddPackage(gh:ikalnytskyi/termcolor@2.0.0)
+
+CPMAddPackage(
 	NAME CADMesh
 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/CADMesh)
 
@@ -39,6 +51,8 @@ add_executable(AFRODITE
         src/ActionInitialization.cc
         src/CloverFactory.cc
         src/DetectorConstruction.cc
+        #src/DetectorHit.cc
+        #src/EnergyDepSD.cc
         src/EventAction.cc
         src/OCLLaBr3.cc
         src/FTALaBr3.cc
@@ -48,8 +62,7 @@ add_executable(AFRODITE
 
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh)
-
+target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh cxxopts termcolor::termcolor)
 target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${PROJECT_SOURCE_DIR}/")
 
 

@@ -65,11 +65,15 @@ void EventAction::BeginOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event *)
+void EventAction::EndOfEventAction(const G4Event *e)
 {
 
     // get analysis manager
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+    // Get all hits
+
+    e->GetHCofThisEvent()->GetNumberOfCollections();
 
     //Fill ntuple here
     G4int idx = 0;
@@ -81,7 +85,7 @@ void EventAction::EndOfEventAction(const G4Event *)
         analysisManager->FillNtupleDColumn(idx++, labr);
     for ( auto &labr : FTALABR_energy )
         analysisManager->FillNtupleDColumn(idx++, labr);
-    analysisManager->AddNtupleRow(0);
+    analysisManager->AddNtupleRow();
 
 }
 

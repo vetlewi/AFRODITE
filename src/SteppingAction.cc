@@ -104,11 +104,11 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     ///         FTA LABR DETECTORS FROM          ///
     ////////////////////////////////////////////////
 
-    if ((interactiontime < FTALABR_TotalSampledTime) && (volumeName == "FTA_Crystal"))
+    /*if ((interactiontime < FTALABR_TotalSampledTime) && (volumeName == "FTA_Crystal"))
     {
         G4int did = volume->GetCopyNo();
         fEventAction->FTALABR_energy[did] += aStep->GetTotalEnergyDeposit()/keV;
-    }
+    }*/
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

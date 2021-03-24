@@ -56,11 +56,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
     DetectorConstruction();
-    virtual ~DetectorConstruction();
+    ~DetectorConstruction() override = default;
     
 public:
-    virtual G4VPhysicalVolume* Construct();
-    
+    G4VPhysicalVolume* Construct() override;
+    void ConstructSDandField() override;
+
 private:
     // methods
     //

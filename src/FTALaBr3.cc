@@ -160,7 +160,7 @@ void FTALaBr3::CreateSolids(const bool &checkOverlaps)
     //
     // Material: LaBr3(Ce)
 
-    G4VSolid* LaBr3_Crystal_Solid = new G4Tubs("FTA_Crystal",
+    G4VSolid* LaBr3_Crystal_Solid = new G4Tubs("LaBr3_Crystal_Solid",
                                                0.,
                                                50.8*mm/2,
                                                50.8*mm/2,
@@ -168,14 +168,14 @@ void FTALaBr3::CreateSolids(const bool &checkOverlaps)
                                                360.*deg);
 
     /*std::string crystal_name = "LaBr3_Crystal_Logical_" + std::to_string(detectorID);*/
-    LaBr3_Crystal_Logical = new G4LogicalVolume(LaBr3_Crystal_Solid, LaBr3_Ce, "FTA_Crystal");
+    LaBr3_Crystal_Logical = new G4LogicalVolume(LaBr3_Crystal_Solid, LaBr3_Ce, "LaBr3_Crystal_Logical");
     auto* Vis_LaBr3_Crystal = new G4VisAttributes(G4Colour(0.,0.,1.,0.5));
     Vis_LaBr3_Crystal->SetForceWireframe(false);
     LaBr3_Crystal_Logical->SetVisAttributes(Vis_LaBr3_Crystal);
 
     LaBr3_Crystal_Physical = new G4PVPlacement(0,
                                                G4ThreeVector(0, 0, -(5.0*mm-1.5*mm)/2),
-                                                LaBr3_Crystal_Logical, "FTA_Crystal",
+                                                LaBr3_Crystal_Logical, "LaBr3_Crystal_Physical",
                                                 LaBr3_Reflector_Logical, false, detectorID, checkOverlaps);
 
     ////////////////////////////////////////////////////////////////////////

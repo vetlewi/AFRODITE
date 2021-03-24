@@ -36,6 +36,7 @@
 
 #include <CADMesh/CADMesh.hh>
 #include "DetectorConstruction.hh"
+#include "EnergyDepSD.hh"
 
 
 #include "G4NistManager.hh"
@@ -90,12 +91,6 @@ DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
     , fCheckOverlaps(true)
     , WorldSize( 5. * m )
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-DetectorConstruction::~DetectorConstruction()
 {
 }
 
@@ -441,8 +436,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     if(AFRODITE_MathisTC_Presence)
     {
         G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        G4cout << "Reading TC from " << PLY_PATH"/STRUCTURES/MathisTC/MathisTC.ply" << G4endl;
-        CADMesh * mesh_MathisTC = new CADMesh(PLY_PATH"/STRUCTURES/MathisTC/MathisTC.ply", "PLY", mm, offset_MathisTC, false);
+        G4cout << "Reading TC from " << PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply" << G4endl;
+        CADMesh * mesh_MathisTC = new CADMesh(PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply", "PLY", mm, offset_MathisTC, false);
         
         G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
         
@@ -576,8 +571,17 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //always return the physical World
     //
     return PhysiWorld;
-    
-    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void DetectorConstruction::ConstructSDandField()
+{
+
+    // FTA detectors
+    auto *FTALaBrSD = new EnergyDepSD("LaBr/FTA", "TrackerHitsCollection");
+    G4SDManager::GetSDMpointer()->AddNewDetector(FTALaBrSD);
+    SetSensitiveDetector("FTA_Crystal", FTALaBrSD, true);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
