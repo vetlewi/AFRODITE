@@ -80,24 +80,6 @@ namespace Shields_Paths {
             CLOVER_PATH"/Shield/PMTs/PMT16.ply"};
 }
 
-
-
-G4Material *GetHeavimet()
-{
-    G4Material* Heavimet_Material = G4Material::GetMaterial("Heavimet_Material", false);
-    if ( Heavimet_Material ){
-        return Heavimet_Material;
-    } else {
-        Heavimet_Material = new G4Material("Heavimet_Material",19.25*g/cm3, 5);
-        Heavimet_Material->AddElement(G4Element::GetElement("W"), 94.20*perCent);
-        Heavimet_Material->AddElement(G4Element::GetElement("Ni"), 4.35*perCent);
-        Heavimet_Material->AddElement(G4Element::GetElement("Fe"), 0.85*perCent);
-        Heavimet_Material->AddElement(G4Element::GetElement("Co"), 0.50*perCent);
-        Heavimet_Material->AddElement(G4Element::GetElement("Cu"), 0.10*perCent);
-        return Heavimet_Material;
-    }
-}
-
 constexpr G4double CLOVERtoShield_displacement = 7.3;  // cm
 
 G4ThreeVector HPGeFactory::offset_Vacuum = G4ThreeVector(0*cm, 0*cm, -CLOVERtoShield_displacement*cm);
@@ -260,11 +242,11 @@ G4AssemblyVolume *ShieldFactory::GetAssembly(const int &copy_no, const bool &che
     heavimet_logical->SetVisAttributes(CLOVER_Shield_HEAVIMET_VisAtt);
     assembly->AddPlacedVolume(heavimet_logical, pos0, &rot0);
 
-    auto *CLOVER_Shield_PMTConArray_VisAtt = new G4VisAttributes(G4Colour::White());
+    /*auto *CLOVER_Shield_PMTConArray_VisAtt = new G4VisAttributes(G4Colour::White());
     CLOVER_Shield_PMTConArray_VisAtt->SetVisibility(true);
     auto *Logic_CLOVER_Shield_PMTConArray = new G4LogicalVolume(PMTConArray.solid, fMatAluminium, "LogicCLOVERShieldPMTConArray");
     Logic_CLOVER_Shield_PMTConArray->SetVisAttributes(CLOVER_Shield_PMTConArray_VisAtt);
-    assembly->AddPlacedVolume(Logic_CLOVER_Shield_PMTConArray, pos0, &rot0);
+    assembly->AddPlacedVolume(Logic_CLOVER_Shield_PMTConArray, pos0, &rot0);*/
 
     auto *Shield_BGOCrystal_VisAtt = new G4VisAttributes(G4Colour(0., 0., 1.0));
     auto *Shield_PMT_VisAtt = new G4VisAttributes(G4Colour(0., 1., 0.0));

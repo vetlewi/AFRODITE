@@ -89,7 +89,7 @@
 
 DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
-    , fCheckOverlaps( false )
+    , fCheckOverlaps( true )
     , WorldSize( 5. * m )
 {
 }
@@ -195,7 +195,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = true;
+    OCLLaBr3_AllAbsent_Override = false;
     
     
     // LaBr3 Detector 1
@@ -226,7 +226,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    FTA LaBr3 Detectors
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = true;
+    FTALaBr3_AllAbsent_Override = false;
 
 
     // LaBr3 Detector 1
@@ -299,63 +299,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = false;
+    AFRODITE_MathisTC_Presence = true;
     
     /////////////////////////////////////
     ////    AFRODITE Target
     AFRODITE_Target_Presence = false;
     
-    
-    // Define materials
-    DefineMaterials();
-    
     // Define volumes
     return DefineVolumes();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void DetectorConstruction::DefineMaterials()
-{
-    G4NistManager* nistManager = G4NistManager::Instance();
-    
-    //  NIST Material Database - Materials
-    nistManager->FindOrBuildMaterial("G4_Galactic");
-    nistManager->FindOrBuildMaterial("G4_AIR");
-    nistManager->FindOrBuildMaterial("G4_BGO");
-    nistManager->FindOrBuildMaterial("G4_Ge");
-    nistManager->FindOrBuildMaterial("G4_Al");
-    nistManager->FindOrBuildMaterial("G4_Si");
-    nistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-    nistManager->FindOrBuildMaterial("G4_MYLAR");
-    nistManager->FindOrBuildMaterial("G4_W");
-    nistManager->FindOrBuildMaterial("G4_Ar");
-    nistManager->FindOrBuildMaterial("G4_Be");
-    nistManager->FindOrBuildMaterial("G4_CARBON_DIOXIDE");
-    nistManager->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-    nistManager->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
-    
-    //  NIST Elementary Material Database - ELEMENTS
-    nistManager->FindOrBuildElement("H");
-    nistManager->FindOrBuildElement("C");
-    nistManager->FindOrBuildElement("N");
-    nistManager->FindOrBuildElement("O");
-    nistManager->FindOrBuildElement("Fe");
-    nistManager->FindOrBuildElement("Co");
-    nistManager->FindOrBuildElement("Ni");
-    nistManager->FindOrBuildElement("Cu");
-    nistManager->FindOrBuildElement("Pb");
-    nistManager->FindOrBuildElement("W");
-    nistManager->FindOrBuildElement("Li");
-    
-    
-    // Vacuum
-    //new G4Material("Galactic", z=1., a=1.01*g/mole,density= universe_mean_density,kStateGas, 2.73*kelvin, 3.e-18*pascal);
-    
-    
-    // Print materials
-    G4cout << *(G4Material::GetMaterialTable()) << G4endl;
-}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -368,11 +321,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //////////////////////////////////////
     
     ////    NIST Defined Elemental Material
-    G4Material* G4_Al_Material  = G4Material::GetMaterial("G4_Al");
+    G4Material* G4_Al_Material  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
 
     ////    NIST Defined Materials and Compounds
-    G4Material* G4_Galactic_Material = G4Material::GetMaterial("G4_Galactic");
-    G4Material* G4_LITHIUM_CARBONATE_Material = G4Material::GetMaterial("G4_LITHIUM_CARBONATE");
+    G4Material* G4_Galactic_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+    G4Material* G4_LITHIUM_CARBONATE_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
     
     
     

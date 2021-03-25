@@ -42,6 +42,8 @@
 #include "G4Step.hh"
 #include "G4RunManager.hh"
 
+#include <cstring>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SteppingAction::SteppingAction(EventAction* eventAction)
@@ -61,54 +63,22 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
     const G4TouchableHandle& theTouchable = preStepPoint->GetTouchableHandle();
     
-    // get interaction time of the current step
-    G4double interactiontime = preStepPoint->GetGlobalTime()/ns;
-    
     // get volume of the current step
     G4VPhysicalVolume* volume = theTouchable->GetVolume();
     
     // get volume name of the current step
-    const G4String& volumeName = volume->GetName();
-    
-    
-    ////////////////////////////////////////////////
-    ///                 CLOVERS                  ///
-    ////////////////////////////////////////////////
-    
-    if((interactiontime < CLOVER_TotalSampledTime) && (volumeName == "CLOVER_HPGeCrystal"))
-    {
-        //G4int CLOVERNo = volume->GetCopyNo()/4;
-        //G4int CLOVER_HPGeCrystalNo = channelID%4;
+    const char *volumeName = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName().c_str();
+
+
+    if ( strcmp(volumeName, "CLOVER_HPGeCrystal") == 0 ){
         fEventAction->CLOVER_energy[volume->GetCopyNo()/4] +=aStep->GetTotalEnergyDeposit()/keV;
-    }
-    
-    if((interactiontime < CLOVER_Shield_BGO_TotalSampledTime) && (volumeName == "CLOVER_Shield_BGOCrystal"))
-    {
-        //G4int CLOVER_BGOCrystalNo = volume->GetCopyNo()%16;
+    } else if ( strcmp(volumeName, "CLOVER_Shield_BGOCrystal") == 0 ){
         fEventAction->BGO_energy[volume->GetCopyNo()/16] += aStep->GetTotalEnergyDeposit()/keV;
-
-    }
-
-
-    ////////////////////////////////////////////////
-    ///         OCL LABR DETECTORS FROM          ///
-    ////////////////////////////////////////////////
-    
-    
-    if((interactiontime < OCLLABR_TotalSampledTime) && (volumeName == "OCL_Crystal"))
-    {
+    } else if ( strcmp(volumeName, "OCL_Crystal") == 0 ){
         fEventAction->OCLLABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
+    } else if ( strcmp(volumeName, "LaBr3_Crystal_Physical") == 0 ){
+        fEventAction->FTALABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
     }
-
-    ////////////////////////////////////////////////
-    ///         FTA LABR DETECTORS FROM          ///
-    ////////////////////////////////////////////////
-
-    /*if ((interactiontime < FTALABR_TotalSampledTime) && (volumeName == "FTA_Crystal"))
-    {
-        G4int did = volume->GetCopyNo();
-        fEventAction->FTALABR_energy[did] += aStep->GetTotalEnergyDeposit()/keV;
-    }*/
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
