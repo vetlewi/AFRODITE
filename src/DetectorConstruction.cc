@@ -479,10 +479,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //               CLOVER INITIALIZATION            //
     ////////////////////////////////////////////////////
 
-
+    bool have_HPGe = std::any_of(CLOVER_Presence, CLOVER_Presence+sizeof(CLOVER_Presence),
+                                 [](const G4bool &p){ return p; });
     bool have_shield = std::any_of(CLOVER_Shield_Presence, CLOVER_Shield_Presence+sizeof(CLOVER_Shield_Presence),
                                    [](const G4bool &p){ return p; });
-    CloverFactory cloverFactory(have_shield);
+    CloverFactory cloverFactory(have_HPGe, have_shield);
     for(G4int i=0; i< numberOf_CLOVER ; i++)
     {
         CLOVER_position[i] = CLOVER_Distance[i]
@@ -494,8 +495,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
         auto *assembly = cloverFactory.GetAssembly(i, fCheckOverlaps);
         assembly->MakeImprint(LogicVacuumChamber, CLOVER_transform[i], i);
-
-        //cloverFactory.Construct(LogicVacuumChamber, CLOVER_position[i], CLOVER_rotm[i], i, fCheckOverlaps, CLOVER_Presence[i], CLOVER_Shield_Presence[i]);
     }
 
     ////////////////////////////////////////////////////
@@ -514,9 +513,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         {
             auto *assembly = ocl_factory.GetAssembly(i, fCheckOverlaps);
             assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i], i);
-           /*labr3[i]->SetRotation(OCLLaBr3_rotm[i]);
-           labr3[i]->SetPosition(OCLLaBr3_position[i]);
-           labr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);*/
         }
 
     }
@@ -537,16 +533,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         //          LaBr3 Detectors
         if(FTALaBr3_Presence[i])
         {
-            //ftalabr3[i] = new FTALaBr3(i, fCheckOverlaps);
             auto *assembly = labr_factory.GetAssembly(i, fCheckOverlaps);
             assembly->MakeImprint(LogicVacuumChamber, FTALaBr3_position[i], &FTALaBr3_rotm[i], i);
-            /*new G4PVPlacement(G4Transform3D(FTALaBr3_rotm[i],FTALaBr3_position[i]),
-                              "LaBr3_Housing_Physical",
-                              ftalabr3[i]->GetLogical(),
-                              PhysiVacuumChamber,
-                              false,
-                              i,
-                              fCheckOverlaps);*/
         }
 
     }
