@@ -12,6 +12,8 @@
 #include <G4Colour.hh>
 #include <G4Transform3D.hh>
 #include <G4PVPlacement.hh>
+#include <G4NistManager.hh>
+#include <G4MultiUnion.hh>
 
 #include "CloverFactory.hh"
 
@@ -119,7 +121,10 @@ Solids_t::Solids_t(const char *path, const G4ThreeVector &offset)
 
 HPGeFactory::HPGeFactory(const char *vacuum_path, const char *encasement_path, const char *crystals_path[],
                          const char *contacts_path[])
-    : internal_vacuum(vacuum_path, offset_Vacuum)
+    : fMatVaccum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
+    , fMatAluminium( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
+    , fMatGe( G4NistManager::Instance()->FindOrBuildMaterial("G4_Ge") )
+    , internal_vacuum(vacuum_path, offset_Vacuum)
     , encasement(encasement_path, offset_Encasement)
     , crystals{ Solids_t(crystals_path[0], offset_Crystals[0]),
                 Solids_t(crystals_path[1], offset_Crystals[1]),
@@ -130,117 +135,70 @@ HPGeFactory::HPGeFactory(const char *vacuum_path, const char *encasement_path, c
                 Solids_t(contacts_path[2], offset_Crystals[2]),
                 Solids_t(contacts_path[3], offset_Crystals[3])}
 {
+    if ( !fMatVaccum || !fMatAluminium || !fMatGe )
+        throw std::runtime_error("Could not find materials needed.");
 }
 
-void HPGeFactory::SetupLogical(HPGeDetector *detector) const
+G4AssemblyVolume *HPGeFactory::GetAssembly(const int &copy_no, const bool &overlap)
 {
-    G4Material* G4_Galactic_Material = G4Material::GetMaterial("G4_Galactic");
-    G4Material* G4_Ge_Material = G4Material::GetMaterial("G4_Ge");
-    G4Material* G4_Al_Material = G4Material::GetMaterial("G4_Al");
+    auto *assembly = new G4AssemblyVolume();
+    G4ThreeVector pos0(0.,0., 0.);
+    G4RotationMatrix rot0;
 
-    detector->InternalVacuum.logicalVolume =
-            new G4LogicalVolume(internal_vacuum.solid, G4_Galactic_Material, "LogicCLOVERInternalVacuum");
-
-
-    detector->Encasement.logicalVolume =
-            new G4LogicalVolume(encasement.solid, G4_Al_Material, "LogicCLOVERCloverEncasement");
-
-
-    auto* CLOVER_DeadLayer_Lithium_VisAtt = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
-    CLOVER_DeadLayer_Lithium_VisAtt->SetForceSolid(true);
-    CLOVER_DeadLayer_Lithium_VisAtt->SetVisibility(true);
-
-    auto* CLOVER_HPGeCrystals_VisAtt = new G4VisAttributes(G4Colour(0.9, 0.9, 0.0));
-    CLOVER_HPGeCrystals_VisAtt->SetVisibility(true);
-
-    for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i ){
-        std::string name = "LogicCLOVERHPGeCrystal";
-        name.push_back('A'+i);
-        detector->HPGeCrystals[i].logicalVolume =
-                new G4LogicalVolume(crystals[i].solid, G4_Ge_Material, "LogicCLOVERHPGeCrystal");
-        name = "LogicCLOVERHPGeCrystal_LithiumContact";
-        name.push_back('A'+i);
-        detector->HPGeContacts[i].logicalVolume =
-                new G4LogicalVolume(contacts[i].solid, G4_Ge_Material, "LogicCLOVERHPGeCrystal_LithiumContact");
-    }
-}
-
-void HPGeFactory::SetupVis(HPGeDetector *detector) const
-{
     auto* CLOVER_InternalVacuum_VisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
-    auto *CLOVER_Encasement_VisAtt = new G4VisAttributes(G4Colour(1, 0., 0.));
-    auto* CLOVER_HPGeCrystals_VisAtt = new G4VisAttributes(G4Colour(0.9, 0.9, 0.0));
-    auto* CLOVER_DeadLayer_Lithium_VisAtt = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
-
-
     CLOVER_InternalVacuum_VisAtt->SetVisibility(false);
-    CLOVER_Encasement_VisAtt->SetVisibility(true);
-    CLOVER_HPGeCrystals_VisAtt->SetVisibility(true);
-    CLOVER_DeadLayer_Lithium_VisAtt->SetVisibility(true);
+    auto *internal_volume_logical = new G4LogicalVolume(internal_vacuum.solid, fMatVaccum, "Internal_Volume_Logic");
+    internal_volume_logical->SetVisAttributes(CLOVER_InternalVacuum_VisAtt);
+    assembly->AddPlacedVolume(internal_volume_logical, pos0, &rot0);
+
+    auto *CLOVER_Encasement_VisAtt = new G4VisAttributes(G4Colour(1, 0., 0.));
+    CLOVER_Encasement_VisAtt->SetVisibility(false);
+    auto *encasement_volume_logical = new G4LogicalVolume(encasement.solid, fMatAluminium, "Encasement_Volume_Logic");
+    encasement_volume_logical->SetVisAttributes(CLOVER_Encasement_VisAtt);
+    assembly->AddPlacedVolume(encasement_volume_logical, pos0, &rot0);
+
+
+
+    auto* CLOVER_DeadLayer_Lithium_VisAtt = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
+    auto* CLOVER_HPGeCrystals_VisAtt = new G4VisAttributes(G4Colour(0.9, 0.9, 0.0));
 
     CLOVER_DeadLayer_Lithium_VisAtt->SetForceSolid(true);
 
-    detector->InternalVacuum.logicalVolume->SetVisAttributes(CLOVER_InternalVacuum_VisAtt);
-    detector->Encasement.logicalVolume->SetVisAttributes(CLOVER_Encasement_VisAtt);
+    CLOVER_DeadLayer_Lithium_VisAtt->SetVisibility(false);
+    CLOVER_HPGeCrystals_VisAtt->SetVisibility(false);
 
-    for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i){
-        detector->HPGeCrystals[i].logicalVolume->SetVisAttributes(CLOVER_HPGeCrystals_VisAtt);
-        detector->HPGeContacts[i].logicalVolume->SetVisAttributes(CLOVER_DeadLayer_Lithium_VisAtt);
+    // Place the HPGe inside the internal volume
+    for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i ) {
+        auto *crystal_logical = new G4LogicalVolume(crystals[i].solid, fMatGe, "LogicCLOVERHPGeCrystal");
+        crystal_logical->SetVisAttributes(CLOVER_HPGeCrystals_VisAtt);
+        new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+                          crystal_logical,
+                          "CLOVER_HPGeCrystal",
+                          internal_volume_logical,
+                          false,
+                          copy_no * numberOf_CLOVER_Crystals + i,
+                          overlap);
+        auto *contact_logical = new G4LogicalVolume(contacts[i].solid, fMatGe, "LogicCLOVERHPGeCrystal_LithiumContact");
+        contact_logical->SetVisAttributes(CLOVER_DeadLayer_Lithium_VisAtt);
+        new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+                          contact_logical,
+                          "CLOVER_HPGeLithiumDopedDeadlayer",
+                          crystal_logical,
+                          false,
+                          copy_no * numberOf_CLOVER_Crystals + i,
+                          overlap);
     }
-}
 
-void HPGeFactory::SetupPhysical(HPGeDetector *detector, G4LogicalVolume *parent, const G4ThreeVector &pos,
-                                const G4RotationMatrix &rot, const int &copy_no, const bool &overlap) const
-{
-    G4Transform3D transform = G4Transform3D(rot, pos);
-    detector->InternalVacuum.physicalVolume = new G4PVPlacement(transform,
-                                                                detector->InternalVacuum.logicalVolume,
-                                                                "CLOVER_InternalVacuum",
-                                                                 parent,
-                                                                false,
-                                                                copy_no,
-                                                                overlap);
-    detector->Encasement.physicalVolume = new G4PVPlacement(transform,
-                                                            detector->Encasement.logicalVolume,
-                                                            "CLOVER_Encasement",
-                                                            parent,
-                                                            false,
-                                                            copy_no,
-                                                            overlap);
-
-    for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i ){
-        detector->HPGeCrystals[i].physicalVolume =
-                new G4PVPlacement(0, G4ThreeVector(0,0,0),
-                                  detector->HPGeCrystals[i].logicalVolume,
-                                  "CLOVER_HPGeCrystal",
-                                  detector->InternalVacuum.logicalVolume,
-                                  false,
-                                  copy_no*4 + i,
-                                  overlap);
-        detector->HPGeContacts[i].physicalVolume =
-                new G4PVPlacement(0, G4ThreeVector(0,0,0),
-                                  detector->HPGeContacts[i].logicalVolume,
-                                  "CLOVER_HPGeLithiumDopedDeadlayer",
-                                  detector->HPGeCrystals[i].logicalVolume,
-                                  false,
-                                  copy_no*4 + i,
-                                  overlap);
-    }
-}
-
-HPGeDetector HPGeFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                                        const int &copy_no, const bool &overlap) const
-{
-    HPGeDetector detector;
-    SetupLogical(&detector);
-    SetupVis(&detector);
-    SetupPhysical(&detector, parent, pos, rot, copy_no, overlap);
-    return detector;
+    return assembly;
 }
 
 ShieldFactory::ShieldFactory(const char *body_path, const char *heavimet_path, const char *PMTConArray_path,
                              const char *BGOCrystal_path[], const char *PMT_path[])
-    : body(body_path, offset_body)
+     : fMatVaccum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
+    , fMatAluminium( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
+    , fMatHeavimet( G4NistManager::Instance()->FindOrBuildMaterial("Heavimet_Material") )
+    , fMatBGO( G4NistManager::Instance()->FindOrBuildMaterial("G4_BGO") )
+    , body(body_path, offset_body)
     , heavimet(heavimet_path, offset_heavimet)
     , PMTConArray(PMTConArray_path, offset_PMTConArray)
     , BGOCrystal{ Solids_t(BGOCrystal_path[0], offset_BGOCrystals), Solids_t(BGOCrystal_path[1], offset_BGOCrystals),
@@ -259,116 +217,91 @@ ShieldFactory::ShieldFactory(const char *body_path, const char *heavimet_path, c
           Solids_t(PMT_path[10], offset_PMT), Solids_t(PMT_path[11], offset_PMT),
           Solids_t(PMT_path[12], offset_PMT), Solids_t(PMT_path[13], offset_PMT),
           Solids_t(PMT_path[14], offset_PMT), Solids_t(PMT_path[15], offset_PMT)}
+    , BGOVolume( new G4MultiUnion() )
 {
-}
-
-void ShieldFactory::SetupLogical(ShieldDetector *detector) const
-{
-    auto *G4_Al_Material = G4Material::GetMaterial("G4_Al");
-    auto *Heavimet_Material = GetHeavimet();
-    auto* G4_BGO_Material = G4Material::GetMaterial("G4_BGO");
-
-    detector->Body.logicalVolume = new G4LogicalVolume(body.solid, G4_Al_Material, "LogicCLOVERShieldBody");
-    detector->Heavimet.logicalVolume = new G4LogicalVolume(heavimet.solid, Heavimet_Material,
-                                                           "LogicCLOVERShieldHeavimet");
-    detector->PMTConArray.logicalVolume = new G4LogicalVolume(PMTConArray.solid, G4_Al_Material,
-                                                              "LogicCLOVERShieldPMTConArray");
-
-    char name[128];
-    for (int i = 0 ; i < numberOf_BGO_Crystals ; ++i) {
-        sprintf(name, "LogicCLOVERShieldBGOCrystal_%02d", i);
-        detector->BGOCrystals[i].logicalVolume =
-                new G4LogicalVolume(BGOCrystal[i].solid, G4_BGO_Material, name);
-        sprintf(name, "LogicCLOVERShieldPMT_%02d", i);
-        detector->PMT[i].logicalVolume =
-                new G4LogicalVolume(PMT[i].solid, G4_Al_Material, name);
+    if ( !fMatHeavimet ){
+        fMatHeavimet = new G4Material("Heavimet_Material",19.25*g/cm3, 5);
+        fMatHeavimet->AddElement(G4NistManager::Instance()->FindOrBuildElement("W"), 94.20*perCent);
+        fMatHeavimet->AddElement(G4NistManager::Instance()->FindOrBuildElement("Ni"), 4.35*perCent);
+        fMatHeavimet->AddElement(G4NistManager::Instance()->FindOrBuildElement("Fe"), 0.85*perCent);
+        fMatHeavimet->AddElement(G4NistManager::Instance()->FindOrBuildElement("Co"), 0.50*perCent);
+        fMatHeavimet->AddElement(G4NistManager::Instance()->FindOrBuildElement("Cu"), 0.10*perCent);
     }
+
+    {
+        auto rotm = G4RotationMatrix();
+        auto pos = G4ThreeVector(0,0,0);
+        auto tr = G4Transform3D(rotm, pos);
+        for ( auto &crystal : BGOCrystal ){
+            BGOVolume->AddNode(*crystal.solid, tr);
+        }
+        BGOVolume->Voxelize();
+    }
+
 }
 
-void ShieldFactory::SetupVis(ShieldDetector *detector) const
+G4AssemblyVolume *ShieldFactory::GetAssembly(const int &copy_no, const bool &checkOverlap)
 {
+    auto *assembly = new G4AssemblyVolume();
+    G4ThreeVector pos0(0.,0., 0.);
+    G4RotationMatrix rot0;
+
     auto* CLOVER_ShieldBody_VisAtt = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6));
+    CLOVER_ShieldBody_VisAtt->SetForceSolid(true);
+    CLOVER_ShieldBody_VisAtt->SetVisibility(true);
+    auto *body_logical = new G4LogicalVolume(body.solid, fMatAluminium, "LogicCLOVERShieldBody");
+    body_logical->SetVisAttributes(CLOVER_ShieldBody_VisAtt);
+    assembly->AddPlacedVolume(body_logical, pos0, &rot0);
+
     auto* CLOVER_Shield_HEAVIMET_VisAtt = new G4VisAttributes(G4Colour(0.4, 0.2, 0.2));
+    CLOVER_Shield_HEAVIMET_VisAtt->SetForceSolid(true);
+    CLOVER_Shield_HEAVIMET_VisAtt->SetVisibility(false);
+    auto *heavimet_logical = new G4LogicalVolume(heavimet.solid, fMatHeavimet, "LogicCLOVERShieldHeavimet");
+    heavimet_logical->SetVisAttributes(CLOVER_Shield_HEAVIMET_VisAtt);
+    assembly->AddPlacedVolume(heavimet_logical, pos0, &rot0);
+
+    auto *CLOVER_Shield_PMTConArray_VisAtt = new G4VisAttributes(G4Colour::White());
+    CLOVER_Shield_PMTConArray_VisAtt->SetVisibility(true);
+    auto *Logic_CLOVER_Shield_PMTConArray = new G4LogicalVolume(PMTConArray.solid, fMatAluminium, "LogicCLOVERShieldPMTConArray");
+    Logic_CLOVER_Shield_PMTConArray->SetVisAttributes(CLOVER_Shield_PMTConArray_VisAtt);
+    assembly->AddPlacedVolume(Logic_CLOVER_Shield_PMTConArray, pos0, &rot0);
+
     auto *Shield_BGOCrystal_VisAtt = new G4VisAttributes(G4Colour(0., 0., 1.0));
     auto *Shield_PMT_VisAtt = new G4VisAttributes(G4Colour(0., 1., 0.0));
-
-    CLOVER_ShieldBody_VisAtt->SetForceSolid(true);
-    CLOVER_Shield_HEAVIMET_VisAtt->SetForceSolid(true);
-    Shield_PMT_VisAtt->SetForceSolid(true);
-
-    CLOVER_ShieldBody_VisAtt->SetVisibility(true);
-    CLOVER_Shield_HEAVIMET_VisAtt->SetVisibility(true);
     Shield_BGOCrystal_VisAtt->SetVisibility(false);
     Shield_PMT_VisAtt->SetVisibility(false);
 
-    detector->Body.logicalVolume->SetVisAttributes(CLOVER_ShieldBody_VisAtt);
-    detector->Heavimet.logicalVolume->SetVisAttributes(CLOVER_Shield_HEAVIMET_VisAtt);
+    auto *BGO_Volume_VisAtt = new G4VisAttributes(G4Colour::Black());
+    BGO_Volume_VisAtt->SetVisibility(false);
+    auto *BGO_volume_logical = new G4LogicalVolume(BGOVolume, fMatVaccum, "LogicalBGOVolume");
+    BGO_volume_logical->SetVisAttributes(BGO_Volume_VisAtt);
+    assembly->AddPlacedVolume(BGO_volume_logical, pos0, &rot0);
 
-    for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ) {
-        detector->BGOCrystals[i].logicalVolume->SetVisAttributes(Shield_BGOCrystal_VisAtt);
-        detector->PMT[i].logicalVolume->SetVisAttributes(Shield_PMT_VisAtt);
+    for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ){
+        auto *bgo_logical = new G4LogicalVolume(BGOCrystal[i].solid, fMatBGO, "LogicCLOVERShieldBGOCrystal");
+        bgo_logical->SetVisAttributes(Shield_BGOCrystal_VisAtt);
+        new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+                          bgo_logical,
+                          "CLOVER_Shield_BGOCrystal",
+                          BGO_volume_logical,
+                          false,
+                          copy_no * numberOf_BGO_Crystals + i,
+                          checkOverlap);
+        auto *pmt_logical = new G4LogicalVolume(PMT[i].solid, fMatAluminium, "LogicCLOVERShieldPMT");
+        pmt_logical->SetVisAttributes(Shield_PMT_VisAtt);
+        assembly->AddPlacedVolume(pmt_logical, pos0, &rot0);
     }
-}
 
-void ShieldFactory::SetupPhysical(ShieldDetector *detector, G4LogicalVolume *parent, const G4ThreeVector &pos,
-                                  const G4RotationMatrix &rot, const int &copy_no, const bool &overlap) const
-{
-    G4Transform3D transform = G4Transform3D(rot, pos);
-    char volName[128];
-    sprintf(volName, "CLOVER_Shield_Body_%02d", copy_no);
-    detector->Body.physicalVolume =
-            new G4PVPlacement(transform, detector->Body.logicalVolume, volName, parent, false, copy_no, overlap);
-
-    sprintf(volName, "CLOVER_Shield_Heavimet_%02d", copy_no);
-    detector->Heavimet.physicalVolume =
-            new G4PVPlacement(transform, detector->Heavimet.logicalVolume, volName, parent, false, copy_no, overlap);
-
-    /*sprintf(volName, "CLOVER_Shield_PMTConArray_%02d", copy_no);
-    detector->PMTConArray.physicalVolume =
-            new G4PVPlacement(transform, detector->PMTConArray.logicalVolume, volName, parent, false, copy_no, overlap);
-    */
-
-    for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ) {
-        sprintf(volName, "CLOVER_Shield_BGOCrystal_%02d_%02d", copy_no, i);
-        detector->BGOCrystals[i].physicalVolume =
-                new G4PVPlacement(transform,
-                                  detector->BGOCrystals[i].logicalVolume,
-                                  "CLOVER_Shield_BGOCrystal",//volName,
-                                  parent,
-                                  false,
-                                  copy_no * numberOf_BGO_Crystals + i,
-                                  overlap);
-        sprintf(volName, "CLOVER_Shield_PMT_%02d_%02d", copy_no, i);
-        detector->PMT[i].physicalVolume =
-                new G4PVPlacement(transform,
-                                  detector->PMT[i].logicalVolume,
-                                  volName,
-                                  parent,
-                                  false,
-                                  copy_no * numberOf_BGO_Crystals + i,
-                                  overlap);
-    }
-}
-
-ShieldDetector ShieldFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos,
-                                              const G4RotationMatrix &rot, const int &copy_no,
-                                              const bool &overlap) const
-{
-    ShieldDetector detector;
-    SetupLogical(&detector);
-    SetupVis(&detector);
-    SetupPhysical(&detector, parent, pos, rot, copy_no, overlap);
-    return detector;
+    return assembly;
 }
 
 
-CloverFactory::CloverFactory(const bool &shield)
-    : shieldConstruct( shield )
-    , crystalFactory(new HPGeFactory(HPGe_Paths::vacuum_path, HPGe_Paths::encasement_path,
-                                     HPGe_Paths::crystals_path, HPGe_Paths::contacts_path))
-    , shieldFactory( ( shieldConstruct ) ? new ShieldFactory(Shields_Paths::body_path, Shields_Paths::heavimet_path,
-                                                                   Shields_Paths::PMTConArray_path,
-                                                                   Shields_Paths::bgo_path, Shields_Paths::pmt_path) : nullptr )
+CloverFactory::CloverFactory(const bool &have_HPGe, const bool &have_Shield)
+    : crystalFactory( have_HPGe ? new HPGeFactory(HPGe_Paths::vacuum_path, HPGe_Paths::encasement_path,
+                                                  HPGe_Paths::crystals_path, HPGe_Paths::contacts_path) : nullptr)
+    , shieldFactory( have_Shield ? new ShieldFactory(Shields_Paths::body_path, Shields_Paths::heavimet_path,
+                                                     Shields_Paths::PMTConArray_path, Shields_Paths::bgo_path,
+                                                     Shields_Paths::pmt_path) : nullptr )
 {}
 
 CloverFactory::~CloverFactory()
@@ -377,12 +310,14 @@ CloverFactory::~CloverFactory()
     delete shieldFactory;
 }
 
-CloverDetector CloverFactory::Construct(G4LogicalVolume *parent, const G4ThreeVector &pos, const G4RotationMatrix &rot,
-                                        const int &copy_no, const bool &overlap,  const bool &HPGe_present,
-                                        const bool &shield_present) const
+G4AssemblyVolume *CloverFactory::GetAssembly(const int &copy_no, const bool &checkOverlap)
 {
-    CloverDetector detector;
-    detector.HPGe = ( HPGe_present ) ?  crystalFactory->Construct(parent, pos, rot, copy_no, overlap) : HPGeDetector();
-    detector.Shield = ( shieldConstruct && shield_present ) ? shieldFactory->Construct(parent, pos, rot, copy_no, overlap) : ShieldDetector();
-    return detector;
+    auto *assembly = new G4AssemblyVolume();
+    G4ThreeVector pos0(0.,0., 0.);
+    G4RotationMatrix rot0;
+    if ( crystalFactory )
+        assembly->AddPlacedAssembly(crystalFactory->GetAssembly(copy_no, checkOverlap), pos0, &rot0);
+    if ( shieldFactory )
+        assembly->AddPlacedAssembly(shieldFactory->GetAssembly(copy_no, checkOverlap), pos0, &rot0);
+    return assembly;
 }

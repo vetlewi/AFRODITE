@@ -110,10 +110,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = true;
+    CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = true;
+    CLOVER_Shield_AllAbsent_Override = false;
     
     
     //  CLOVER 1
@@ -195,7 +195,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
+    OCLLaBr3_AllAbsent_Override = true;
     
     
     // LaBr3 Detector 1
@@ -226,7 +226,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    FTA LaBr3 Detectors
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = false;
+    FTALaBr3_AllAbsent_Override = true;
 
 
     // LaBr3 Detector 1
@@ -299,7 +299,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = true;
+    AFRODITE_MathisTC_Presence = false;
     
     /////////////////////////////////////
     ////    AFRODITE Target
@@ -485,14 +485,17 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     CloverFactory cloverFactory(have_shield);
     for(G4int i=0; i< numberOf_CLOVER ; i++)
     {
-        //CLOVER_position[i] = (CLOVER_Distance[i])*G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]), sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]), cos(CLOVER_theta[i]));
         CLOVER_position[i] = CLOVER_Distance[i]
         *G4ThreeVector( -sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
                         cos(CLOVER_theta[i]),
                         sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]));
 
         CLOVER_transform[i] = G4Transform3D(CLOVER_rotm[i],CLOVER_position[i]);
-        cloverFactory.Construct(LogicVacuumChamber, CLOVER_position[i], CLOVER_rotm[i], i, fCheckOverlaps, CLOVER_Presence[i], CLOVER_Shield_Presence[i]);
+
+        auto *assembly = cloverFactory.GetAssembly(i, fCheckOverlaps);
+        assembly->MakeImprint(LogicVacuumChamber, CLOVER_transform[i], i);
+
+        //cloverFactory.Construct(LogicVacuumChamber, CLOVER_position[i], CLOVER_rotm[i], i, fCheckOverlaps, CLOVER_Presence[i], CLOVER_Shield_Presence[i]);
     }
 
     ////////////////////////////////////////////////////
@@ -510,7 +513,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         if(OCLLaBr3_Presence[i])
         {
             auto *assembly = ocl_factory.GetAssembly(i, fCheckOverlaps);
-            assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i]);
+            assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i], i);
            /*labr3[i]->SetRotation(OCLLaBr3_rotm[i]);
            labr3[i]->SetPosition(OCLLaBr3_position[i]);
            labr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);*/
@@ -536,7 +539,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         {
             //ftalabr3[i] = new FTALaBr3(i, fCheckOverlaps);
             auto *assembly = labr_factory.GetAssembly(i, fCheckOverlaps);
-            assembly->MakeImprint(LogicVacuumChamber, FTALaBr3_position[i], &FTALaBr3_rotm[i]);
+            assembly->MakeImprint(LogicVacuumChamber, FTALaBr3_position[i], &FTALaBr3_rotm[i], i);
             /*new G4PVPlacement(G4Transform3D(FTALaBr3_rotm[i],FTALaBr3_position[i]),
                               "LaBr3_Housing_Physical",
                               ftalabr3[i]->GetLogical(),
