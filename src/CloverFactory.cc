@@ -298,8 +298,8 @@ void ShieldFactory::SetupVis(ShieldDetector *detector) const
 
     CLOVER_ShieldBody_VisAtt->SetVisibility(true);
     CLOVER_Shield_HEAVIMET_VisAtt->SetVisibility(true);
-    Shield_BGOCrystal_VisAtt->SetVisibility(true);
-    Shield_PMT_VisAtt->SetVisibility(true);
+    Shield_BGOCrystal_VisAtt->SetVisibility(false);
+    Shield_PMT_VisAtt->SetVisibility(false);
 
     detector->Body.logicalVolume->SetVisAttributes(CLOVER_ShieldBody_VisAtt);
     detector->Heavimet.logicalVolume->SetVisAttributes(CLOVER_Shield_HEAVIMET_VisAtt);

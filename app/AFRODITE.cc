@@ -47,6 +47,7 @@
 
 #include <G4PhysListFactory.hh>
 #include <G4RadioactiveDecayPhysics.hh>
+#include <FTFP_BERT.hh>
 
 #include "Randomize.hh"
 
@@ -58,39 +59,38 @@
 #include "G4UIExecutive.hh"
 #endif
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-namespace {
-    void PrintUsage() {
-        G4cerr << " Usage: " << G4endl;
-        G4cerr << " AFRODITE [-m macro ] [-u UIsession] [-t nThreads]" << G4endl;
-        G4cerr << "   note: -t option is available only for multi-threaded mode."
-               << G4endl;
-    }
-}
+#include <thread>
+#include <cxxopts.hpp>
+#include <termcolor/termcolor.hpp>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)
 {
-    // Evaluate arguments
-    //
-    if ( argc > 7 ) {
-        PrintUsage();
-        return 1;
-    }
+    cxxopts::Options options("AFRODITE", "A Geant4 model of the AFRODITE array");
+    options.add_options()
+            ("m,macro", "Macro file", cxxopts::value<std::string>())
+            ("t,threads", "Number of worker threads", cxxopts::value<int>())
+            ("h,help", "Print usage");
 
-    G4String macro;
-    G4String session;
-    G4int nThreads = 0;
-    for ( G4int i=1; i<argc; i=i+2 ) {
-        if      ( G4String(argv[i]) == "-m" ) macro = argv[i+1];
-        else if ( G4String(argv[i]) == "-u" ) session = argv[i+1];
-        else if ( G4String(argv[i]) == "-t" ) {
-            nThreads = G4UIcommand::ConvertToInt(argv[i+1]);
-        }
-        else {
-            PrintUsage();
+    G4UIExecutive* ui = 0;
+    std::string macro = "";
+    G4int threads = std::thread::hardware_concurrency();
+    if ( argc == 1 ) {
+        ui = new G4UIExecutive(argc, argv);
+    } else {
+        try {
+            auto result = options.parse(argc, argv);
+            if ( result.count("help") ){
+                std::cout << options.help() << std::endl;
+                return 0;
+            }
+            macro = result["macro"].as<std::string>();
+            threads = result["threads"].as<int>();
+        } catch (const std::exception &e){
+            std::cerr << termcolor::bold << termcolor::red;
+            std::cerr << "Error: " << e.what() << termcolor::reset << std::endl;
+            std::cout << options.help() << std::endl;
             return 1;
         }
     }
@@ -102,57 +102,54 @@ int main(int argc,char** argv)
     G4int seed = time( NULL );
     G4Random::setTheSeed( seed );
 
-    auto *runManager = G4RunManagerFactory::CreateRunManager();
-    runManager->SetUserInitialization(new DetectorConstruction);
+    auto *runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
+    runManager->SetNumberOfThreads(threads);
 
-    if ( nThreads == 0 )
-        runManager->SetNumberOfThreads(1);
-    else
-        runManager->SetNumberOfThreads(nThreads);
+    // Initialize classes
+    runManager->SetUserInitialization(new DetectorConstruction);
 
     ////////////////////////////////////////////////////////////////////
     //      Initialising the Physics List with Radioactive Decay
     ////////////////////////////////////////////////////////////////////
 
-    G4PhysListFactory factory;
-    auto *phys = factory.GetReferencePhysList("QGSP_BERT");
-    phys->RegisterPhysics(new G4RadioactiveDecayPhysics());
-    runManager->SetUserInitialization(phys);
+    G4VModularPhysicsList* physicsList = new FTFP_BERT;
+    physicsList->RegisterPhysics(new G4RadioactiveDecayPhysics());
+    runManager->SetUserInitialization(physicsList);
     runManager->SetUserInitialization(new ActionInitialization);
 
-    // Initialize G4 kernel
+    // Initialize visualization
     //
-    runManager->Initialize();
-
-    auto *visManager = new G4VisExecutive;
+    G4VisManager* visManager = new G4VisExecutive;
+    // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
+    // G4VisManager* visManager = new G4VisExecutive("Quiet");
     visManager->Initialize();
 
-    auto *uiManager = G4UImanager::GetUIpointer();
+    // Get the pointer to the User Interface manager
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-    if ( !macro.empty() ) {
+    // Process macro or start UI session
+    //
+    if ( !ui ) {
         // batch mode
         G4String command = "/control/execute ";
-        uiManager->ApplyCommand(command+macro);
-    } else {
-        // interactive mode : define UI session
-#ifdef G4UI_USE
-        auto *ui = new G4UIExecutive(argc, argv, session);
-#ifdef G4VIS_USE
-        uiManager->ApplyCommand("/control/execute init_vis.mac");
-#else
-        uiManager->ApplyCommand("/control/execute init.mac");
-#endif // G4VIS_USE
-        if (ui->IsGUI())
-            uiManager->ApplyCommand("/control/execute gui.mac");
+        UImanager->ApplyCommand(command+macro);
+    }
+    else {
+        // interactive mode
+        UImanager->ApplyCommand("/control/execute init_vis.mac");
+        if (ui->IsGUI()) {
+            UImanager->ApplyCommand("/control/execute gui.mac");
+        }
         ui->SessionStart();
         delete ui;
-#endif // G4UI_USE
     }
 
-    G4cout << "Segfaults after this message are not a problem" << G4endl;
-#ifdef G4VIS_USE
+    // Job termination
+    // Free the store: user actions, physics_list and detector_description are
+    // owned and deleted by the run manager, so they should not be deleted
+    // in the main() program !
+    //
     delete visManager;
-#endif // G4VIS_USE
     delete runManager;
 
     return 0;

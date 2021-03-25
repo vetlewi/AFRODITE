@@ -60,7 +60,7 @@ public:
     
 public:
     G4VPhysicalVolume* Construct() override;
-    void ConstructSDandField() override;
+    //void ConstructSDandField() override;
 
 private:
     // methods
@@ -101,9 +101,6 @@ private:
     /////////////////////////////////////
     //          OCL LaBr3 DETECTORS
     /////////////////////////////////////
-    
-    OCLLaBr3*           labr3[numberOf_OCLLaBr3];
-
     G4bool              OCLLaBr3_AllPresent_Override;
     G4bool              OCLLaBr3_AllAbsent_Override;
     G4bool              OCLLaBr3_Presence[numberOf_OCLLaBr3];
@@ -117,9 +114,6 @@ private:
     /////////////////////////////////////
     //          FTA LaBr3 DETECTORS
     /////////////////////////////////////
-
-    FTALaBr3*           ftalabr3[numberOf_FTALaBr3];
-
     G4bool              FTALaBr3_AllPresent_Override;
     G4bool              FTALaBr3_AllAbsent_Override;
     G4bool              FTALaBr3_Presence[numberOf_FTALaBr3];

@@ -89,7 +89,7 @@
 
 DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
-    , fCheckOverlaps(true)
+    , fCheckOverlaps( false )
     , WorldSize( 5. * m )
 {
 }
@@ -105,8 +105,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////                                                  ////
     //////////////////////////////////////////////////////////
     
-    ////////////////////////////
-    ////    CLOVER SETUP
+    /////////////////////////////
+    ////    CLOVER SETUP      ///
+    /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
     CLOVER_AllAbsent_Override = true;
@@ -119,72 +120,66 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_Presence[0] = true;
     CLOVER_Shield_Presence[0] = true;
     CLOVER_Distance[0] = 14.*cm;
-    CLOVER_phi[0] = 0*deg;
-    CLOVER_theta[0] = 90*deg;
-    CLOVER_rotm[0].rotateY(-90.*deg);
+    CLOVER_phi[0] = 0.*deg;
+    CLOVER_theta[0] = 45.*deg;
     
     //  CLOVER 2
     CLOVER_Presence[1] = true;
     CLOVER_Shield_Presence[1] = true;
     CLOVER_Distance[1] = 14.*cm;
-    CLOVER_phi[1] = 45*deg;
+    CLOVER_phi[1] = 0*deg;
     CLOVER_theta[1] = 90*deg;
-    CLOVER_rotm[1].rotateX(45.0*deg);
-    CLOVER_rotm[1].rotateY(-90.0*deg);
     
     //  CLOVER 3
     CLOVER_Presence[2] = true;
     CLOVER_Shield_Presence[2] = true;
     CLOVER_Distance[2] = 14.*cm;
-    CLOVER_phi[2] = 135*deg;
-    CLOVER_theta[2] = 90*deg;
-    CLOVER_rotm[2].rotateX(45.0*deg);
-    CLOVER_rotm[2].rotateY(90.0*deg);
+    CLOVER_phi[2] = 0*deg;
+    CLOVER_theta[2] = 135*deg;
 
     //  CLOVER 4
     CLOVER_Presence[3] = true;
     CLOVER_Shield_Presence[3] = true;
     CLOVER_Distance[3] = 14.*cm;
-    CLOVER_phi[3] = 180*deg;
+    CLOVER_phi[3] = 45*deg;
     CLOVER_theta[3] = 90*deg;
-    CLOVER_rotm[3].rotateY(90.0*deg);
-    
+
     //  CLOVER 5
     CLOVER_Presence[4] = true;
     CLOVER_Shield_Presence[4] = true;
     CLOVER_Distance[4] = 14.*cm;
-    CLOVER_phi[4] = 225*deg;
-    CLOVER_theta[4] = 90*deg;
-    CLOVER_rotm[4].rotateX(-45.0*deg);
-    CLOVER_rotm[4].rotateY(90.0 *deg);
+    CLOVER_phi[4] = 0*deg;
+    CLOVER_theta[4] = -45*deg;
     
     //  CLOVER 6
     CLOVER_Presence[5] = true;
     CLOVER_Shield_Presence[5] = true;
     CLOVER_Distance[5] = 14.*cm;
     CLOVER_phi[5] = 0*deg;
-    CLOVER_theta[5] = 45*deg;
-    CLOVER_rotm[5].rotateY(-135.0*deg);
+    CLOVER_theta[5] = -90*deg;
     
     //  CLOVER 7
     CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = true;
     CLOVER_Distance[6] = 14.*cm;
-    CLOVER_phi[6] = 90*deg;
-    CLOVER_theta[6] = 45*deg;
-    CLOVER_rotm[6].rotateX(135.0*deg);
+    CLOVER_phi[6] = 45*deg;
+    CLOVER_theta[6] = -90*deg;
 
     //  CLOVER 8
     CLOVER_Presence[7] = true;
     CLOVER_Shield_Presence[7] = true;
     CLOVER_Distance[7] = 14.*cm;
-    CLOVER_phi[7] = -90*deg;
+    CLOVER_phi[7] = 90*deg;
     CLOVER_theta[7] = 45*deg;
-    CLOVER_rotm[7].rotateX(225*deg);
-    
+
     
     for (G4int i=0; i<numberOf_CLOVER; i++)
     {
+
+        CLOVER_rotm[i].rotateX(90.*deg);
+        CLOVER_rotm[i].rotateZ(CLOVER_theta[i]);
+        CLOVER_rotm[i].rotateY(CLOVER_phi[i]);
+
         if(CLOVER_AllPresent_Override) CLOVER_Presence[i] = true;
         if(CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
         if(CLOVER_AllPresent_Override && CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
@@ -200,7 +195,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = true;
+    OCLLaBr3_AllAbsent_Override = false;
     
     
     // LaBr3 Detector 1
@@ -208,9 +203,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
     OCLLaBr3_phi[0] = -45.*deg;
     OCLLaBr3_theta[0] = 90.*deg;
-    //OCLLaBr3_rotm[0].rotateX(270*deg);
-    //OCLLaBr3_rotm[0].rotateZ(OCLLaBr3_theta[0]);
-    //OCLLaBr3_rotm[0].rotateY(OCLLaBr3_phi[0]);
     
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
@@ -239,39 +231,39 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     // LaBr3 Detector 1
     FTALaBr3_Presence[0] = true;
-    FTALaBr3_Distance[0] = 14.*cm;
+    FTALaBr3_Distance[0] = 21.*cm;
     FTALaBr3_phi[0] = -135*deg;
     FTALaBr3_theta[0] = 54.5*deg;
 
 
     // LaBr3 Detector 2
     FTALaBr3_Presence[1] = true;
-    FTALaBr3_Distance[1] = 14.*cm;
+    FTALaBr3_Distance[1] = 21.*cm;
     FTALaBr3_phi[1] = -45*deg;
     FTALaBr3_theta[1] = 54.5*deg;
 
     // LaBr3 Detector 3
     FTALaBr3_Presence[2] = true;
-    FTALaBr3_Distance[2] = 14.*cm;
+    FTALaBr3_Distance[2] = 21.*cm;
     FTALaBr3_phi[2] = 45.*deg;
     FTALaBr3_theta[2] = (180.-56.)*deg;
 
     // LaBr3 Detector 4
     FTALaBr3_Presence[3] = true;
-    FTALaBr3_Distance[3] = 14.*cm;
+    FTALaBr3_Distance[3] = 21.*cm;
     FTALaBr3_phi[3] = 45.*deg;
     FTALaBr3_theta[3] = 54.5*deg;
 
 
     // LaBr3 Detector 5
     FTALaBr3_Presence[4] = true;
-    FTALaBr3_Distance[4] = 14.*cm;
+    FTALaBr3_Distance[4] = 21.*cm;
     FTALaBr3_phi[4] = 135.*deg;
     FTALaBr3_theta[4] = 54.5*deg;
 
     // LaBr3 Detector 6
     FTALaBr3_Presence[5] = true;
-    FTALaBr3_Distance[5] = 14.*cm;
+    FTALaBr3_Distance[5] = 21.*cm;
     FTALaBr3_phi[5] = 135.*deg;
     FTALaBr3_theta[5] = (180.-56.)*deg;
 
@@ -279,7 +271,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     for (G4int i=0; i<numberOf_FTALaBr3; i++)
     {
 
-        FTALaBr3_rotm[i].rotateX(270*deg);
+        FTALaBr3_rotm[i].rotateX(90*deg);
         FTALaBr3_rotm[i].rotateZ(FTALaBr3_theta[i]);
         FTALaBr3_rotm[i].rotateY(FTALaBr3_phi[i]);
 
@@ -493,7 +485,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     CloverFactory cloverFactory(have_shield);
     for(G4int i=0; i< numberOf_CLOVER ; i++)
     {
-        CLOVER_position[i] = (CLOVER_Distance[i])*G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]), sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]), cos(CLOVER_theta[i]));
+        //CLOVER_position[i] = (CLOVER_Distance[i])*G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]), sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]), cos(CLOVER_theta[i]));
+        CLOVER_position[i] = CLOVER_Distance[i]
+        *G4ThreeVector( -sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
+                        cos(CLOVER_theta[i]),
+                        sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]));
+
         CLOVER_transform[i] = G4Transform3D(CLOVER_rotm[i],CLOVER_position[i]);
         cloverFactory.Construct(LogicVacuumChamber, CLOVER_position[i], CLOVER_rotm[i], i, fCheckOverlaps, CLOVER_Presence[i], CLOVER_Shield_Presence[i]);
     }
@@ -501,7 +498,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////////////////////////////////////////////////////
     //            OCL LaBr3 INITIALIZATION            //
     ////////////////////////////////////////////////////
-    
+    OCLLaBr3 ocl_factory(false);
     for(G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
         OCLLaBr3_position[i] = OCLLaBr3_Distance[i]
@@ -509,14 +506,14 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                                 cos(OCLLaBr3_theta[i]),
                                                 sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]));
 
-        /////////////////////////////
-        //          LaBr3 Detectors
+
         if(OCLLaBr3_Presence[i])
         {
-           labr3[i] = new OCLLaBr3();
-           labr3[i]->SetRotation(OCLLaBr3_rotm[i]);
+            auto *assembly = ocl_factory.GetAssembly(i, fCheckOverlaps);
+            assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i]);
+           /*labr3[i]->SetRotation(OCLLaBr3_rotm[i]);
            labr3[i]->SetPosition(OCLLaBr3_position[i]);
-           labr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);
+           labr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);*/
         }
 
     }
@@ -525,23 +522,28 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////////////////////////////////////////////////////
     //            FTA LaBr3 INITIALIZATION            //
     ////////////////////////////////////////////////////
-
-    for(G4int i=0; i<numberOf_FTALaBr3; i++)
+    FTALaBr3 labr_factory;
+    for(G4int i=0; i < numberOf_FTALaBr3 ; i++)
     {
         FTALaBr3_position[i] = (FTALaBr3_Distance[i])
                                *G4ThreeVector( -sin(FTALaBr3_theta[i]) * cos(FTALaBr3_phi[i]),
                                                cos(FTALaBr3_theta[i]),
-                                               sin(FTALaBr3_theta[i]) * sin(FTALaBr3_phi[i])
-        );
+                                               sin(FTALaBr3_theta[i]) * sin(FTALaBr3_phi[i]));
 
         /////////////////////////////
         //          LaBr3 Detectors
         if(FTALaBr3_Presence[i])
         {
-            ftalabr3[i] = new FTALaBr3(i, fCheckOverlaps);
-            ftalabr3[i]->SetRotation(FTALaBr3_rotm[i]);
-            ftalabr3[i]->SetPosition(FTALaBr3_position[i]);
-            ftalabr3[i]->Placement(i,  PhysiVacuumChamber, fCheckOverlaps);
+            //ftalabr3[i] = new FTALaBr3(i, fCheckOverlaps);
+            auto *assembly = labr_factory.GetAssembly(i, fCheckOverlaps);
+            assembly->MakeImprint(LogicVacuumChamber, FTALaBr3_position[i], &FTALaBr3_rotm[i]);
+            /*new G4PVPlacement(G4Transform3D(FTALaBr3_rotm[i],FTALaBr3_position[i]),
+                              "LaBr3_Housing_Physical",
+                              ftalabr3[i]->GetLogical(),
+                              PhysiVacuumChamber,
+                              false,
+                              i,
+                              fCheckOverlaps);*/
         }
 
     }
@@ -555,8 +557,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     World_VisAtt->SetVisibility(true);
     LogicWorld->SetVisAttributes(World_VisAtt);
     
-    //G4VisAttributes* Target_VisAtt= new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
-    //LogicTarget->SetVisAttributes(Target_VisAtt);
+    G4VisAttributes* Target_VisAtt= new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
+    LogicTarget->SetVisAttributes(Target_VisAtt);
     
     
     ////////////////////////////
@@ -575,13 +577,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorConstruction::ConstructSDandField()
+/*void DetectorConstruction::ConstructSDandField()
 {
 
     // FTA detectors
     auto *FTALaBrSD = new EnergyDepSD("LaBr/FTA", "TrackerHitsCollection");
     G4SDManager::GetSDMpointer()->AddNewDetector(FTALaBrSD);
     SetSensitiveDetector("FTA_Crystal", FTALaBrSD, true);
-}
+}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
