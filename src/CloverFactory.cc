@@ -146,8 +146,8 @@ G4AssemblyVolume *HPGeFactory::GetAssembly(const int &copy_no, const bool &overl
 
     CLOVER_DeadLayer_Lithium_VisAtt->SetForceSolid(true);
 
-    CLOVER_DeadLayer_Lithium_VisAtt->SetVisibility(false);
-    CLOVER_HPGeCrystals_VisAtt->SetVisibility(false);
+    CLOVER_DeadLayer_Lithium_VisAtt->SetVisibility(true);
+    CLOVER_HPGeCrystals_VisAtt->SetVisibility(true);
 
     // Place the HPGe inside the internal volume
     for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i ) {
