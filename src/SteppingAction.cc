@@ -60,14 +60,11 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
-    G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
-    const G4TouchableHandle& theTouchable = preStepPoint->GetTouchableHandle();
-    
     // get volume of the current step
-    G4VPhysicalVolume* volume = theTouchable->GetVolume();
-    
+    G4VPhysicalVolume* volume = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
+
     // get volume name of the current step
-    const char *volumeName = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName().c_str();
+    const char *volumeName = volume->GetName().c_str();
 
 
     if ( strcmp(volumeName, "CLOVER_HPGeCrystal") == 0 ){

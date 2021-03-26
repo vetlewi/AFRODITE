@@ -253,22 +253,23 @@ G4AssemblyVolume *ShieldFactory::GetAssembly(const int &copy_no, const bool &che
     Shield_BGOCrystal_VisAtt->SetVisibility(false);
     Shield_PMT_VisAtt->SetVisibility(false);
 
-    auto *BGO_Volume_VisAtt = new G4VisAttributes(G4Colour::Black());
+    /*auto *BGO_Volume_VisAtt = new G4VisAttributes(G4Colour::Black());
     BGO_Volume_VisAtt->SetVisibility(false);
     auto *BGO_volume_logical = new G4LogicalVolume(BGOVolume, fMatVaccum, "LogicalBGOVolume");
     BGO_volume_logical->SetVisAttributes(BGO_Volume_VisAtt);
-    assembly->AddPlacedVolume(BGO_volume_logical, pos0, &rot0);
+    assembly->AddPlacedVolume(BGO_volume_logical, pos0, &rot0);*/
 
     for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ){
         auto *bgo_logical = new G4LogicalVolume(BGOCrystal[i].solid, fMatBGO, "LogicCLOVERShieldBGOCrystal");
         bgo_logical->SetVisAttributes(Shield_BGOCrystal_VisAtt);
-        new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
+        /*new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
                           bgo_logical,
                           "CLOVER_Shield_BGOCrystal",
                           BGO_volume_logical,
                           false,
                           copy_no * numberOf_BGO_Crystals + i,
-                          checkOverlap);
+                          checkOverlap);*/
+        assembly->AddPlacedVolume(bgo_logical, pos0, &rot0);
         auto *pmt_logical = new G4LogicalVolume(PMT[i].solid, fMatAluminium, "LogicCLOVERShieldPMT");
         pmt_logical->SetVisAttributes(Shield_PMT_VisAtt);
         assembly->AddPlacedVolume(pmt_logical, pos0, &rot0);

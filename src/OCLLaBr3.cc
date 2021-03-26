@@ -154,12 +154,13 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
     G4RotationMatrix rot0;
 
     // Setup attributes
-    auto hiddenVIS = G4VisAttributes(G4Colour::Black());
+    auto *hiddenVIS = new G4VisAttributes(G4Colour::Black());
     auto *shieldVIS = new G4VisAttributes(G4Colour::Gray());
     auto *crystalVIS = new G4VisAttributes(G4Colour::White());
     auto *coatingVIS = new G4VisAttributes(G4Color::Red());
     auto *reflectorVIS = new G4VisAttributes(G4Colour::Yellow());
     auto *plexiCoatingVIS = new G4VisAttributes(G4Colour::Brown());
+    auto *PMT_Vol_VIS = new G4VisAttributes(G4Colour::Red());
     auto *PMT_WindowVIS = new G4VisAttributes(G4Colour::Green());
     auto *PMT_VIS = new G4VisAttributes(G4Colour::Magenta());
 
@@ -167,14 +168,15 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
 
     shieldVIS->SetForceSolid(true);
 
-    hiddenVIS.SetVisibility(false);
+    hiddenVIS->SetVisibility(false);
     shieldVIS->SetVisibility(true);
-    crystalVIS->SetVisibility(true);
-    coatingVIS->SetVisibility(true);
-    reflectorVIS->SetVisibility(true);
-    plexiCoatingVIS->SetVisibility(true);
-    PMT_WindowVIS->SetVisibility(true);
-    PMT_VIS->SetVisibility(true);
+    crystalVIS->SetVisibility(false);
+    coatingVIS->SetVisibility(false);
+    reflectorVIS->SetVisibility(false);
+    plexiCoatingVIS->SetVisibility(false);
+    PMT_Vol_VIS->SetVisibility(false);
+    PMT_WindowVIS->SetVisibility(false);
+    PMT_VIS->SetVisibility(false);
 
 
 
@@ -184,7 +186,7 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
     assembly->AddPlacedVolume(Shielding_Logic, pos0, &rot0);
 
     // Set Shielding visuals
-    Detector_Logic->SetVisAttributes(hiddenVIS);
+    Detector_Logic->SetVisAttributes(PMT_Vol_VIS);
     Shielding_Logic->SetVisAttributes(shieldVIS);
 
 
@@ -234,7 +236,7 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
     new G4PVPlacement(0, positionPMTandAir,
                       Detector_Logic, "Detector_Phys", Shielding_Logic, false, copy_no, checkOverlap);
 
-    auto positionPMTWindow = G4ThreeVector(0.*cm, 0.*cm, plexiGlasWindowHalfLength - PMTandAirHalfLength);
+    auto positionPMTWindow = G4ThreeVector(0.*cm, 0.*cm, PMTWindowHalfLength - PMTandAirHalfLength);
     new G4PVPlacement(0, positionPMTWindow,
                       PMT_Window_Logic, "PMT_Window_Phys", Detector_Logic, false, copy_no, checkOverlap);
 

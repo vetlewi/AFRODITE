@@ -347,8 +347,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                    0,                        //its mother  volume
                                    false,                    //no boolean operation
                                    0);                       //copy number
-    
-    
+
+
     
     //////////////////////////////////////////////////////////
     //                      VACUUM CHAMBER
@@ -448,6 +448,24 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
         auto *assembly = cloverFactory.GetAssembly(i, fCheckOverlaps);
         assembly->MakeImprint(LogicVacuumChamber, CLOVER_transform[i], i);
+
+        // Since assembly class will do create all the pysical volumes that
+        // we haven't made yet our self we will have to hack the names
+        // and copy number that we expect into the physical volumes our self.
+        // It isnt a good way of doing it, but it should work:/
+        // This is also the point where we will check that nothing overlaps, since
+        // we dont properly check during construction.
+        auto nVolumes = assembly->TotalImprintedVolumes();
+        int copy_no = 0;
+        for ( auto vol = assembly->GetVolumesIterator() ;
+              vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
+            if ( fCheckOverlaps )
+                (*vol)->CheckOverlaps();
+            if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
+                (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
+                (*vol)->SetName("LogicCLOVERShieldBGOCrystal");
+            }
+        }
     }
 
     ////////////////////////////////////////////////////
