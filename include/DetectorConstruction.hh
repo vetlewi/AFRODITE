@@ -73,8 +73,22 @@ private:
     /////////////////////////////
     //          WORLD
     G4double WorldSize;
-    
-    
+
+
+    /////////////////////////////////////
+    //          S2 SILICON DETECTORS
+    /////////////////////////////////////
+    G4bool              S2_Silicon_AllPresent_Override;
+    G4bool              S2_Silicon_AllAbsent_Override;
+    G4bool              S2_Silicon_Presence[numberOfSi];
+    G4double            S2_Silicon_Distance[numberOfSi];
+    G4double            S2_Silicon_Thickness[numberOfSi];
+    G4RotationMatrix    S2_Silicon_rotm[numberOfSi];
+    G4Transform3D       S2_Silicon_transform[numberOfSi];
+    G4ThreeVector       S2_Silicon_position[numberOfSi];
+    G4double            S2_Silicon_phi[numberOfSi];
+    G4double            S2_Silicon_theta[numberOfSi];
+
     /////////////////////////////////////
     //          CLOVER DETECTORS
     /////////////////////////////////////

@@ -75,6 +75,11 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         fEventAction->OCLLABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "LaBr3_Crystal_Physical") == 0 ){
         fEventAction->FTALABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
+    } else if ( strcmp(volumeName, "Active_Si_area") == 0 ){
+
+        aStep->GetPreStepPoint()->GetPosition();
+
+
     }
 }
 

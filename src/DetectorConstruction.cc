@@ -72,6 +72,7 @@
 #include "G4TransportationManager.hh"
 
 #include "CloverFactory.hh"
+#include "S2Factory.hh"
 
 
 #include <fstream>
@@ -104,16 +105,45 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////            DETECTOR ARRAY POSITIONING            ////
     ////                                                  ////
     //////////////////////////////////////////////////////////
+
+    /////////////////////////////////
+    ////    S2 Silicon SETUP      ///
+    /////////////////////////////////
+
+    S2_Silicon_AllPresent_Override = false;
+    S2_Silicon_AllAbsent_Override = false;
+
+    S2_Silicon_Presence[0] = true;
+    S2_Silicon_Thickness[0] = 330*um;
+    S2_Silicon_Distance[0] = 22.5*mm;
+    S2_Silicon_phi[0] = 0;
+    S2_Silicon_theta[0] = 0;
+
+    S2_Silicon_Presence[1] = false;
+    S2_Silicon_Thickness[1] = 1090*um;
+    S2_Silicon_Distance[1] = 25.5*mm;
+    S2_Silicon_phi[1] = 0;
+    S2_Silicon_theta[1] = 0;
+
+    for (G4int i=0; i<numberOfSi; i++)
+    {
+        S2_Silicon_rotm[i].rotateY(S2_Silicon_theta[i]);
+        S2_Silicon_rotm[i].rotateZ(S2_Silicon_phi[i]);
+
+        if(S2_Silicon_AllPresent_Override) S2_Silicon_Presence[i] = true;
+        if(S2_Silicon_AllAbsent_Override) S2_Silicon_Presence[i] = false;
+        if(S2_Silicon_AllPresent_Override && S2_Silicon_AllAbsent_Override) S2_Silicon_Presence[i] = false;
+    }
     
     /////////////////////////////
     ////    CLOVER SETUP      ///
     /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = false;
+    CLOVER_AllAbsent_Override = true;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
+    CLOVER_Shield_AllAbsent_Override = true;
     
     
     //  CLOVER 1
@@ -121,64 +151,64 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     CLOVER_Shield_Presence[0] = true;
     CLOVER_Distance[0] = 14.*cm;
     CLOVER_phi[0] = 0.*deg;
-    CLOVER_theta[0] = 45.*deg;
+    CLOVER_theta[0] = 90.*deg;
     
     //  CLOVER 2
     CLOVER_Presence[1] = true;
     CLOVER_Shield_Presence[1] = true;
     CLOVER_Distance[1] = 14.*cm;
-    CLOVER_phi[1] = 0*deg;
+    CLOVER_phi[1] = 45*deg;
     CLOVER_theta[1] = 90*deg;
     
     //  CLOVER 3
     CLOVER_Presence[2] = true;
     CLOVER_Shield_Presence[2] = true;
     CLOVER_Distance[2] = 14.*cm;
-    CLOVER_phi[2] = 0*deg;
-    CLOVER_theta[2] = 135*deg;
+    CLOVER_phi[2] = 135*deg;
+    CLOVER_theta[2] = 90*deg;
 
     //  CLOVER 4
     CLOVER_Presence[3] = true;
     CLOVER_Shield_Presence[3] = true;
     CLOVER_Distance[3] = 14.*cm;
-    CLOVER_phi[3] = 45*deg;
+    CLOVER_phi[3] = 180*deg;
     CLOVER_theta[3] = 90*deg;
 
     //  CLOVER 5
     CLOVER_Presence[4] = true;
     CLOVER_Shield_Presence[4] = true;
     CLOVER_Distance[4] = 14.*cm;
-    CLOVER_phi[4] = 0*deg;
-    CLOVER_theta[4] = -45*deg;
+    CLOVER_phi[4] = 315*deg;
+    CLOVER_theta[4] = 90*deg;
     
     //  CLOVER 6
     CLOVER_Presence[5] = true;
     CLOVER_Shield_Presence[5] = true;
     CLOVER_Distance[5] = 14.*cm;
     CLOVER_phi[5] = 0*deg;
-    CLOVER_theta[5] = -90*deg;
+    CLOVER_theta[5] = 135*deg;
     
     //  CLOVER 7
     CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = true;
     CLOVER_Distance[6] = 14.*cm;
-    CLOVER_phi[6] = 45*deg;
-    CLOVER_theta[6] = -90*deg;
+    CLOVER_phi[6] = 90*deg;
+    CLOVER_theta[6] = 135*deg;
 
     //  CLOVER 8
     CLOVER_Presence[7] = true;
     CLOVER_Shield_Presence[7] = true;
     CLOVER_Distance[7] = 14.*cm;
-    CLOVER_phi[7] = 90*deg;
-    CLOVER_theta[7] = 45*deg;
+    CLOVER_phi[7] = 135*deg;
+    CLOVER_theta[7] = 180*deg;
 
     
     for (G4int i=0; i<numberOf_CLOVER; i++)
     {
 
-        CLOVER_rotm[i].rotateX(90.*deg);
-        CLOVER_rotm[i].rotateZ(CLOVER_theta[i]);
-        CLOVER_rotm[i].rotateY(CLOVER_phi[i]);
+        CLOVER_rotm[i].rotateX(180.*deg);
+        CLOVER_rotm[i].rotateY(CLOVER_theta[i]);
+        CLOVER_rotm[i].rotateZ(CLOVER_phi[i]);
 
         if(CLOVER_AllPresent_Override) CLOVER_Presence[i] = true;
         if(CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
@@ -195,27 +225,26 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
+    OCLLaBr3_AllAbsent_Override = true;
     
     
     // LaBr3 Detector 1
     OCLLaBr3_Presence[0] = true;
     OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
-    OCLLaBr3_phi[0] = -45.*deg;
-    OCLLaBr3_theta[0] = 90.*deg;
+    OCLLaBr3_phi[0] = 0.*deg;
+    OCLLaBr3_theta[0] = 45.*deg;
     
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
     OCLLaBr3_Distance[1] = 10.*cm+14.*cm;
-    OCLLaBr3_phi[1] = -(90.)*deg;
+    OCLLaBr3_phi[1] = 90.*deg;
     OCLLaBr3_theta[1] = 45.*deg;
 
     
     for (G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
-        OCLLaBr3_rotm[i].rotateX(270*deg);
-        OCLLaBr3_rotm[i].rotateZ(OCLLaBr3_theta[i]);
-        OCLLaBr3_rotm[i].rotateY(OCLLaBr3_phi[i]);
+        OCLLaBr3_rotm[i].rotateY(OCLLaBr3_theta[i]);
+        OCLLaBr3_rotm[i].rotateZ(OCLLaBr3_phi[i]);
 
         if(OCLLaBr3_AllPresent_Override) OCLLaBr3_Presence[i] = true;
         if(OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
@@ -224,54 +253,56 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     ////////////////////////////
     ////    FTA LaBr3 Detectors
+    ////////////////////////////
+
+    // NOTE: Angles are defined differently for FTA detectors.
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = false;
+    FTALaBr3_AllAbsent_Override = true;
 
 
     // LaBr3 Detector 1
     FTALaBr3_Presence[0] = true;
     FTALaBr3_Distance[0] = 21.*cm;
-    FTALaBr3_phi[0] = -135*deg;
-    FTALaBr3_theta[0] = 54.5*deg;
+    FTALaBr3_phi[0] = 45.*deg;
+    FTALaBr3_theta[0] = 55*deg;
 
 
     // LaBr3 Detector 2
     FTALaBr3_Presence[1] = true;
     FTALaBr3_Distance[1] = 21.*cm;
-    FTALaBr3_phi[1] = -45*deg;
-    FTALaBr3_theta[1] = 54.5*deg;
+    FTALaBr3_phi[1] = 135.*deg;
+    FTALaBr3_theta[1] = 55*deg;
 
     // LaBr3 Detector 3
     FTALaBr3_Presence[2] = true;
     FTALaBr3_Distance[2] = 21.*cm;
-    FTALaBr3_phi[2] = 45.*deg;
-    FTALaBr3_theta[2] = (180.-56.)*deg;
+    FTALaBr3_phi[2] = 225.*deg;
+    FTALaBr3_theta[2] = 55*deg;
 
     // LaBr3 Detector 4
     FTALaBr3_Presence[3] = true;
     FTALaBr3_Distance[3] = 21.*cm;
-    FTALaBr3_phi[3] = 45.*deg;
-    FTALaBr3_theta[3] = 54.5*deg;
+    FTALaBr3_phi[3] = 225.*deg;
+    FTALaBr3_theta[3] = (180-55)*deg;
 
 
     // LaBr3 Detector 5
     FTALaBr3_Presence[4] = true;
     FTALaBr3_Distance[4] = 21.*cm;
-    FTALaBr3_phi[4] = 135.*deg;
-    FTALaBr3_theta[4] = 54.5*deg;
+    FTALaBr3_phi[4] = 315.*deg;
+    FTALaBr3_theta[4] = 55.*deg;
 
     // LaBr3 Detector 6
     FTALaBr3_Presence[5] = true;
     FTALaBr3_Distance[5] = 21.*cm;
-    FTALaBr3_phi[5] = 135.*deg;
-    FTALaBr3_theta[5] = (180.-56.)*deg;
+    FTALaBr3_phi[5] = 315.*deg;
+    FTALaBr3_theta[5] = (180.-55.)*deg;
 
 
     for (G4int i=0; i<numberOf_FTALaBr3; i++)
     {
-
-        FTALaBr3_rotm[i].rotateX(90*deg);
+        FTALaBr3_rotm[i].rotateX(270*deg);
         FTALaBr3_rotm[i].rotateZ(FTALaBr3_theta[i]);
         FTALaBr3_rotm[i].rotateY(FTALaBr3_phi[i]);
 
@@ -387,8 +418,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
         
         G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
-        
-        new G4PVPlacement(0,               // no rotation
+        G4RotationMatrix *rot = new G4RotationMatrix();
+        rot->rotateY(180*deg);
+        new G4PVPlacement(rot,               // no rotation
                           G4ThreeVector(), // at (x,y,z)
                           LogicMathisTC,       // its logical volume
                           "BACTAR",       // its name
@@ -426,7 +458,42 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                           0,               // copy number
                           fCheckOverlaps); // checking overlaps
     }
-    
+
+    //////////////////////////////////////////////////////////
+    //                      S2 detectors
+    //////////////////////////////////////////////////////////
+
+
+   for (int i = 0 ; i < numberOfSi ; ++i){
+
+       if ( !S2_Silicon_Presence[i] )
+           continue;
+
+        S2Factory s2factory(S2_Silicon_Thickness[i]);
+        auto *assembly = s2factory.GetAssembly(0, fCheckOverlaps);
+
+       S2_Silicon_position[i] = S2_Silicon_Distance[i]
+                            *G4ThreeVector( sin(S2_Silicon_theta[i]) * cos(S2_Silicon_phi[i]),
+                                            sin(S2_Silicon_theta[i]) * sin(S2_Silicon_phi[i]),
+                                            cos(S2_Silicon_theta[i]));
+
+       S2_Silicon_transform[i] = G4Transform3D(S2_Silicon_rotm[i],S2_Silicon_position[i]);
+
+
+        assembly->MakeImprint(LogicVacuumChamber, S2_Silicon_transform[i], i);
+        // Hack to set correct name for later analysis
+        auto nVolumes = assembly->TotalImprintedVolumes();
+        for ( auto vol = assembly->GetVolumesIterator() ;
+              vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
+            if ( fCheckOverlaps )
+                (*vol)->CheckOverlaps();
+            if ( (*vol)->GetName().contains("Active_area_logical") ) {
+                (*vol)->SetCopyNo(0);
+                (*vol)->SetName("Active_Si_area");
+                break; // there is only one active area
+            }
+        }
+    }
     
     ////////////////////////////////////////////////////
     //               CLOVER INITIALIZATION            //
@@ -439,10 +506,18 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     CloverFactory cloverFactory(have_HPGe, have_shield);
     for(G4int i=0; i< numberOf_CLOVER ; i++)
     {
-        CLOVER_position[i] = CLOVER_Distance[i]
+        if ( !CLOVER_Presence[i] )
+            continue;
+
+        /*CLOVER_position[i] = CLOVER_Distance[i]
         *G4ThreeVector( -sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
                         cos(CLOVER_theta[i]),
-                        sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]));
+                        sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]));*/
+
+        CLOVER_position[i] = CLOVER_Distance[i]
+                             *G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
+                                             sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]),
+                                             cos(CLOVER_theta[i]));
 
         CLOVER_transform[i] = G4Transform3D(CLOVER_rotm[i],CLOVER_position[i]);
 
@@ -475,9 +550,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     for(G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
         OCLLaBr3_position[i] = OCLLaBr3_Distance[i]
-                                *G4ThreeVector( -sin(OCLLaBr3_theta[i]) * cos(OCLLaBr3_phi[i]), 
-                                                cos(OCLLaBr3_theta[i]),
-                                                sin(OCLLaBr3_theta[i]) * sin(OCLLaBr3_phi[i]));
+                              *G4ThreeVector( sin(OCLLaBr3_theta[i])*cos(OCLLaBr3_phi[i]),
+                                              sin(OCLLaBr3_theta[i]*sin(OCLLaBr3_phi[i])),
+                                              cos(OCLLaBr3_theta[i]));
 
 
         if(OCLLaBr3_Presence[i])
