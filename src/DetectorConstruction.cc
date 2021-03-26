@@ -334,7 +334,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     /////////////////////////////////////
     ////    AFRODITE Target
-    AFRODITE_Target_Presence = false;
+    AFRODITE_Target_Presence = true;
     
     // Define volumes
     return DefineVolumes();

@@ -77,7 +77,8 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         fEventAction->FTALABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "Active_Si_area") == 0 ){
 
-        aStep->GetPreStepPoint()->GetPosition();
+        // TODO: Find ring/sector from angle.
+        // TODO: Add results to tree
 
 
     }
