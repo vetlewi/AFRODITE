@@ -58,7 +58,8 @@ add_executable(AFRODITE
         src/FTALaBr3.cc
         src/PrimaryGeneratorAction.cc
         src/RunAction.cc
-        src/SteppingAction.cc)
+        src/SteppingAction.cc
+        src/S2Factory.cc)
 
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
