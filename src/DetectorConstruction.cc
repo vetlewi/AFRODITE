@@ -90,7 +90,7 @@
 
 DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
-    , fCheckOverlaps( true )
+    , fCheckOverlaps( false )
     , WorldSize( 5. * m )
 {
 }
@@ -110,6 +110,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    S2 Silicon SETUP      ///
     /////////////////////////////////
 
+
     S2_Silicon_AllPresent_Override = false;
     S2_Silicon_AllAbsent_Override = false;
 
@@ -119,7 +120,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     S2_Silicon_phi[0] = 0;
     S2_Silicon_theta[0] = 0;
 
-    S2_Silicon_Presence[1] = false;
+    S2_Silicon_Presence[1] = true;
     S2_Silicon_Thickness[1] = 1090*um;
     S2_Silicon_Distance[1] = 25.5*mm;
     S2_Silicon_phi[1] = 0;
@@ -140,68 +141,67 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = true;
+    CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = true;
+    CLOVER_Shield_AllAbsent_Override = false;
     
     
     //  CLOVER 1
     CLOVER_Presence[0] = true;
     CLOVER_Shield_Presence[0] = true;
-    CLOVER_Distance[0] = 14.*cm;
+    CLOVER_Distance[0] = (21.-7.3)*cm;
     CLOVER_phi[0] = 0.*deg;
     CLOVER_theta[0] = 90.*deg;
     
     //  CLOVER 2
     CLOVER_Presence[1] = true;
     CLOVER_Shield_Presence[1] = true;
-    CLOVER_Distance[1] = 14.*cm;
+    CLOVER_Distance[1] = (21.-7.3)*cm;
     CLOVER_phi[1] = 45*deg;
     CLOVER_theta[1] = 90*deg;
     
     //  CLOVER 3
     CLOVER_Presence[2] = true;
     CLOVER_Shield_Presence[2] = true;
-    CLOVER_Distance[2] = 14.*cm;
+    CLOVER_Distance[2] = (21.-7.3)*cm;
     CLOVER_phi[2] = 135*deg;
     CLOVER_theta[2] = 90*deg;
 
     //  CLOVER 4
     CLOVER_Presence[3] = true;
     CLOVER_Shield_Presence[3] = true;
-    CLOVER_Distance[3] = 14.*cm;
+    CLOVER_Distance[3] = (21.-7.3)*cm;
     CLOVER_phi[3] = 180*deg;
     CLOVER_theta[3] = 90*deg;
 
     //  CLOVER 5
     CLOVER_Presence[4] = true;
     CLOVER_Shield_Presence[4] = true;
-    CLOVER_Distance[4] = 14.*cm;
+    CLOVER_Distance[4] = (21.-7.3)*cm;
     CLOVER_phi[4] = 315*deg;
     CLOVER_theta[4] = 90*deg;
     
     //  CLOVER 6
     CLOVER_Presence[5] = true;
     CLOVER_Shield_Presence[5] = true;
-    CLOVER_Distance[5] = 14.*cm;
+    CLOVER_Distance[5] = (21.-7.3)*cm;
     CLOVER_phi[5] = 0*deg;
     CLOVER_theta[5] = 135*deg;
     
     //  CLOVER 7
     CLOVER_Presence[6] = true;
     CLOVER_Shield_Presence[6] = true;
-    CLOVER_Distance[6] = 14.*cm;
+    CLOVER_Distance[6] = (21.-7.3)*cm;
     CLOVER_phi[6] = 90*deg;
     CLOVER_theta[6] = 135*deg;
 
     //  CLOVER 8
     CLOVER_Presence[7] = true;
     CLOVER_Shield_Presence[7] = true;
-    CLOVER_Distance[7] = 14.*cm;
-    CLOVER_phi[7] = 135*deg;
-    CLOVER_theta[7] = 180*deg;
-
+    CLOVER_Distance[7] = (21.-7.3)*cm;
+    CLOVER_phi[7] = 180*deg;
+    CLOVER_theta[7] = 135*deg;
     
     for (G4int i=0; i<numberOf_CLOVER; i++)
     {
@@ -218,27 +218,51 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if(CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
         if(CLOVER_Shield_AllPresent_Override && CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
     }
-    
+
    
 
     ////////////////////////////
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = true;
+    OCLLaBr3_AllAbsent_Override = false;
     
     
     // LaBr3 Detector 1
     OCLLaBr3_Presence[0] = true;
-    OCLLaBr3_Distance[0] = 10.*cm+14.*cm;
+    OCLLaBr3_Distance[0] = 14.*cm;
     OCLLaBr3_phi[0] = 0.*deg;
     OCLLaBr3_theta[0] = 45.*deg;
     
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
-    OCLLaBr3_Distance[1] = 10.*cm+14.*cm;
+    OCLLaBr3_Distance[1] = 14.*cm;
     OCLLaBr3_phi[1] = 90.*deg;
     OCLLaBr3_theta[1] = 45.*deg;
+
+    // LaBr3 Detector 3
+    OCLLaBr3_Presence[2] = false;
+    OCLLaBr3_Distance[2] = 14.*cm;
+    OCLLaBr3_phi[2] = 180.*deg;
+    OCLLaBr3_theta[2] = 45.*deg;
+
+    //  LaBr3 Detector 4
+    OCLLaBr3_Presence[3] = false;
+    OCLLaBr3_Distance[3] = 14.*cm;
+    OCLLaBr3_phi[3] = 270.*deg;
+    OCLLaBr3_theta[3] = 45.*deg;
+
+    // LaBr3 Detector 5
+    OCLLaBr3_Presence[4] = false;
+    OCLLaBr3_Distance[4] = 14.*cm;
+    OCLLaBr3_phi[4] = 225.*deg;
+    OCLLaBr3_theta[4] = 90.*deg;
+
+    //  LaBr3 Detector 6
+    OCLLaBr3_Presence[5] = false;
+    OCLLaBr3_Distance[5] = 14.*cm;
+    OCLLaBr3_phi[5] = 270.*deg;
+    OCLLaBr3_theta[5] = 135.*deg;
 
     
     for (G4int i=0; i<numberOf_OCLLaBr3; i++)
@@ -258,44 +282,44 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // NOTE: Angles are defined differently for FTA detectors.
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = true;
+    FTALaBr3_AllAbsent_Override = false;
 
 
     // LaBr3 Detector 1
     FTALaBr3_Presence[0] = true;
-    FTALaBr3_Distance[0] = 21.*cm;
+    FTALaBr3_Distance[0] = 14.*cm;
     FTALaBr3_phi[0] = 45.*deg;
     FTALaBr3_theta[0] = 55*deg;
 
 
     // LaBr3 Detector 2
     FTALaBr3_Presence[1] = true;
-    FTALaBr3_Distance[1] = 21.*cm;
+    FTALaBr3_Distance[1] = 14.*cm;
     FTALaBr3_phi[1] = 135.*deg;
     FTALaBr3_theta[1] = 55*deg;
 
     // LaBr3 Detector 3
     FTALaBr3_Presence[2] = true;
-    FTALaBr3_Distance[2] = 21.*cm;
+    FTALaBr3_Distance[2] = 14.*cm;
     FTALaBr3_phi[2] = 225.*deg;
     FTALaBr3_theta[2] = 55*deg;
 
     // LaBr3 Detector 4
     FTALaBr3_Presence[3] = true;
-    FTALaBr3_Distance[3] = 21.*cm;
+    FTALaBr3_Distance[3] = 14.*cm;
     FTALaBr3_phi[3] = 225.*deg;
     FTALaBr3_theta[3] = (180-55)*deg;
 
 
     // LaBr3 Detector 5
     FTALaBr3_Presence[4] = true;
-    FTALaBr3_Distance[4] = 21.*cm;
+    FTALaBr3_Distance[4] = 14.*cm;
     FTALaBr3_phi[4] = 315.*deg;
     FTALaBr3_theta[4] = 55.*deg;
 
     // LaBr3 Detector 6
     FTALaBr3_Presence[5] = true;
-    FTALaBr3_Distance[5] = 21.*cm;
+    FTALaBr3_Distance[5] = 14.*cm;
     FTALaBr3_phi[5] = 315.*deg;
     FTALaBr3_theta[5] = (180.-55.)*deg;
 
@@ -412,8 +436,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     if(AFRODITE_MathisTC_Presence)
     {
         G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        G4cout << "Reading TC from " << PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply" << G4endl;
-        CADMesh * mesh_MathisTC = new CADMesh(PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply", "PLY", mm, offset_MathisTC, false);
+        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply";
+        G4cout << "Reading TC from " << TC_path << G4endl;
+        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);
         
         G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
         
@@ -559,6 +584,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         {
             auto *assembly = ocl_factory.GetAssembly(i, fCheckOverlaps);
             assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i], i);
+            auto nVolumes = assembly->TotalImprintedVolumes();
+            for ( auto vol = assembly->GetVolumesIterator() ;
+                  vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
+                if ( fCheckOverlaps )
+                    (*vol)->CheckOverlaps();
+            }
         }
 
     }

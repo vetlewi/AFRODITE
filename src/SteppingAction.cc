@@ -75,13 +75,18 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         fEventAction->OCLLABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "LaBr3_Crystal_Physical") == 0 ){
         fEventAction->FTALABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
-    } else if ( strcmp(volumeName, "Active_Si_area") == 0 ){
-
-        // TODO: Find ring/sector from angle.
-        // TODO: Add results to tree
-
-
     }
+#if ANALYZE_SI_DETECTORS
+    else if ( strcmp(volumeName, "Active_Si_area") == 0 ){
+
+        auto &pos = aStep->GetPreStepPoint()->GetPosition();
+        G4int ring_id = pos.getR()/(0.491*mm) - ring_constant;
+        G4int sect_id = pos.getPhi()/(22.5*deg);
+
+        fEventAction->DeltaE_ring_energy[ring_id] += aStep->GetTotalEnergyDeposit()/keV;
+        fEventAction->DeltaE_sector_energy[sect_id] += aStep->GetTotalEnergyDeposit()/keV
+    }
+#endif // ANALYZE_SI_DETECTORS
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

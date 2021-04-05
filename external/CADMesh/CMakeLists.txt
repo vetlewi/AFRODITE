@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(CADMesh VERSION 1.1.0 LANGUAGES CXX)
 
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 # ---- Include guards ----
 
@@ -38,7 +38,6 @@ else()
     message(STATUS "Found assimp: " ${ASSIMP_LIBRARIES})
 endif()
 
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.4.1")
 CPMAddPackage(
     NAME tetgen
     GITHUB_REPOSITORY christopherpoole/tetgen
@@ -47,27 +46,19 @@ CPMAddPackage(
 )
 
 if ( tetgen_ADDED )
-    add_library(tet ${tetgen_SOURCE_DIR}/tetgen.cxx ${tetgen_SOURCE_DIR}/predicates.cxx)
+    add_library(tet STATIC ${tetgen_SOURCE_DIR}/tetgen.cxx ${tetgen_SOURCE_DIR}/predicates.cxx)
     target_compile_definitions(tet PRIVATE TETLIBRARY)
     target_include_directories(tet PUBLIC
         $<BUILD_INTERFACE:${tetgen_SOURCE_DIR}>)
     add_library(tet::tet ALIAS tet)
 endif()
 
-#ExternalProject_Add(
-#        assimp_external
-#        SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/assimp
-#        GIT_REPOSITORY https://github.com/assimp/assimp.git
-#        GIT_TAG v3.1.1
-#        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}
-#)
-
 
 #############################################
 # Declare the library
 #############################################
 
-add_library(CADMesh 
+add_library(CADMesh STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/source/CADMesh.cc)
 add_library(CADMesh::CADMesh ALIAS CADMesh)
 
@@ -77,5 +68,5 @@ target_include_directories(CADMesh
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     PRIVATE
         ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh)
-target_link_libraries(CADMesh PUBLIC tet::tet ASSIMP::ASSIMP ${Geant4_LIBRARIES})
+target_link_libraries(CADMesh PUBLIC tet::tet assimp::assimp ${Geant4_LIBRARIES})
 

@@ -64,6 +64,13 @@ protected:
     G4double OCLLABR_energy[numberOf_OCLLaBr3];
     G4double FTALABR_energy[numberOf_FTALaBr3];
 
+    G4double DeltaE_ring_energy[numberOf_SiRings];
+    G4double DeltaE_sector_energy[numberOf_SiSectors];
+#if ANALYZE_SI_DETECTORS
+    G4double E_ring_energy[numberOf_SiRings];
+    G4double E_sector_energy[numberOf_SiSectors];
+#endif // ANALYZE_SI_DETECTORS
+
     friend class SteppingAction;
 };
 

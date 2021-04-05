@@ -23,10 +23,16 @@ constexpr G4int     numberOf_BGO_Crystals = 16;
 constexpr G4int     numberOfSi = 2;
 
 ///////////////     OCL LaBr3            ///////////////////
-constexpr G4int     numberOf_OCLLaBr3 = 2;
+constexpr G4int     numberOf_OCLLaBr3 = 6;
 
 ///////////////     FTA LaBr3            ///////////////////
 constexpr G4int     numberOf_FTALaBr3 = 6;
+
+///////////////     Si detectrs            ///////////////////
+constexpr G4int     numberOf_SiRings = 48;
+constexpr G4int     numberOf_SiSectors = 16;
+
+constexpr G4double  ring_constant = 0.5*23.06/0.491;
 
 
 //////////////////////////////////////////////////////////////////////////

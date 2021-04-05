@@ -74,39 +74,52 @@ RunAction::RunAction()
    
     // Creating ntuple
     analysisManager->CreateNtuple("DataTreeSim", "AFRODITE and OCL detectors");
+
+    char name[512];
     
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
-        char tmp[512];
-        sprintf(tmp, "CLOVER_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, tmp);
+        sprintf(name, "CLOVER_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
     
      ////////////////////////////////////////////////////
     ////    BGO Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
-        char tmp[512];
-        sprintf(tmp, "BGO_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, tmp);
+        sprintf(name, "BGO_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
     
     ////////////////////////////////////////////////////
     ////    OCL LABR Detectors
     for ( G4int n = 0 ; n < numberOf_OCLLaBr3 ; ++n ){
-        char tmp[512];
-        sprintf(tmp, "OCLLABR_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, tmp);
+        sprintf(name, "OCLLABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
 
     ////////////////////////////////////////////////////
     ////    FTA LABR Detectors
     for ( G4int n = 0 ; n < numberOf_FTALaBr3 ; ++n ){
-        char tmp[512];
-        sprintf(tmp, "FTALABR_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, tmp);
+        sprintf(name, "FTALABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
-    
+#if ANALYZE_SI_DETECTORS
+    ////////////////////////////////////////////////////
+    ////    Delta E Rings
+    for ( G4int n = 0 ; n < numberOf_SiRings ; ++n ){
+        sprintf(name, "DeltaE_ring%02d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
+    }
+
+    ////////////////////////////////////////////////////
+    ////    Delta E Sectors
+    for ( G4int n = 0 ; n < numberOf_SiSectors ; ++n ){
+        sprintf(name, "DeltaE_sector%02d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
+    }
+#endif // ANALYZE_SI_DETECTORS
+
     analysisManager->FinishNtuple(0);
     
     

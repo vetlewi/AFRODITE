@@ -61,6 +61,10 @@ void EventAction::BeginOfEventAction(const G4Event*)
     memset(BGO_energy, 0, sizeof(CLOVER_energy));
     memset(OCLLABR_energy, 0, sizeof(CLOVER_energy));
     memset(FTALABR_energy, 0, sizeof(CLOVER_energy));
+#if ANALYZE_SI_DETECTORS
+    memset(DeltaE_ring_energy, 0, sizeof(DeltaE_ring_energy));
+    memset(DeltaE_sector_energy, 0, sizeof (DeltaE_sector_energy));
+#endif // ANALYZE_SI_DETECTORS
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -85,6 +89,12 @@ void EventAction::EndOfEventAction(const G4Event *e)
         analysisManager->FillNtupleDColumn(idx++, labr);
     for ( auto &labr : FTALABR_energy )
         analysisManager->FillNtupleDColumn(idx++, labr);
+#if ANALYZE_SI_DETECTORS
+    for ( auto &ring : DeltaE_ring_energy )
+        analysisManager->FillNtupleDColumn(idx++, ring);
+    for ( auto &sect : DeltaE_sector_energy )
+        analysisManager->FillNtupleDColumn(idx++, sect);
+#endif // ANALYZE_SI_DETECTORS
     analysisManager->AddNtupleRow();
 
 }

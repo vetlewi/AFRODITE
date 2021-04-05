@@ -62,6 +62,8 @@
 #include <thread>
 #include <cxxopts.hpp>
 #include <termcolor/termcolor.hpp>
+#include <G4EmStandardPhysics.hh>
+#include <QGSP_BIC_HP.hh>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -70,7 +72,7 @@ int main(int argc,char** argv)
     cxxopts::Options options("AFRODITE", "A Geant4 model of the AFRODITE array");
     options.add_options()
             ("m,macro", "Macro file", cxxopts::value<std::string>())
-            ("t,threads", "Number of worker threads", cxxopts::value<int>())
+            ("t,threads", "Number of worker threads", cxxopts::value<int>()->default_value(std::to_string(std::thread::hardware_concurrency())))
             ("h,help", "Print usage");
 
     G4UIExecutive* ui = 0;
@@ -113,15 +115,16 @@ int main(int argc,char** argv)
     ////////////////////////////////////////////////////////////////////
 
     G4VModularPhysicsList* physicsList = new FTFP_BERT;
+    physicsList->RegisterPhysics(new G4EmStandardPhysics());
     physicsList->RegisterPhysics(new G4RadioactiveDecayPhysics());
     runManager->SetUserInitialization(physicsList);
+
+
     runManager->SetUserInitialization(new ActionInitialization);
 
     // Initialize visualization
     //
     G4VisManager* visManager = new G4VisExecutive;
-    // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-    // G4VisManager* visManager = new G4VisExecutive("Quiet");
     visManager->Initialize();
 
     // Get the pointer to the User Interface manager

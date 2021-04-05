@@ -226,7 +226,7 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
 
     auto positionCrystal = G4ThreeVector(0.*cm, 0.*cm, 0.5*reflectorThickness);
     new G4PVPlacement(0, positionCrystal,
-                      Crystal_Logic, "Crystal_Phys", Reflector_Logic, false, copy_no, checkOverlap);
+                      Crystal_Logic, /*"Crystal_Phys"*/"OCL_Crystal", Reflector_Logic, false, copy_no, checkOverlap);
 
     auto positionPlexiWindow = positionCoating + G4ThreeVector(0.*cm, 0.*cm, coatingHalfLength + plexiGlasWindowHalfLength);
     new G4PVPlacement(0, positionPlexiWindow,
