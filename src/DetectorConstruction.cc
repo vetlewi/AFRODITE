@@ -39,6 +39,8 @@
 #include "EnergyDepSD.hh"
 
 
+
+
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4Sphere.hh"
@@ -436,10 +438,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     if(AFRODITE_MathisTC_Presence)
     {
         G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/MathisTC_sealedPorts.ply";
+        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
         G4cout << "Reading TC from " << TC_path << G4endl;
         CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);
-        
         G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
         
         G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
