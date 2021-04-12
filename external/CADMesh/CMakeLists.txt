@@ -31,11 +31,20 @@ else()
 endif()
 
 include(${Geant4_USE_FILE})
+
+set(ON 1)
 find_package(ASSIMP REQUIRED)
+unset(ON)
 if ( NOT ASSIMP_FOUND )
     message(FATAL_ERROR "Could not find assimp")
 else()
-    message(STATUS "Found assimp: " ${ASSIMP_LIBRARIES}, ${ASSIMP_INCLUDE_DIRS})
+    get_target_property(assimp_debug assimp::assimp IMPORTED_SONAME_${CMAKE_BUILD_TYPE})
+    if ( ${assimp_debug} STREQUAL "assimp_debug-NOTFOUND" )
+        message(WARNING "assimp only has no IMPORTED_SONAME_${CMAKE_BUILD_TYPE} property. Adding manually IMPORTED_SONAME property")
+        set_target_properties(assimp::assimp PROPERTIES
+                IMPORTED_SONAME "${ASSIMP_LIBRARIES}"
+                IMPORTED_LOCATION "${ASSIMP_ROOT_DIR}/lib/${sharedLibraryName}")
+    endif()
 endif()
 
 CPMAddPackage(
@@ -51,19 +60,6 @@ if ( tetgen_ADDED )
     target_include_directories(tet PUBLIC
         $<BUILD_INTERFACE:${tetgen_SOURCE_DIR}>)
     add_library(tet::tet ALIAS tet)
-endif()
-
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
-    if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
-        message(STATUS "MacOS debug")
-        add_library(myassimp INTERFACE)
-        target_include_directories(myassimp INTERFACE ${ASSIMP_INCLUDE_DIRS})
-        target_link_libraries(myassimp INTERFACE ${ASSIMP_ROOT_DIR}/lib/${ASSIMP_LIBRARIES})
-    else()
-        add_library(myassimp ALIAS assimp::assimp)
-    endif()
-else()
-    add_library(myassimp ALIAS assimp::assimp)
 endif()
 
 
@@ -82,5 +78,5 @@ target_include_directories(CADMesh
     PRIVATE
         ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh
         )
-target_link_libraries(CADMesh PUBLIC tet::tet myassimp ${Geant4_LIBRARIES})
 
+target_link_libraries(CADMesh PUBLIC tet::tet assimp::assimp ${Geant4_LIBRARIES})
