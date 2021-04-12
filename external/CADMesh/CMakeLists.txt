@@ -53,6 +53,19 @@ if ( tetgen_ADDED )
     add_library(tet::tet ALIAS tet)
 endif()
 
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+    if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
+        message(STATUS "MacOS debug")
+        add_library(myassimp INTERFACE)
+        target_include_directories(myassimp INTERFACE ${ASSIMP_INCLUDE_DIRS})
+        target_link_libraries(myassimp INTERFACE ${ASSIMP_ROOT_DIR}/lib/${ASSIMP_LIBRARIES})
+    else()
+        add_library(myassimp ALIAS assimp::assimp)
+    endif()
+else()
+    add_library(myassimp ALIAS assimp::assimp)
+endif()
+
 
 #############################################
 # Declare the library
@@ -68,6 +81,6 @@ target_include_directories(CADMesh
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     PRIVATE
         ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh
-        ${ASSIMP_INCLUDE_DIRS})
-target_link_libraries(CADMesh PUBLIC tet::tet ${ASSIMP_ROOT_DIR}/lib/${ASSIMP_LIBRARIES} ${Geant4_LIBRARIES})
+        )
+target_link_libraries(CADMesh PUBLIC tet::tet myassimp ${Geant4_LIBRARIES})
 
