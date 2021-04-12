@@ -35,7 +35,7 @@ find_package(ASSIMP REQUIRED)
 if ( NOT ASSIMP_FOUND )
     message(FATAL_ERROR "Could not find assimp")
 else()
-    message(STATUS "Found assimp: " ${ASSIMP_LIBRARIES})
+    message(STATUS "Found assimp: " ${ASSIMP_LIBRARIES}, ${ASSIMP_INCLUDE_DIRS})
 endif()
 
 CPMAddPackage(
@@ -67,6 +67,7 @@ target_include_directories(CADMesh
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     PRIVATE
-        ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh)
-target_link_libraries(CADMesh PUBLIC tet::tet assimp::assimp ${Geant4_LIBRARIES})
+        ${BUILD_INTERFACE}/include/CADMesh/include/CADMesh
+        ${ASSIMP_INCLUDE_DIRS})
+target_link_libraries(CADMesh PUBLIC tet::tet ${ASSIMP_ROOT_DIR}/lib/${ASSIMP_LIBRARIES} ${Geant4_LIBRARIES})
 

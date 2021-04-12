@@ -564,7 +564,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                 (*vol)->CheckOverlaps();
             if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
                 (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
-                (*vol)->SetName("LogicCLOVERShieldBGOCrystal");
+                (*vol)->SetName("CLOVER_Shield_BGOCrystal");
             }
         }
     }
