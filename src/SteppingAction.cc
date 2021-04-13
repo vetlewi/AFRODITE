@@ -68,8 +68,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
 
 
     if ( strcmp(volumeName, "CLOVER_HPGeCrystal") == 0 ){
-        int cnum = volume->GetCopyNo()/numberOf_CLOVER_Crystals + volume->GetCopyNo()%numberOf_CLOVER_Crystals;
-        fEventAction->CLOVER_energy[cnum] +=aStep->GetTotalEnergyDeposit()/keV;
+        fEventAction->CLOVER_energy[volume->GetCopyNo()] +=aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "CLOVER_Shield_BGOCrystal") == 0 ){
         fEventAction->BGO_energy[volume->GetCopyNo()/16] += aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "OCL_Crystal") == 0 ){
