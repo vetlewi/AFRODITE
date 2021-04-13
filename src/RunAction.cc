@@ -79,8 +79,8 @@ RunAction::RunAction()
     
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
-    for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
-        sprintf(name, "CLOVER_Energy%d", n);
+    for ( G4int n = 0 ; n < numberOf_CLOVER*numberOf_CLOVER_Crystals ; ++n ){
+        sprintf(name, "CLOVER_Energy%d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
         analysisManager->CreateNtupleDColumn(0, name);
     }
     

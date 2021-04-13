@@ -58,7 +58,7 @@ public:
 
 protected:
 
-    G4double CLOVER_energy[numberOf_CLOVER];
+    G4double CLOVER_energy[numberOf_CLOVER*numberOf_CLOVER_Crystals];
     G4double BGO_energy[numberOf_CLOVER];
 
     G4double OCLLABR_energy[numberOf_OCLLaBr3];
