@@ -25,7 +25,7 @@
 //
 
 
-#include "OCLLaBr3.hh"
+#include "Detectors/OCLLaBr3.hh"
 #include "SingleScintParameters.hh"
 
 #include <G4NistManager.hh>

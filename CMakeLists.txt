@@ -49,17 +49,19 @@ CPMAddPackage(
 add_executable(AFRODITE
         app/AFRODITE.cc
         src/ActionInitialization.cc
-        src/CloverFactory.cc
+
+        src/Detectors/CloverFactory.cc
+        src/Detectors/OCLLaBr3.cc
+        src/Detectors/FTALaBr3.cc
+        src/Detectors/S2Factory.cc
+
         src/DetectorConstruction.cc
         #src/DetectorHit.cc
         #src/EnergyDepSD.cc
         src/EventAction.cc
-        src/OCLLaBr3.cc
-        src/FTALaBr3.cc
         src/PrimaryGeneratorAction.cc
         src/RunAction.cc
-        src/SteppingAction.cc
-        src/S2Factory.cc)
+        src/SteppingAction.cc)
 
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

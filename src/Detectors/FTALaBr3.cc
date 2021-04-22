@@ -1,4 +1,4 @@
-#include "FTALaBr3.hh"
+#include "Detectors/FTALaBr3.hh"
 
 #include <G4SystemOfUnits.hh>
 #include <G4NistManager.hh>

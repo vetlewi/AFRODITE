@@ -73,8 +73,8 @@
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
 
-#include "CloverFactory.hh"
-#include "S2Factory.hh"
+#include "Detectors/CloverFactory.hh"
+#include "Detectors/S2Factory.hh"
 
 
 #include <fstream>
@@ -143,10 +143,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = false;
+    CLOVER_AllAbsent_Override = true;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
+    CLOVER_Shield_AllAbsent_Override = true;
     
     
     //  CLOVER 1
@@ -227,7 +227,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
+    OCLLaBr3_AllAbsent_Override = true;
     
     
     // LaBr3 Detector 1
@@ -284,7 +284,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // NOTE: Angles are defined differently for FTA detectors.
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = false;
+    FTALaBr3_AllAbsent_Override = true;
 
 
     // LaBr3 Detector 1
@@ -356,11 +356,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = true;
+    AFRODITE_MathisTC_Presence = false;
     
     /////////////////////////////////////
     ////    AFRODITE Target
-    AFRODITE_Target_Presence = true;
+    AFRODITE_Target_Presence = false;
     
     // Define volumes
     return DefineVolumes();
@@ -505,10 +505,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
        S2_Silicon_transform[i] = G4Transform3D(S2_Silicon_rotm[i],S2_Silicon_position[i]);
 
+       /*new G4PVPlacement(S2_Silicon_transform[i], s2factory.GetVolume(i, fCheckOverlaps),
+                         "S2_Silicon_detector_"+std::to_string(i), LogicVacuumChamber, false,
+                         i, fCheckOverlaps);*/
 
         assembly->MakeImprint(LogicVacuumChamber, S2_Silicon_transform[i], i);
         // Hack to set correct name for later analysis
-        auto nVolumes = assembly->TotalImprintedVolumes();
+        /*auto nVolumes = assembly->TotalImprintedVolumes();
         for ( auto vol = assembly->GetVolumesIterator() ;
               vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
             if ( fCheckOverlaps )
@@ -518,7 +521,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                 (*vol)->SetName("Active_Si_area");
                 break; // there is only one active area
             }
-        }
+        }*/
     }
     
     ////////////////////////////////////////////////////

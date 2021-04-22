@@ -12,6 +12,8 @@ class G4Box;
 class G4AssemblyVolume;
 class G4Material;
 class G4VSolid;
+class G4VPhysicalVolume;
+class G4LogicalVolume;
 
 constexpr int numberOfSectors = 16;
 constexpr int numberOfRings = 48;
@@ -27,8 +29,10 @@ private:
 
     G4Material *fMatPCB;
     G4Material *fMatSi;
+    G4Material *fMatVaccum;
 
     G4VSolid *PCB_Solid;
+    G4VSolid *PCB_vaccum;
 
     G4Tubs *Inactive_area_inner_Solid;
     G4Tubs *Inactive_area_outer_Solid;

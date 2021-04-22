@@ -42,8 +42,8 @@
 #include <G4Transform3D.hh>
 
 
-#include "OCLLaBr3.hh"
-#include "FTALaBr3.hh"
+#include "Detectors/OCLLaBr3.hh"
+#include "Detectors/FTALaBr3.hh"
 #include "Constants.hh"
 
 

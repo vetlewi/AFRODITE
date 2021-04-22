@@ -2,11 +2,12 @@
 // Created by Vetle Wegner Ingeberg on 22/03/2021.
 //
 
+#include "Detectors/CloverFactory.hh"
+
 #include <CADMesh/CADMesh.hh>
 
 #include <G4Types.hh>
 #include <G4SystemOfUnits.hh>
-#include <G4VSolid.hh>
 #include <G4LogicalVolume.hh>
 #include <G4VisAttributes.hh>
 #include <G4Colour.hh>
@@ -14,8 +15,6 @@
 #include <G4PVPlacement.hh>
 #include <G4NistManager.hh>
 #include <G4MultiUnion.hh>
-
-#include "CloverFactory.hh"
 
 #ifndef SRC_PATH
     #define SRC_PATH "../"
