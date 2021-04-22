@@ -62,7 +62,8 @@ G4VSolid *GetShielding_Solid(const bool &tapered)
 
 
 OCLLaBr3::OCLLaBr3(const bool &new_shield_design)
-    : fMatAir( G4NistManager::Instance()->FindOrBuildMaterial("Air") )
+    : Detector::DetectorFactory( Detector::Type::ocl_labr )
+    , fMatAir( G4NistManager::Instance()->FindOrBuildMaterial("Air") )
     , fMatAluminium( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
     , fMatPlexiGlass( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLEXIGLASS") )
     , fMatMgO( G4NistManager::Instance()->FindOrBuildMaterial("MgO") )

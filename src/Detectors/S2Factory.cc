@@ -15,8 +15,12 @@
 #include <G4Colour.hh>
 #include <G4PVPlacement.hh>
 
+constexpr int numberOfSectors = 16;
+constexpr int numberOfRings = 48;
+
 S2Factory::S2Factory(const G4double &thickness)
-    : fMatPCB( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE") )
+    : Detector::DetectorFactory( Detector::Type::s2_silicon )
+    , fMatPCB( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE") )
     , fMatSi( G4NistManager::Instance()->FindOrBuildMaterial("G4_Si") )
     , fMatVaccum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
     , PCB_Solid( new G4SubtractionSolid("PCB_Solid",

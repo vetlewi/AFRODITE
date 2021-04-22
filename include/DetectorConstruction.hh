@@ -72,6 +72,9 @@ private:
     //          WORLD
     G4double WorldSize;
 
+    /////////////////////////////
+    // List of all frame slots
+    /////////////////////////////
 
     /////////////////////////////////////
     //          S2 SILICON DETECTORS
@@ -154,10 +157,6 @@ private:
     /////////////////////////////////////
     //  K600 Target
     G4bool      AFRODITE_Target_Presence;
-
-    ////////////////////////////////////
-    // Concrete floor and ceiling and walls
-    G4bool concrete_Precence;
     
     
 };

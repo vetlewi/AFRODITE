@@ -5,6 +5,8 @@
 #ifndef CLOVERFACTORY_HH
 #define CLOVERFACTORY_HH
 
+#include <Detectors/DetectorFactory.hh>
+
 #include <string>
 
 #include <G4ThreeVector.hh>
@@ -34,7 +36,7 @@ struct Solids_t {
     };
 };
 
-class HPGeFactory {
+class HPGeFactory : public Detector::DetectorFactory {
 
 private:
 
@@ -56,18 +58,22 @@ public:
     HPGeFactory(const char *vacuum_path, const char *encasement_path,
                 const char *crystals_path[], const char *contacts_path[]);
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap);
+    ~HPGeFactory() override = default;
+
+    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) override;
+    void PlaceInside(G4LogicalVolume *encasement, const int &copy_no, const bool &overlap);
 
 };
 
-class ShieldFactory {
+class ShieldFactory : public Detector::DetectorFactory {
 
 public:
 
     ShieldFactory(const char *body_path, const char *heavimet_path, const char *PMTConArray_path,
                   const char *BGOCrystal_path[], const char *PMT_path[]);
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap);
+    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) override;
+    void PlaceInside(G4LogicalVolume *encasement, const int &copy_no, const bool &overlap);
 
 private:
 
@@ -91,20 +97,22 @@ private:
 
 };
 
-class CloverFactory {
+class CloverFactory : public Detector::DetectorFactory {
 
 public:
 
     CloverFactory(const bool &have_HPGe = true, const bool &have_Shield = true);
 
-    ~CloverFactory();
+    ~CloverFactory() override;
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap);
+    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
 private:
     HPGeFactory *crystalFactory;
     ShieldFactory *shieldFactory;
 
+    Solids_t encasement;
+    G4Material *fMatVaccum;
 
 
 };

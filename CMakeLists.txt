@@ -56,6 +56,7 @@ add_executable(AFRODITE
         src/Detectors/S2Factory.cc
 
         src/DetectorConstruction.cc
+        src/DetectorSetupMessenger.cc
         #src/DetectorHit.cc
         #src/EnergyDepSD.cc
         src/EventAction.cc

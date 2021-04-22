@@ -371,8 +371,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
+
     //////////////////////////////////////
     //          Get Materials           //
     //////////////////////////////////////
@@ -382,6 +381,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
     ////    NIST Defined Materials and Compounds
     G4Material* G4_Galactic_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+    G4Material* G4_Air_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR");
     G4Material* G4_LITHIUM_CARBONATE_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
     G4Material* G4_concrete_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
 
@@ -442,7 +442,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //////////////////////////////////////////////////////////
 
     G4Box* air_solid = new G4Box("Air", (5*m)/2, 150*cm/2., (5*m)/2);
-    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(air_solid, G4_Galactic_Material,"VacuumChamber");
+    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(air_solid, G4_Air_Material,"VacuumChamber");
     PhysiVacuumChamber =
             new G4PVPlacement(0, G4ThreeVector(), LogicVacuumChamber,
                               "VaccumChamber",LogicConcrete, false, 0, fCheckOverlaps);
@@ -660,11 +660,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //VacuumChamber_VisAtt->SetVisibility(false);
     LogicVacuumChamber->SetVisAttributes(VacuumChamber_VisAtt);
 
-    auto end = std::chrono::high_resolution_clock::now();
-    G4cout << "Construction time: ";
-    G4cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()/1000.;
-    G4cout << " seconds" << G4endl;
-    exit(EXIT_SUCCESS);
     //
     //always return the physical World
     //

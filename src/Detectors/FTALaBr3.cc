@@ -51,7 +51,8 @@ extern G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, c
 
 
 FTALaBr3::FTALaBr3()
-    : fMatLaBr3Vacuum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
+    : Detector::DetectorFactory( Detector::Type::fta_labr )
+    , fMatLaBr3Vacuum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
     , fMatLaBr3Housing( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
     , fMatLaBr3Reflector( G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON") )
     , fMatLaBr3Crystal( G4NistManager::Instance()->FindOrBuildMaterial("Labr3_Ce") )

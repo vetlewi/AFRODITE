@@ -1,6 +1,7 @@
 #ifndef OCLLABR3_H
 #define OCLLABR3_H 1
 
+#include "Detectors/DetectorFactory.hh"
 
 class G4Tubs;
 class G4Cons;
@@ -8,16 +9,16 @@ class G4VSolid;
 class G4Polycone;
 class G4MultiUnion;
 class G4Material;
-class G4AssemblyVolume;
 
 
 
-class OCLLaBr3 {
+class OCLLaBr3 : public Detector::DetectorFactory {
 
 public:
-    OCLLaBr3(const bool &new_shield_design = true);
+    explicit OCLLaBr3(const bool &new_shield_design = true);
+    ~OCLLaBr3() override = default;
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap);
+    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
 
 private:

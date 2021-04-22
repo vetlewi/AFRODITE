@@ -5,25 +5,24 @@
 #ifndef S2FACTORY_HH
 #define S2FACTORY_HH
 
+#include "Detectors/DetectorFactory.hh"
 #include <G4Types.hh>
 
 class G4Tubs;
 class G4Box;
-class G4AssemblyVolume;
 class G4Material;
 class G4VSolid;
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
-constexpr int numberOfSectors = 16;
-constexpr int numberOfRings = 48;
 
-class S2Factory
+class S2Factory : public Detector::DetectorFactory
 {
 public:
+    explicit S2Factory(const G4double &thickness);
+    ~S2Factory() override = default;
 
-    S2Factory(const G4double &thickness);
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap);
+    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
 private:
 
@@ -37,7 +36,6 @@ private:
     G4Tubs *Inactive_area_inner_Solid;
     G4Tubs *Inactive_area_outer_Solid;
     G4Tubs *Active_area_solid;
-//    G4Tubs *Active_area_Solid[numberOfSectors][numberOfRings];
 
 };
 
