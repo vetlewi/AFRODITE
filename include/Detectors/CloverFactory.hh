@@ -11,6 +11,7 @@
 #include <G4RotationMatrix.hh>
 
 #include "Constants.hh"
+#include <future>
 
 class CADMesh;
 class G4VSolid;
@@ -21,8 +22,16 @@ class G4MultiUnion;
 
 struct Solids_t {
     CADMesh *mesh;
+    std::future<G4VSolid *> solid_future;
     G4VSolid *solid;
     Solids_t(const char *path, const G4ThreeVector &offset);
+    void await();
+    inline G4VSolid *GetSolid()
+    {
+        if ( !solid )
+            await();
+        return solid;
+    };
 };
 
 class HPGeFactory {

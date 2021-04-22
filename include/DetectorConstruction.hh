@@ -60,12 +60,10 @@ public:
     
 public:
     G4VPhysicalVolume* Construct() override;
-    //void ConstructSDandField() override;
 
 private:
     // methods
     //
-    void DefineMaterials();
     G4VPhysicalVolume* DefineVolumes();
     
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
@@ -156,6 +154,10 @@ private:
     /////////////////////////////////////
     //  K600 Target
     G4bool      AFRODITE_Target_Presence;
+
+    ////////////////////////////////////
+    // Concrete floor and ceiling and walls
+    G4bool concrete_Precence;
     
     
 };

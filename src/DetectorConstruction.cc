@@ -143,10 +143,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////
     
     CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = true;
+    CLOVER_AllAbsent_Override = false;
     
     CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = true;
+    CLOVER_Shield_AllAbsent_Override = false;
     
     
     //  CLOVER 1
@@ -227,7 +227,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////    OCL LaBr3 Detectors
     
     OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = true;
+    OCLLaBr3_AllAbsent_Override = false;
     
     
     // LaBr3 Detector 1
@@ -284,7 +284,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // NOTE: Angles are defined differently for FTA detectors.
 
     FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = true;
+    FTALaBr3_AllAbsent_Override = false;
 
 
     // LaBr3 Detector 1
@@ -356,11 +356,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = false;
+    AFRODITE_MathisTC_Presence = true;
     
     /////////////////////////////////////
     ////    AFRODITE Target
-    AFRODITE_Target_Presence = false;
+    AFRODITE_Target_Presence = true;
     
     // Define volumes
     return DefineVolumes();
@@ -371,7 +371,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 {
-
+    auto start = std::chrono::high_resolution_clock::now();
     
     //////////////////////////////////////
     //          Get Materials           //
@@ -383,14 +383,27 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////    NIST Defined Materials and Compounds
     G4Material* G4_Galactic_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
     G4Material* G4_LITHIUM_CARBONATE_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
-    
+    G4Material* G4_concrete_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
+
+    // Create factories
+    bool have_HPGe = std::any_of(CLOVER_Presence, CLOVER_Presence+sizeof(CLOVER_Presence),
+                                 [](const G4bool &p){ return p; });
+    bool have_shield = std::any_of(CLOVER_Shield_Presence, CLOVER_Shield_Presence+sizeof(CLOVER_Shield_Presence),
+                                   [](const G4bool &p){ return p; });
+    CloverFactory cloverFactory(have_HPGe, have_shield);
+    OCLLaBr3 ocl_factory(false);
+    FTALaBr3 labr_factory;
+
+    G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
+    const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
+    Solids_t targetChamber(TC_path, offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
     //                      WORLD                           //
     //////////////////////////////////////////////////////////
     
-    G4Box* SolidWorld = new G4Box("World", WorldSize/2, WorldSize/2, WorldSize/2);
+    G4Box* SolidWorld = new G4Box("World", (5*m + 50*cm)/2, 200*cm/2., (5*m + 50*cm)/2);
     
     G4LogicalVolume*
     LogicWorld = new G4LogicalVolume(SolidWorld,                //its solid
@@ -405,13 +418,41 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                    false,                    //no boolean operation
                                    0);                       //copy number
 
+    //////////////////////////////////////////////////////////
+    //              Concrete walls                          //
+    //////////////////////////////////////////////////////////
 
-    
+    G4Box *solidConcrete = new G4Box("Concrete_box", (5*m + 50*cm)/2, 200*cm/2., (5*m + 50*cm)/2);
+    G4LogicalVolume*
+    LogicConcrete = new G4LogicalVolume(solidConcrete,                //its solid
+                                        G4_concrete_Material,      //its material
+                                        "Concrete");                  //its name
+
+    G4VPhysicalVolume*
+    physConcrete = new G4PVPlacement(0, G4ThreeVector(),
+                                     LogicConcrete,
+                                     "ConcretePhysical",
+                                     LogicWorld,
+                                     false,
+                                     0,
+                                     fCheckOverlaps);
+
+    //////////////////////////////////////////////////////////
+    //          Vaccum inside the concrete (air actually)
+    //////////////////////////////////////////////////////////
+
+    G4Box* air_solid = new G4Box("Air", (5*m)/2, 150*cm/2., (5*m)/2);
+    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(air_solid, G4_Galactic_Material,"VacuumChamber");
+    PhysiVacuumChamber =
+            new G4PVPlacement(0, G4ThreeVector(), LogicVacuumChamber,
+                              "VaccumChamber",LogicConcrete, false, 0, fCheckOverlaps);
+
     //////////////////////////////////////////////////////////
     //                      VACUUM CHAMBER
     //////////////////////////////////////////////////////////
     
-    G4ThreeVector positionVacuumChamber = G4ThreeVector(0,0,0);
+   /* G4ThreeVector positionVacuumChamber = G4ThreeVector(0,0,0);
+
     
     G4Box* SolidVacuumChamber = new G4Box("VacuumChamber", (200./2)*cm, (200./2)*cm, (200./2)*cm);
     
@@ -425,7 +466,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                           LogicWorld,         // its mother  volume
                           false,           // no boolean operations
                           0,               // copy number
-                          fCheckOverlaps); // checking overlaps
+                          fCheckOverlaps); // checking overlaps*/
     
     
     
@@ -437,11 +478,11 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     if(AFRODITE_MathisTC_Presence)
     {
-        G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
+        /*G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
         const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
         G4cout << "Reading TC from " << TC_path << G4endl;
-        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);
-        G4VSolid * SolidMathisTC = mesh_MathisTC->TessellatedMesh();
+        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);*/
+        G4VSolid * SolidMathisTC = targetChamber.GetSolid();//mesh_MathisTC->TessellatedMesh();
         
         G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
         G4RotationMatrix *rot = new G4RotationMatrix();
@@ -505,34 +546,15 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
        S2_Silicon_transform[i] = G4Transform3D(S2_Silicon_rotm[i],S2_Silicon_position[i]);
 
-       /*new G4PVPlacement(S2_Silicon_transform[i], s2factory.GetVolume(i, fCheckOverlaps),
-                         "S2_Silicon_detector_"+std::to_string(i), LogicVacuumChamber, false,
-                         i, fCheckOverlaps);*/
-
         assembly->MakeImprint(LogicVacuumChamber, S2_Silicon_transform[i], i);
-        // Hack to set correct name for later analysis
-        /*auto nVolumes = assembly->TotalImprintedVolumes();
-        for ( auto vol = assembly->GetVolumesIterator() ;
-              vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
-            if ( fCheckOverlaps )
-                (*vol)->CheckOverlaps();
-            if ( (*vol)->GetName().contains("Active_area_logical") ) {
-                (*vol)->SetCopyNo(0);
-                (*vol)->SetName("Active_Si_area");
-                break; // there is only one active area
-            }
-        }*/
+
     }
     
     ////////////////////////////////////////////////////
     //               CLOVER INITIALIZATION            //
     ////////////////////////////////////////////////////
 
-    bool have_HPGe = std::any_of(CLOVER_Presence, CLOVER_Presence+sizeof(CLOVER_Presence),
-                                 [](const G4bool &p){ return p; });
-    bool have_shield = std::any_of(CLOVER_Shield_Presence, CLOVER_Shield_Presence+sizeof(CLOVER_Shield_Presence),
-                                   [](const G4bool &p){ return p; });
-    CloverFactory cloverFactory(have_HPGe, have_shield);
+
     for(G4int i=0; i< numberOf_CLOVER ; i++)
     {
         if ( !CLOVER_Presence[i] )
@@ -575,7 +597,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////////////////////////////////////////////////////
     //            OCL LaBr3 INITIALIZATION            //
     ////////////////////////////////////////////////////
-    OCLLaBr3 ocl_factory(false);
     for(G4int i=0; i<numberOf_OCLLaBr3; i++)
     {
         OCLLaBr3_position[i] = OCLLaBr3_Distance[i]
@@ -602,7 +623,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     ////////////////////////////////////////////////////
     //            FTA LaBr3 INITIALIZATION            //
     ////////////////////////////////////////////////////
-    FTALaBr3 labr_factory;
     for(G4int i=0; i < numberOf_FTALaBr3 ; i++)
     {
         FTALaBr3_position[i] = (FTALaBr3_Distance[i])
@@ -639,8 +659,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4VisAttributes* VacuumChamber_VisAtt= new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
     //VacuumChamber_VisAtt->SetVisibility(false);
     LogicVacuumChamber->SetVisAttributes(VacuumChamber_VisAtt);
-    
-    
+
+    auto end = std::chrono::high_resolution_clock::now();
+    G4cout << "Construction time: ";
+    G4cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()/1000.;
+    G4cout << " seconds" << G4endl;
+    exit(EXIT_SUCCESS);
     //
     //always return the physical World
     //

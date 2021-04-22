@@ -98,7 +98,14 @@ G4ThreeVector ShieldFactory::offset_PMT = G4ThreeVector(0*cm, 0*cm, 0*cm);
 
 Solids_t::Solids_t(const char *path, const G4ThreeVector &offset)
     : mesh( new CADMesh(path, "PLY", mm, offset, false) )
-    , solid( mesh->TessellatedMesh() ){}
+    , solid_future( std::async(std::launch::async, [this](){ return this->mesh->TessellatedMesh(); }) )
+    , solid( nullptr ){}
+
+void Solids_t::await()
+{
+    solid_future.wait();
+    solid = solid_future.get();
+}
 
 HPGeFactory::HPGeFactory(const char *vacuum_path, const char *encasement_path, const char *crystals_path[],
                          const char *contacts_path[])
@@ -128,13 +135,13 @@ G4AssemblyVolume *HPGeFactory::GetAssembly(const int &copy_no, const bool &overl
 
     auto* CLOVER_InternalVacuum_VisAtt = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7));
     CLOVER_InternalVacuum_VisAtt->SetVisibility(false);
-    auto *internal_volume_logical = new G4LogicalVolume(internal_vacuum.solid, fMatVaccum, "Internal_Volume_Logic");
+    auto *internal_volume_logical = new G4LogicalVolume(internal_vacuum.GetSolid(), fMatVaccum, "Internal_Volume_Logic");
     internal_volume_logical->SetVisAttributes(CLOVER_InternalVacuum_VisAtt);
     assembly->AddPlacedVolume(internal_volume_logical, pos0, &rot0);
 
     auto *CLOVER_Encasement_VisAtt = new G4VisAttributes(G4Colour(1, 0., 0.));
     CLOVER_Encasement_VisAtt->SetVisibility(false);
-    auto *encasement_volume_logical = new G4LogicalVolume(encasement.solid, fMatAluminium, "Encasement_Volume_Logic");
+    auto *encasement_volume_logical = new G4LogicalVolume(encasement.GetSolid(), fMatAluminium, "Encasement_Volume_Logic");
     encasement_volume_logical->SetVisAttributes(CLOVER_Encasement_VisAtt);
     assembly->AddPlacedVolume(encasement_volume_logical, pos0, &rot0);
 
@@ -150,7 +157,7 @@ G4AssemblyVolume *HPGeFactory::GetAssembly(const int &copy_no, const bool &overl
 
     // Place the HPGe inside the internal volume
     for ( int i = 0 ; i < numberOf_CLOVER_Crystals ; ++i ) {
-        auto *crystal_logical = new G4LogicalVolume(crystals[i].solid, fMatGe, "LogicCLOVERHPGeCrystal");
+        auto *crystal_logical = new G4LogicalVolume(crystals[i].GetSolid(), fMatGe, "LogicCLOVERHPGeCrystal");
         crystal_logical->SetVisAttributes(CLOVER_HPGeCrystals_VisAtt);
         new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
                           crystal_logical,
@@ -159,7 +166,7 @@ G4AssemblyVolume *HPGeFactory::GetAssembly(const int &copy_no, const bool &overl
                           false,
                           copy_no * numberOf_CLOVER_Crystals + i,
                           overlap);
-        auto *contact_logical = new G4LogicalVolume(contacts[i].solid, fMatGe, "LogicCLOVERHPGeCrystal_LithiumContact");
+        auto *contact_logical = new G4LogicalVolume(contacts[i].GetSolid(), fMatGe, "LogicCLOVERHPGeCrystal_LithiumContact");
         contact_logical->SetVisAttributes(CLOVER_DeadLayer_Lithium_VisAtt);
         new G4PVPlacement(0, G4ThreeVector(0, 0, 0),
                           contact_logical,
@@ -214,7 +221,7 @@ ShieldFactory::ShieldFactory(const char *body_path, const char *heavimet_path, c
         auto pos = G4ThreeVector(0,0,0);
         auto tr = G4Transform3D(rotm, pos);
         for ( auto &crystal : BGOCrystal ){
-            BGOVolume->AddNode(*crystal.solid, tr);
+            BGOVolume->AddNode(*crystal.GetSolid(), tr);
         }
         BGOVolume->Voxelize();
     }
@@ -230,20 +237,20 @@ G4AssemblyVolume *ShieldFactory::GetAssembly(const int &copy_no, const bool &che
     auto* CLOVER_ShieldBody_VisAtt = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6));
     CLOVER_ShieldBody_VisAtt->SetForceSolid(true);
     CLOVER_ShieldBody_VisAtt->SetVisibility(true);
-    auto *body_logical = new G4LogicalVolume(body.solid, fMatAluminium, "LogicCLOVERShieldBody");
+    auto *body_logical = new G4LogicalVolume(body.GetSolid(), fMatAluminium, "LogicCLOVERShieldBody");
     body_logical->SetVisAttributes(CLOVER_ShieldBody_VisAtt);
     assembly->AddPlacedVolume(body_logical, pos0, &rot0);
 
     auto* CLOVER_Shield_HEAVIMET_VisAtt = new G4VisAttributes(G4Colour(0.4, 0.2, 0.2));
     CLOVER_Shield_HEAVIMET_VisAtt->SetForceSolid(true);
     CLOVER_Shield_HEAVIMET_VisAtt->SetVisibility(true);
-    auto *heavimet_logical = new G4LogicalVolume(heavimet.solid, fMatHeavimet, "LogicCLOVERShieldHeavimet");
+    auto *heavimet_logical = new G4LogicalVolume(heavimet.GetSolid(), fMatHeavimet, "LogicCLOVERShieldHeavimet");
     heavimet_logical->SetVisAttributes(CLOVER_Shield_HEAVIMET_VisAtt);
     assembly->AddPlacedVolume(heavimet_logical, pos0, &rot0);
 
     /*auto *CLOVER_Shield_PMTConArray_VisAtt = new G4VisAttributes(G4Colour::White());
     CLOVER_Shield_PMTConArray_VisAtt->SetVisibility(true);
-    auto *Logic_CLOVER_Shield_PMTConArray = new G4LogicalVolume(PMTConArray.solid, fMatAluminium, "LogicCLOVERShieldPMTConArray");
+    auto *Logic_CLOVER_Shield_PMTConArray = new G4LogicalVolume(PMTConArray.GetSolid(), fMatAluminium, "LogicCLOVERShieldPMTConArray");
     Logic_CLOVER_Shield_PMTConArray->SetVisAttributes(CLOVER_Shield_PMTConArray_VisAtt);
     assembly->AddPlacedVolume(Logic_CLOVER_Shield_PMTConArray, pos0, &rot0);*/
 
@@ -253,10 +260,10 @@ G4AssemblyVolume *ShieldFactory::GetAssembly(const int &copy_no, const bool &che
     Shield_PMT_VisAtt->SetVisibility(false);
 
     for ( int i = 0 ; i < numberOf_BGO_Crystals ; ++i ){
-        auto *bgo_logical = new G4LogicalVolume(BGOCrystal[i].solid, fMatBGO, "LogicCLOVERShieldBGOCrystal");
+        auto *bgo_logical = new G4LogicalVolume(BGOCrystal[i].GetSolid(), fMatBGO, "LogicCLOVERShieldBGOCrystal");
         bgo_logical->SetVisAttributes(Shield_BGOCrystal_VisAtt);
         assembly->AddPlacedVolume(bgo_logical, pos0, &rot0);
-        auto *pmt_logical = new G4LogicalVolume(PMT[i].solid, fMatAluminium, "LogicCLOVERShieldPMT");
+        auto *pmt_logical = new G4LogicalVolume(PMT[i].GetSolid(), fMatAluminium, "LogicCLOVERShieldPMT");
         pmt_logical->SetVisAttributes(Shield_PMT_VisAtt);
         assembly->AddPlacedVolume(pmt_logical, pos0, &rot0);
     }
