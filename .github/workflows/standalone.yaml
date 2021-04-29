@@ -41,10 +41,14 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Sstandalone -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug
+        run: |
+          source /usr/bin/geant4.sh
+          cmake -Sapp -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
-        run: cmake --build build -j4
+        run: |
+          source /usr/bin/geant4.sh
+          cmake --build build -j4
 
       #- name: run
       #  run: ./build/app/AFRODITE
