@@ -17,11 +17,6 @@ jobs:
 
     steps:
 
-      - name: Build
-        run: |
-          cmake -Sdocumentation -Bbuild
-          cmake --build build --target GenerateDocs
-
       - name: Downloading Geant4
         run: wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Linux-g++8.3.0-CC7.tar.gz
 
