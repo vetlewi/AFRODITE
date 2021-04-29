@@ -1,7 +1,7 @@
 #ifndef OCLLABR3_H
 #define OCLLABR3_H 1
 
-#include "Detectors/DetectorFactory.hh"
+#include "detector/DetectorFactory.hh"
 
 class G4Tubs;
 class G4Cons;

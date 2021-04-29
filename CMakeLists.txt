@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 project(AFRODITE VERSION 1.0.0 LANGUAGES C CXX)
 
 # Make sure CMake finds the CMake scripts
@@ -31,14 +31,6 @@ include(${Geant4_USE_FILE})
 include(cmake/CPM.cmake)
 
 CPMAddPackage(
-        GITHUB_REPOSITORY jarro2783/cxxopts
-        VERSION 2.2.1
-        OPTIONS "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_BUILD_EXAMPLES NO"
-)
-
-CPMAddPackage(gh:ikalnytskyi/termcolor@2.0.0)
-
-CPMAddPackage(
 	NAME CADMesh
 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/CADMesh)
 
@@ -51,42 +43,48 @@ CPMAddPackage(
 # Detector factory library
 
 add_library(detector
-        src/Detectors/CloverFactory.cc
-        src/Detectors/OCLLaBr3.cc
-        src/Detectors/FTALaBr3.cc
-        src/Detectors/S2Factory.cc
+        source/Detectors/CloverFactory.cc
+        source/Detectors/OCLLaBr3.cc
+        source/Detectors/FTALaBr3.cc
+        source/Detectors/S2Factory.cc
+
+        source/Detectors/MeshReader.cc
 )
+
+add_library(AFRODITE::detector ALIAS detector)
 
 target_include_directories(detector
     PUBLIC
-        $<)
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src/detector
+)
 
+set_target_properties(detector PROPERTIES CXX_STANDARD 17)
+target_link_libraries(detector PUBLIC CADMesh::CADMesh ${Geant4_LIBRARIES})
 
-add_executable(AFRODITE
-        app/AFRODITE.cc
-        src/ActionInitialization.cc
+add_library(AFRODITE
+        source/G4User/ActionInitialization.cc
 
-        src/Detectors/CloverFactory.cc
-        src/Detectors/OCLLaBr3.cc
-        src/Detectors/FTALaBr3.cc
-        src/Detectors/S2Factory.cc
+        source/G4User/DetectorConstruction.cc
+        source/DetectorSetupMessenger.cc
+        source/G4User/EventAction.cc
+        source/G4User/PrimaryGeneratorAction.cc
+        source/G4User/RunAction.cc
+        source/G4User/SteppingAction.cc)
 
-        src/DetectorConstruction.cc
-        src/DetectorSetupMessenger.cc
-        src/EventAction.cc
-        src/PrimaryGeneratorAction.cc
-        src/RunAction.cc
-        src/SteppingAction.cc)
+add_library(AFRODITE::AFRODITE ALIAS AFRODITE)
 
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(AFRODITE ${Geant4_LIBRARIES} CADMesh::CADMesh cxxopts termcolor::termcolor)
-target_compile_definitions(AFRODITE PRIVATE G4VIS_USE=1 G4UI_USE=1 SRC_PATH="${PROJECT_SOURCE_DIR}/")
+target_link_libraries(AFRODITE detector ${Geant4_LIBRARIES} CADMesh::CADMesh)
+target_compile_definitions(AFRODITE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 
 
 #----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
-# build B4a. This is so that we can run the executable directly because it
+# Copy all scripts to the build directory.
+# This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
 

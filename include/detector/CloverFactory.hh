@@ -5,7 +5,7 @@
 #ifndef CLOVERFACTORY_HH
 #define CLOVERFACTORY_HH
 
-#include <Detectors/DetectorFactory.hh>
+#include <detector/DetectorFactory.hh>
 
 #include <string>
 

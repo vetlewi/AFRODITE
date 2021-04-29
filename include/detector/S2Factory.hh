@@ -5,7 +5,7 @@
 #ifndef S2FACTORY_HH
 #define S2FACTORY_HH
 
-#include "Detectors/DetectorFactory.hh"
+#include "detector/DetectorFactory.hh"
 #include <G4Types.hh>
 
 class G4Tubs;

@@ -36,8 +36,8 @@
 //      Main program of the AFRODITE code (PR239A branch)
 //
 
-#include "DetectorConstruction.hh"
-#include "ActionInitialization.hh"
+#include "user/DetectorConstruction.hh"
+#include "user/ActionInitialization.hh"
 
 
 #include <G4RunManagerFactory.hh>

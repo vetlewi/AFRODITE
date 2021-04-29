@@ -5,7 +5,7 @@
  * Sizes and measurements of the FTA LaBr detector is based on https://github.com/AndreiHanu/G4McMasterTDS
  */
 
-#include "Detectors/DetectorFactory.hh"
+#include "detector/DetectorFactory.hh"
 
 class G4Element;
 class G4Material;

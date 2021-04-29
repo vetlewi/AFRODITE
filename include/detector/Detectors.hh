@@ -5,11 +5,11 @@
 #ifndef AFRODITE_DETECTORS_HH
 #define AFRODITE_DETECTORS_HH
 
-#include <Detectors/DetectorFactory.hh>
-#include <Detectors/CloverFactory.hh>
-#include <Detectors/FTALaBr3.hh>
-#include <Detectors/OCLLaBr3.hh>
-#include <Detectors/S2Factory.hh>
+#include <detector/DetectorFactory.hh>
+#include <detector/CloverFactory.hh>
+#include <detector/FTALaBr3.hh>
+#include <detector/OCLLaBr3.hh>
+#include <detector/S2Factory.hh>
 
 
 #endif //AFRODITE_DETECTORS_HH

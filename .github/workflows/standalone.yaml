@@ -1,0 +1,52 @@
+name: Standalone
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Downloading Geant4
+        run: wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Linux-g++8.3.0-CC7.tar.gz
+
+      - name: Download G4EMLOW
+        run: wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
+
+      - name: Decompressing Geant4
+        run: tar xzf Linux-g++8.3.0-CC7.tar.gz
+
+      - name: Installing Geant4
+        run: |
+          sudo cp -R Geant4-10.7.1-Linux/bin/* /usr/bin
+          sudo cp -R Geant4-10.7.1-Linux/include/* /usr/include
+          sudo cp -R Geant4-10.7.1-Linux/lib64/* /usr/lib
+          sudo cp -R Geant4-10.7.1-Linux/share/* /usr/share
+
+      - name: Installing
+
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/cpm_modules"
+          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: configure
+        run: cmake -Sstandalone -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug
+
+      - name: build
+        run: cmake --build build -j4
+
+      #- name: run
+      #  run: ./build/app/AFRODITE

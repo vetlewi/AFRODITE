@@ -41,7 +41,7 @@
 #include <G4Types.hh>
 #include "Constants.hh"
 
-#include <SteppingAction.hh>
+#include "user/SteppingAction.hh"
 
 class G4Event;
 
