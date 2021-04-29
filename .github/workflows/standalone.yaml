@@ -18,7 +18,7 @@ jobs:
     steps:
 
       - name: Install Geant4 dependencies
-        run: sudo apt install -qq libtbb-dev assimp
+        run: sudo apt install -qq libtbb-dev libassimp-dev
 
       - name: Downloading Geant4
         run: wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Linux-g++8.3.0-CC7.tar.gz
