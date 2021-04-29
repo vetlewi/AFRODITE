@@ -46,6 +46,22 @@ CPMAddPackage(
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
+
+#----------------------------------------------------------------------------
+# Detector factory library
+
+add_library(detector
+        src/Detectors/CloverFactory.cc
+        src/Detectors/OCLLaBr3.cc
+        src/Detectors/FTALaBr3.cc
+        src/Detectors/S2Factory.cc
+)
+
+target_include_directories(detector
+    PUBLIC
+        $<)
+
+
 add_executable(AFRODITE
         app/AFRODITE.cc
         src/ActionInitialization.cc
@@ -57,8 +73,6 @@ add_executable(AFRODITE
 
         src/DetectorConstruction.cc
         src/DetectorSetupMessenger.cc
-        #src/DetectorHit.cc
-        #src/EnergyDepSD.cc
         src/EventAction.cc
         src/PrimaryGeneratorAction.cc
         src/RunAction.cc
