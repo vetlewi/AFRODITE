@@ -4,12 +4,6 @@ project(AFRODITE VERSION 1.0.0 LANGUAGES C CXX)
 # Make sure CMake finds the CMake scripts
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
-list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/qt@5/5.15.2/lib/cmake")
-list(APPEND CMAKE_PREFIX_PATH "/Users/vetlewi/prog/lib/Geant4-10.7.1")
-
-#list(APPEND CMAKE_CXX_FLAGS "-flto")
-#list(APPEND CMAKE_EXE_LINK_FLAGS "-flto")
-#list(APPEND CMAKE_SHARED_LINK_FLAGS "-flto")
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -29,10 +23,12 @@ include(${Geant4_USE_FILE})
 # Download and locate external dependencies
 
 include(cmake/CPM.cmake)
-
+include(cmake/Modules/FindASSIMP.cmake)
 CPMAddPackage(
 	NAME CADMesh
 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/CADMesh)
+
+
 
 
 #----------------------------------------------------------------------------
@@ -42,13 +38,28 @@ CPMAddPackage(
 #----------------------------------------------------------------------------
 # Detector factory library
 
+add_library(MeshReader
+        source/meshreader/MeshReader.cc)
+
+add_library(AFRODITE::MeshReader ALIAS MeshReader)
+
+target_include_directories(MeshReader
+        PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/include/meshreader
+        )
+
+target_link_libraries(MeshReader PRIVATE assimp::assimp ${Geant4_LIBRARIES})
+set_target_properties(MeshReader PROPERTIES CXX_STANDARD 17)
+
 add_library(detector
         source/Detectors/CloverFactory.cc
         source/Detectors/OCLLaBr3.cc
         source/Detectors/FTALaBr3.cc
         source/Detectors/S2Factory.cc
-
-        source/Detectors/MeshReader.cc
+        source/Detectors/MeshModels.cc
 )
 
 add_library(AFRODITE::detector ALIAS detector)
@@ -61,8 +72,10 @@ target_include_directories(detector
         ${PROJECT_SOURCE_DIR}/src/detector
 )
 
+target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 set_target_properties(detector PROPERTIES CXX_STANDARD 17)
-target_link_libraries(detector PUBLIC CADMesh::CADMesh ${Geant4_LIBRARIES})
+target_link_libraries(detector PUBLIC CADMesh::CADMesh ${Geant4_LIBRARIES} assimp::assimp
+        PRIVATE AFRODITE::MeshReader)
 
 add_library(AFRODITE
         source/G4User/ActionInitialization.cc

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(CADMesh VERSION 1.1.0 LANGUAGES CXX)
 
-#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 # ---- Include guards ----
 
@@ -19,6 +19,7 @@ endif()
 # Add external dependencies
 #############################################
 
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
 include(ExternalProject)
 
@@ -31,20 +32,18 @@ else()
 endif()
 
 include(${Geant4_USE_FILE})
-
-set(ON 1)
 find_package(ASSIMP REQUIRED)
-unset(ON)
+
 if ( NOT ASSIMP_FOUND )
     message(FATAL_ERROR "Could not find assimp")
-else()#if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
-    get_target_property(assimp_debug assimp::assimp IMPORTED_SONAME_${CMAKE_BUILD_TYPE})
-    if ( ${assimp_debug} STREQUAL "assimp_debug-NOTFOUND" )
-        message(WARNING "assimp only has no IMPORTED_SONAME_${CMAKE_BUILD_TYPE} property. Adding manually IMPORTED_SONAME property")
-        set_target_properties(assimp::assimp PROPERTIES
-                IMPORTED_SONAME "${ASSIMP_LIBRARIES}"
-                IMPORTED_LOCATION "${ASSIMP_ROOT_DIR}/lib/${sharedLibraryName}")
-    endif()
+#else()#if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" )
+#    get_target_property(assimp_debug assimp::assimp IMPORTED_SONAME_${CMAKE_BUILD_TYPE})
+#    if ( ${assimp_debug} STREQUAL "assimp_debug-NOTFOUND" )
+#        message(WARNING "assimp only has no IMPORTED_SONAME_${CMAKE_BUILD_TYPE} property. Adding manually IMPORTED_SONAME property")
+#        set_target_properties(assimp::assimp PROPERTIES
+#                IMPORTED_SONAME "${ASSIMP_LIBRARIES}"
+#                IMPORTED_LOCATION "${ASSIMP_ROOT_DIR}/lib/${sharedLibraryName}")
+#    endif()
 endif()
 
 CPMAddPackage(

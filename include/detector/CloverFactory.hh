@@ -15,6 +15,8 @@
 #include "Constants.hh"
 #include <future>
 
+#include <meshreader/MeshReader.hh>
+
 class CADMesh;
 class G4VSolid;
 class G4LogicalVolume;
@@ -44,7 +46,7 @@ private:
     G4Material *fMatAluminium;
     G4Material *fMatGe;
 
-    Solids_t internal_vacuum;
+    MeshReader internal_vacuum;
     Solids_t encasement;
     Solids_t crystals[numberOf_CLOVER_Crystals];
     Solids_t contacts[numberOf_CLOVER_Crystals];

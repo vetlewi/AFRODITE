@@ -24,7 +24,8 @@ add_executable(AFRODITEtests
         ${CMAKE_CURRENT_LIST_DIR}/source/main.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/MeshReader.cpp)
 
-target_link_libraries(AFRODITEtests doctest::doctest AFRODITE::detector)
+target_compile_definitions(AFRODITEtests PRIVATE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/../")
+target_link_libraries(AFRODITEtests doctest::doctest AFRODITE::MeshReader AFRODITE::AFRODITE)
 set_target_properties(AFRODITEtests PROPERTIES CXX_STANDARD 17)
 
 # ---- Add GreeterTests ----
