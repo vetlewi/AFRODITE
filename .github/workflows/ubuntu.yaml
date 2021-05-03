@@ -18,6 +18,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install Geant4 dependencies
+          run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev libexpat-dev libxerces-c-dev qt5-default
+
+      - name: Download Geant4
+        run: |
+          wget https://github.com/vetlewi/homebrew-formula/releases/download/v1.0/Geant4-10.7.1-Linux.sh
+          chmod +x Geant4-10.7.1-Linux.sh
+
+      - name: Install Geant4
+        run: sudo ./Geant4-10.7.1-Linux.sh --skip-license --prefix=/usr
+
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
@@ -26,13 +37,18 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Stest -Bbuild -DENABLE_TEST_COVERAGE=0 -DCMAKE_BUILD_TYPE=Debug
+        run: |
+          source /usr/bin/geant4.sh
+          cmake -Stest -Bbuild -DENABLE_TEST_COVERAGE=0 -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
-        run: cmake --build build -j4
+        run: |
+          source /usr/bin/geant4.sh
+          cmake --build build -j4
 
       - name: test
         run: |
+          source /usr/bin/geant4.sh
           cd build
           ctest --build-config Debug
 #      - name: collect code coverage # We will do coverage later

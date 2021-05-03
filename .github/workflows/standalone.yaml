@@ -56,7 +56,4 @@ jobs:
       - name: run
         run: |
           source /usr/bin/geant4.sh
-          ls -las
-          ls ./build
-          ls ./build/app
-#          ./build/app/AFRODITE -m macros/run.mac
+          ./build/AFRODITE -m macros/run.mac
