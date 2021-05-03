@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew tap vetlewi/geant4
+          brew tap vetlewi/formula
           brew install wget cmake assimp geant4
 
       - name: configure
