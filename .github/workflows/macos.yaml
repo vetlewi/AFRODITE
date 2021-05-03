@@ -26,17 +26,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install wget cmake assimp
-          wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz
-          wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
-          tar xzf Darwin-clang12.0.0-BigSur.tar.gz
-          tar xzf G4EMLOW.7.13.tar.gz
-          sudo mkdir /opt/local
-          sudo mv Geant4-10.7.1-Darwin/bin /opt/local
-          sudo mv Geant4-10.7.1-Darwin/include /opt/local
-          sudo mv Geant4-10.7.1-Darwin/lib /opt/local
-          sudo mv Geant4-10.7.1-Darwin/share /opt/local
-          sudo mv G4EMLOW7.13 /opt/local/share/Geant4-10.7.1/data
+          cp external/geant4.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/geant4.rb
+          brew install wget cmake assimp geant4
 
       - name: configure
         run: cmake -Sall -Bbuild -DCMAKE_BUILD_TYPE=Debug
