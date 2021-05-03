@@ -33,7 +33,7 @@ jobs:
           wget -q https://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
           tar xzf G4EMLOW.7.13.tar.gz
           sudo mkdir /usr/share/Geant4-10.7.1/data
-          mv G4EMLOW.7.13 /usr/share/Geant4-10.7.1/data
+          mv G4EMLOW7.13 /usr/share/Geant4-10.7.1/data
 
 
       - uses: actions/checkout@v2
