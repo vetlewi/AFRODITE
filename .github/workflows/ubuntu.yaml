@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Install Geant4 dependencies
-          run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev libexpat-dev libxerces-c-dev qt5-default
+        run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev libexpat-dev libxerces-c-dev qt5-default
 
       - name: Download Geant4
         run: |
