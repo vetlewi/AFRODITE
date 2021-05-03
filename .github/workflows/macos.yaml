@@ -27,7 +27,10 @@ jobs:
       - name: Install dependencies
         run: |
           brew tap vetlewi/formula
-          brew install wget cmake assimp geant4
+          brew install cmake assimp
+
+      - name: Install Geant4
+        run: brew install --force-bottle geant4
 
       - name: configure
         run: cmake -Sall -Bbuild -DCMAKE_BUILD_TYPE=Debug
