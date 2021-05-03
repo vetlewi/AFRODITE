@@ -1,12 +1,12 @@
 name: Standalone
 
 on:
-  #push:
-  #  branches:
-  #    - master
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 env:
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
@@ -18,9 +18,23 @@ jobs:
     steps:
 
       - name: Install Geant4 dependencies
+        run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev libexpat-dev libxerces-c-dev qt5-default
+
+      - name: Download Geant4
         run: |
-          sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev
-          sudo brew tap vetlewi/formula
+          wget https://github.com/vetlewi/homebrew-formula/releases/download/v1.0/Geant4-10.7.1-Linux.sh
+          chmod +x Geant4-10.7.1-Linux.sh
+
+      - name: Install Geant4
+        run: sudo ./Geant4-10.7.1-Linux.sh --skip-license --prefix=/usr
+
+      - name: Download and install G4EMLOW
+        run: |
+          wget https://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
+          tar xvf G4EMLOW.7.13.tar.gz
+          sudo mkdir /usr/share/Geant4-10.7.1/data
+          mv G4EMLOW.7.13 /usr/share/Geant4-10.7.1/data
+
 
       - uses: actions/checkout@v2
 
@@ -39,5 +53,5 @@ jobs:
           source /usr/bin/geant4.sh
           cmake --build build -j4
 
-      #- name: run
-      #  run: ./build/app/AFRODITE
+      - name: run
+        run: ./build/app/AFRODITE -m macros/run.mac
