@@ -18,32 +18,9 @@ jobs:
     steps:
 
       - name: Install Geant4 dependencies
-        run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev
-
-      - name: Downloading Geant4
-        run: wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Linux-g++8.3.0-CC7.tar.gz
-
-      - name: Download G4EMLOW
-        run: wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
-
-      - name: Decompressing Geant4
-        run: tar xzf Linux-g++8.3.0-CC7.tar.gz
-
-      - name: Decompressing G4EMLOW
-        run: tar xzf G4EMLOW.7.13.tar.gz
-
-      - name: Installing Geant4
         run: |
-          sudo cp -R Geant4-10.7.1-Linux/bin/* /usr/bin
-          sudo cp -R Geant4-10.7.1-Linux/include/* /usr/include
-          sudo cp -R Geant4-10.7.1-Linux/lib64/* /usr/lib
-          sudo cp -R Geant4-10.7.1-Linux/lib64/* /usr/lib64
-          sudo cp -R Geant4-10.7.1-Linux/share/* /usr/share
-
-      - name: Installing G4EMLOW
-        run: |
-          sudo mkdir /usr/share/Geant4-10.7.1/data
-          sudo mv G4EMLOW7.13 /usr/share/Geant4-10.7.1/data
+          sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev
+          sudo brew tap vetlewi/formula
 
       - uses: actions/checkout@v2
 
