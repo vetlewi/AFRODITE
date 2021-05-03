@@ -17,25 +17,29 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Install dependencies
-        run: |
-          brew install wget cmake
-          wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz
-          wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
-          tar xzf Darwin-clang12.0.0-BigSur.tar.gz
-          tar xzf G4EMLOW.7.13.tar.gz
-          sudo cp -R Geant4-10.7.1-Darwin/bin/* /usr/local/bin
-          sudo cp -R Geant4-10.7.1-Darwin/include/* /usr/local/include
-          sudo cp -R Geant4-10.7.1-Darwin/lib/* /usr/local/lib
-          sudo cp -R Geant4-10.7.1-Darwin/share/* /usr/local/share
-          sudo mv G4EMLOW7.13 /usr/local/share/Geant4-10.7.1/data
-
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
         with:
-          path: "**/cpm_modules"
+          path: |
+            "**/cpm_modules"
+            Darwin-clang12.0.0-BigSur.tar.gz
+            G4EMLOW.7.13.tar.gz
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: Install dependencies
+        run: |
+          brew install wget cmake assimp
+          if [ ! -f Darwin-clang12.0.0-BigSur.tar.gz ]; then wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz fi
+          if [ ! -f G4EMLOW.7.13.tar.gz ]; then wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz fi
+          tar xzf Darwin-clang12.0.0-BigSur.tar.gz
+          tar xzf G4EMLOW.7.13.tar.gz
+          sudo mkdir /opt/local
+          sudo mv Geant4-10.7.1-Darwin/bin /opt/local/bin
+          sudo mv Geant4-10.7.1-Darwin/include/* /opt/local/include
+          sudo mv Geant4-10.7.1-Darwin/lib/* /opt/local/lib
+          sudo mv Geant4-10.7.1-Darwin/share/* /opt/local/share
+          sudo mv G4EMLOW7.13 /opt/local/share/Geant4-10.7.1/data
 
       - name: configure
         run: cmake -Sall -Bbuild -DCMAKE_BUILD_TYPE=Debug
