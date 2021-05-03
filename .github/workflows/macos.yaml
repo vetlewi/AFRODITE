@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cp external/geant4.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/geant4.rb
+          brew tap brewsci/science
           brew install wget cmake assimp geant4
 
       - name: configure
