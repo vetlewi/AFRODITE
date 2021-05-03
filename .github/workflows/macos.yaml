@@ -32,10 +32,10 @@ jobs:
           tar xzf Darwin-clang12.0.0-BigSur.tar.gz
           tar xzf G4EMLOW.7.13.tar.gz
           sudo mkdir /opt/local
-          sudo mv Geant4-10.7.1-Darwin/bin /opt/local/bin
-          sudo mv Geant4-10.7.1-Darwin/include/* /opt/local/include
-          sudo mv Geant4-10.7.1-Darwin/lib/* /opt/local/lib
-          sudo mv Geant4-10.7.1-Darwin/share/* /opt/local/share
+          sudo mv Geant4-10.7.1-Darwin/bin /opt/local
+          sudo mv Geant4-10.7.1-Darwin/include /opt/local
+          sudo mv Geant4-10.7.1-Darwin/lib /opt/local
+          sudo mv Geant4-10.7.1-Darwin/share /opt/local
           sudo mv G4EMLOW7.13 /opt/local/share/Geant4-10.7.1/data
 
       - name: configure
