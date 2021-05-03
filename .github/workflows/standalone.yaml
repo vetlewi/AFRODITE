@@ -54,4 +54,9 @@ jobs:
           cmake --build build -j4
 
       - name: run
-        run: ./build/app/AFRODITE -m macros/run.mac
+        run: |
+          source /usr/bin/geant4.sh
+          ls -las
+          ls ./build
+          ls ./build/app
+#          ./build/app/AFRODITE -m macros/run.mac
