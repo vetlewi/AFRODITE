@@ -24,16 +24,6 @@ include(${Geant4_USE_FILE})
 
 include(cmake/CPM.cmake)
 include(cmake/Modules/FindASSIMP.cmake)
-CPMAddPackage(
-	NAME CADMesh
-	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/CADMesh)
-
-
-
-
-#----------------------------------------------------------------------------
-# Add the executable, and link it to the Geant4 libraries
-#
 
 #----------------------------------------------------------------------------
 # Detector factory library
@@ -74,7 +64,7 @@ target_include_directories(detector
 
 target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 set_target_properties(detector PROPERTIES CXX_STANDARD 17)
-target_link_libraries(detector PUBLIC CADMesh::CADMesh ${Geant4_LIBRARIES} assimp::assimp
+target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES} assimp::assimp
         PRIVATE AFRODITE::MeshReader)
 
 add_library(AFRODITE
@@ -91,20 +81,5 @@ add_library(AFRODITE::AFRODITE ALIAS AFRODITE)
 
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(AFRODITE detector ${Geant4_LIBRARIES} CADMesh::CADMesh)
+target_link_libraries(AFRODITE detector ${Geant4_LIBRARIES})
 target_compile_definitions(AFRODITE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
-
-
-#----------------------------------------------------------------------------
-# Copy all scripts to the build directory.
-# This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
-#
-
-add_custom_command(TARGET AFRODITE POST_BUILD
-        COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/macros/* ${CMAKE_CURRENT_BINARY_DIR})
-
-#----------------------------------------------------------------------------
-# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
-#
-install(TARGETS AFRODITE DESTINATION bin)

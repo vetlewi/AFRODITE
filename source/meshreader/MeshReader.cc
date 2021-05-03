@@ -20,28 +20,28 @@
 G4VSolid *GetMeshFromScene(const aiScene *scene, const char *name, const double &scale,
                               const G4ThreeVector &offset, const bool &reverse)
 {
-    auto m = scene->mMeshes[0];
+    auto mesh = scene->mMeshes[0];
     auto solid = new G4TessellatedSolid(name);
 
     G4ThreeVector point_1;
     G4ThreeVector point_2;
     G4ThreeVector point_3;
 
-    for(unsigned int i=0; i < m->mNumFaces; i++)
+    for(unsigned int i=0; i < mesh->mNumFaces; ++i)
     {
-        const aiFace& face = m->mFaces[i];
+        const aiFace& face = mesh->mFaces[i];
 
-        point_1.setX(m->mVertices[face.mIndices[0]].x * scale + offset.x());
-        point_1.setY(m->mVertices[face.mIndices[0]].y * scale + offset.y());
-        point_1.setZ(m->mVertices[face.mIndices[0]].z * scale + offset.z());
+        point_1.setX(mesh->mVertices[face.mIndices[0]].x * scale + offset.x());
+        point_1.setY(mesh->mVertices[face.mIndices[0]].y * scale + offset.y());
+        point_1.setZ(mesh->mVertices[face.mIndices[0]].z * scale + offset.z());
 
-        point_2.setX(m->mVertices[face.mIndices[1]].x * scale + offset.x());
-        point_2.setY(m->mVertices[face.mIndices[1]].y * scale + offset.y());
-        point_2.setZ(m->mVertices[face.mIndices[1]].z * scale + offset.z());
+        point_2.setX(mesh->mVertices[face.mIndices[1]].x * scale + offset.x());
+        point_2.setY(mesh->mVertices[face.mIndices[1]].y * scale + offset.y());
+        point_2.setZ(mesh->mVertices[face.mIndices[1]].z * scale + offset.z());
 
-        point_3.setX(m->mVertices[face.mIndices[2]].x * scale + offset.x());
-        point_3.setY(m->mVertices[face.mIndices[2]].y * scale + offset.y());
-        point_3.setZ(m->mVertices[face.mIndices[2]].z * scale + offset.z());
+        point_3.setX(mesh->mVertices[face.mIndices[2]].x * scale + offset.x());
+        point_3.setY(mesh->mVertices[face.mIndices[2]].y * scale + offset.y());
+        point_3.setZ(mesh->mVertices[face.mIndices[2]].z * scale + offset.z());
 
         G4TriangularFacet * facet;
         if ( !reverse ) {

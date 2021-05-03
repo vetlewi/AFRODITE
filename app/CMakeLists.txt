@@ -4,12 +4,11 @@ project(AFRODITEStandalone LANGUAGES CXX)
 
 # --- Import tools ----
 
-include(../cmake/tools.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../cmake/tools.cmake)
 
 # ---- Dependencies ----
 
-include(../cmake/CPM.cmake)
-
+include(${CMAKE_CURRENT_LIST_DIR}/../cmake/CPM.cmake)
 
 CPMAddPackage(
         GITHUB_REPOSITORY jarro2783/cxxopts
@@ -38,3 +37,8 @@ target_link_libraries(AFRODITEStandalone AFRODITE::AFRODITE cxxopts termcolor::t
 
 add_custom_command(TARGET AFRODITEStandalone POST_BUILD
         COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/../macros/* ${CMAKE_CURRENT_BINARY_DIR})
+
+#----------------------------------------------------------------------------
+# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
+#
+install(TARGETS AFRODITEStandalone DESTINATION bin)

@@ -34,7 +34,6 @@
 //      email: likevincw@gmail.com
 //
 
-#include <CADMesh/CADMesh.hh>
 #include "user/DetectorConstruction.hh"
 
 #include <G4NistManager.hh>
@@ -44,6 +43,7 @@
 #include <G4RotationMatrix.hh>
 #include <G4Transform3D.hh>
 #include <G4Trd.hh>
+#include <G4AssemblyVolume.hh>
 
 #include <G4Material.hh>
 #include <G4MaterialPropertiesTable.hh>
@@ -72,6 +72,9 @@
 #include "detector/CloverFactory.hh"
 #include "detector/S2Factory.hh"
 
+#include <meshreader/incbin.h>
+#include <meshreader/MeshReader.hh>
+
 
 #include <fstream>
 #include <string>
@@ -83,6 +86,8 @@
 #ifndef PLY_PATH
 #define PLY_PATH SRC_PATH"Mesh-Models"
 #endif // PLY_PATH
+
+INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply");
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -391,8 +396,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     FTALaBr3 labr_factory;
 
     G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-    const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
-    Solids_t targetChamber(TC_path, offset_MathisTC);
+    MeshReader targetChamber({gTargetChamberData, gTargetChamberSize}, "TargetChamber", offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
@@ -424,8 +428,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                         G4_concrete_Material,      //its material
                                         "Concrete");                  //its name
 
-    G4VPhysicalVolume*
-    physConcrete = new G4PVPlacement(0, G4ThreeVector(),
+    new G4PVPlacement(0, G4ThreeVector(),
                                      LogicConcrete,
                                      "ConcretePhysical",
                                      LogicWorld,
