@@ -21,17 +21,14 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: |
-            "**/cpm_modules"
-            Darwin-clang12.0.0-BigSur.tar.gz
-            G4EMLOW.7.13.tar.gz
+          path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: Install dependencies
         run: |
           brew install wget cmake assimp
-          if [ ! -f Darwin-clang12.0.0-BigSur.tar.gz ]; then wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz fi
-          if [ ! -f G4EMLOW.7.13.tar.gz ]; then wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz fi
+          wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz
+          wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
           tar xzf Darwin-clang12.0.0-BigSur.tar.gz
           tar xzf G4EMLOW.7.13.tar.gz
           sudo mkdir /opt/local
