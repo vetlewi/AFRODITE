@@ -22,8 +22,8 @@ include(${Geant4_USE_FILE})
 #----------------------------------------------------------------------------
 # Download and locate external dependencies
 
-include(cmake/CPM.cmake)
-include(cmake/Modules/FindASSIMP.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/CPM.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/Modules/FindAssimp.cmake)
 
 #----------------------------------------------------------------------------
 # Detector factory library
