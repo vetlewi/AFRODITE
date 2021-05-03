@@ -44,8 +44,8 @@
     namespace NAMESPACE { static const MeshReader::MemBuf_t NAME = CONVERT_TO_STRUCT(NAME); }
 
 // Including all the CLOVER HPGe mesh models
-INCNS(HPGe_Components, vaccum, CLOVER_PATH"/CLOVER-InternalVacuum/CloverInternalVacuum_approx.ply");
-INCNS(HPGe_Components, encasement, CLOVER_PATH"/CLOVER-InternalVacuum/CloverInternalVacuum_approx.ply");
+INCNS(HPGe_Components, vaccum, CLOVER_PATH"/CLOVER-InternalVacuum/CloverInternalVacuum_approx.ply")
+INCNS(HPGe_Components, encasement, CLOVER_PATH"/CLOVER-InternalVacuum/CloverInternalVacuum_approx.ply")
 INCBIN(HPGeCrystalA, CLOVER_PATH"/HPGeCrystals/HPGe-RoundedCrystal1_10umTolerance.ply");
 INCBIN(HPGeCrystalB, CLOVER_PATH"/HPGeCrystals/HPGe-RoundedCrystal2_10umTolerance.ply");
 INCBIN(HPGeCrystalC, CLOVER_PATH"/HPGeCrystals/HPGe-RoundedCrystal3_10umTolerance.ply");
@@ -68,9 +68,9 @@ namespace HPGe_Components {
 }
 
 // Including all the shield components
-INCNS(Shield_parts, body, CLOVER_PATH"/Shield/Body/Body_Modified2_tol_10um.ply");
-INCNS(Shield_parts, heavimet, CLOVER_PATH"/Shield/Heavimet/HEAVIMET_30mm.ply");
-INCNS(Shield_parts, PMTConArray, CLOVER_PATH"/Shield/PMT-Connectors/PMT-ConnecterArray.ply");
+INCNS(Shield_parts, body, CLOVER_PATH"/Shield/Body/Body_Modified2_tol_10um.ply")
+INCNS(Shield_parts, heavimet, CLOVER_PATH"/Shield/Heavimet/HEAVIMET_30mm.ply")
+INCNS(Shield_parts, PMTConArray, CLOVER_PATH"/Shield/PMT-Connectors/PMT-ConnecterArray.ply")
 INCBIN(BGOCrystal0, CLOVER_PATH"/Shield/BGO-Crystals/BGO-Crystal_Modified_1.ply");
 INCBIN(BGOCrystal1, CLOVER_PATH"/Shield/BGO-Crystals/BGO-Crystal_Modified_2.ply");
 INCBIN(BGOCrystal2, CLOVER_PATH"/Shield/BGO-Crystals/BGO-Crystal_Modified_3.ply");

@@ -1,12 +1,12 @@
 name: MacOS
 
 on:
-  #push:
-  #  branches:
-  #    - master
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
@@ -17,6 +17,19 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Install dependencies
+        run: |
+          brew install wget cmake
+          wget http://cern.ch/geant4-data/releases/lib4.10.7.p01/Darwin-clang12.0.0-BigSur.tar.gz
+          wget http://cern.ch/geant4-data/datasets/G4EMLOW.7.13.tar.gz
+          tar xzf Darwin-clang12.0.0-BigSur.tar.gz
+          tar xzf G4EMLOW.7.13.tar.gz
+          sudo cp -R Geant4-10.7.1-Darwin/bin/* /usr/local/bin
+          sudo cp -R Geant4-10.7.1-Darwin/include/* /usr/local/include
+          sudo cp -R Geant4-10.7.1-Darwin/lib/* /usr/local/lib
+          sudo cp -R Geant4-10.7.1-Darwin/share/* /usr/local/share
+          sudo mv G4EMLOW7.13 /usr/local/share/Geant4-10.7.1/data
+
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
@@ -25,10 +38,13 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Stest -Bbuild -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -Sall -Bbuild -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
         run: cmake --build build -j4
+
+      - name: run
+        run: ./build/app/AFRODITE -m macros/run.mac
 
       - name: test
         run: |

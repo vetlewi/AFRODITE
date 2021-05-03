@@ -1,12 +1,12 @@
 name: Standalone
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  #push:
+  #  branches:
+  #    - master
+  #pull_request:
+  #  branches:
+  #    - master
 
 env:
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
@@ -55,7 +55,7 @@ jobs:
       - name: configure
         run: |
           source /usr/bin/geant4.sh
-          cmake -Sapp -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_TYPE=Debug
+          cmake -Sapp -Bbuild -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
         run: |
