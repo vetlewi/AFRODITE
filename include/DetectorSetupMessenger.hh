@@ -17,42 +17,49 @@ constexpr const int number_of_small_frame_positions = 8;
 #define NUMBER_OF_SMALL_FRAME_POSITIONS 8
 
 class G4UIdirectory;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithAnInterger;
-class G4UIcmdWithABool;
-
-class DetectorSetupMessenger;
+class G4UIcmdWithAString;
 
 struct STDSlotInfo_t {
-    int slotID; // 0 - 15
+    int detectorID; // 0 - 15
     Detector::Type type;
     double slotDistance;
 
-    STDSlotInfo_t() = default;
+    STDSlotInfo_t() : detectorID( 0 ), type( Detector::none ), slotDistance( 0 ){}
     STDSlotInfo_t(const int &id, const Detector::Type &typ, const double &distance)
-        : slotID( id ), type( typ ), slotDistance( distance ){}
+        : detectorID( id ), type( typ ), slotDistance( distance ){}
 
     STDSlotInfo_t(const char *param);
+};
+
+class CMDSlotID : public G4UIcommand
+{
+public:
+    CMDSlotID(const char* theCommandPath, G4UImessenger* theMessenger);
+    ~CMDSlotID() override = default;
+    static std::pair<int, STDSlotInfo_t> GetSlotInfo(const char *param);
 };
 
 class DetectorSetupMessenger : public G4UImessenger
 {
 private:
     G4UIdirectory *fDirectory;
+    CMDSlotID *slotCmd;
 
-    using slot_t = std::pair<Detector::Type, double>;
 
-    slot_t std_slots[number_of_large_frame_positions];
-    slot_t sml_slots[number_of_small_frame_positions];
+    STDSlotInfo_t std_slots[number_of_large_frame_positions];
 
 public:
     DetectorSetupMessenger();
-    ~DetectorSetupMessenger() override = default;
+    ~DetectorSetupMessenger() override;
 
 
+    void SetNewValue(G4UIcommand* command, G4String newValue) override;
 
-private:
+    inline STDSlotInfo_t GetSlot(const size_t &n) const { return std_slots[n]; }
 
+//#if TEST_INTERFACE
+    inline G4UIcommand *getSlotCMD(){ return slotCmd; }
+//#endif // TEST_INTERFACE
 
 };
 
