@@ -33,7 +33,6 @@ jobs:
             ~/Library/Cache/homebrew/downloads/*--geant4-*
             ~/Library/Cache/Homebrew/downloads/*--G4*
           key: brew-${{ hashFiles('.github/brew-formulae') }}
-          restore-key: brew-
 
       - name: Install Homebrew dependencies
         run: |
