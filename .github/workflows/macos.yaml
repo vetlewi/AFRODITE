@@ -35,9 +35,10 @@ jobs:
           key: brew-${{ hashFiles('.github/brew-formulae') }}
 
       - name: Install Homebrew dependencies
-        run: |
-          brew install cmake assimp
-          brew install --force-bottle geant4
+        run: brew install cmake assimp
+
+      - name: Installing Geant4
+          run: brew install --force-bottle geant4
 
       - uses: actions/cache@v2
         with:
