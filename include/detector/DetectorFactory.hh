@@ -30,6 +30,7 @@ namespace Detector {
     public:
         virtual ~DetectorFactory() = default;
         virtual G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) = 0;
+        //virtual void PlaceAssembly(const int &copy_no, const bool &overlap) = 0;
 
         inline Detector::Type GetType() const { return detector_type; }
 

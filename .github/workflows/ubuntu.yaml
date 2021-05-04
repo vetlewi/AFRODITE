@@ -45,5 +45,5 @@ jobs:
           source /usr/bin/geant4.sh
           cd build
           ctest --build-config Debug
-#      - name: collect code coverage # We will do coverage later
-#        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+      - name: collect code coverage
+        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"

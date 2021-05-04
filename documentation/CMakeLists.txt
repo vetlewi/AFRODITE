@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
-project(GreeterDocs)
+project(AFRODITEDocs)
 
 # ---- Dependencies ----
 
 include(../cmake/CPM.cmake)
 
-CPMAddPackage("gh:mosra/m.css#42d4a9a48f31f5df6e246c948403b54b50574a2a")
+#CPMAddPackage("gh:mosra/m.css#42d4a9a48f31f5df6e246c948403b54b50574a2a")
+CPMAddPackage("gh:mosra/m.css#3a294739e2d351a40b94527eabd7c228d17b56be")
 CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 # ---- Doxygen variables ----
@@ -24,7 +25,8 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/conf.py ${CMAKE_CURRENT_BINARY_DIR}/con
 add_custom_target(
         GenerateDocs
         ${CMAKE_COMMAND} -E make_directory "${DOXYGEN_OUTPUT_DIRECTORY}"
-        COMMAND "${m.css_SOURCE_DIR}/documentation/doxygen.py" "${CMAKE_CURRENT_BINARY_DIR}/conf.py"
+        COMMAND doxygen Doxyfile
+        #COMMAND "${m.css_SOURCE_DIR}/documentation/doxygen.py" "${CMAKE_CURRENT_BINARY_DIR}/conf.py"
         COMMAND echo "Docs written to: ${DOXYGEN_OUTPUT_DIRECTORY}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )

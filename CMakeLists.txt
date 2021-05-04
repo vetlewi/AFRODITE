@@ -13,6 +13,8 @@ include(${PROJECT_SOURCE_DIR}/cmake/tools.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/CPM.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/FindAssimp.cmake)
 
+CPMAddPackage("gh:Neargye/magic_enum@0.7.2")
+
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
@@ -24,9 +26,7 @@ if(WITH_GEANT4_UIVIS)
 else()
   find_package(Geant4 REQUIRED)
 endif()
-include(${Geant4_USE_FILE})
-
-
+#include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
 # Detector factory library
@@ -81,8 +81,8 @@ add_library(AFRODITE
         source/G4User/SteppingAction.cc)
 
 add_library(AFRODITE::AFRODITE ALIAS AFRODITE)
-
+set_target_properties(AFRODITE PROPERTIES CXX_STANDARD 17)
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(AFRODITE detector ${Geant4_LIBRARIES})
+target_link_libraries(AFRODITE PUBLIC detector ${Geant4_LIBRARIES} magic_enum::magic_enum)
 target_compile_definitions(AFRODITE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")

@@ -6,10 +6,18 @@
 #define AFRODITE_DETECTORS_HH
 
 #include <detector/DetectorFactory.hh>
-#include <detector/CloverFactory.hh>
-#include <detector/FTALaBr3.hh>
-#include <detector/OCLLaBr3.hh>
-#include <detector/S2Factory.hh>
+
+class Detector
+{
+private:
+    int detector_number;
+    DetectorFactory *factory;
+
+public:
+
+    Dete
+
+};
 
 
 #endif //AFRODITE_DETECTORS_HH
