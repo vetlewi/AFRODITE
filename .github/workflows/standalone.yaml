@@ -1,12 +1,6 @@
 name: Standalone
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: workflow_dispatch
 
 env:
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
