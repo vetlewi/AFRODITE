@@ -35,7 +35,7 @@ jobs:
           key: brew-${{ hashFiles('.github/brew-formulae') }}
 
       - name: Install Homebrew dependencies
-        run: brew install assimp
+        run: brew install assimp qt@5 expat xerces-c
 
       - name: Installing Geant4
         run: brew install --force-bottle geant4
