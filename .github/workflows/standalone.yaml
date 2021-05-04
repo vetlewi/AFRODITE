@@ -59,6 +59,9 @@ jobs:
           cmake --build build -j4
 
       - name: run
+        env:
+          G4ENSDFSTATEDATA: /usr/share/Geant4-10.7.1/data/G4ENSDFSTATE2.3
+          G4LEDATA: /usr/share/Geant4-10.7.1/data/G4EMLOW7.13
         run: |
           source /usr/bin/geant4.sh
           ./build/AFRODITE -m macros/run.mac
