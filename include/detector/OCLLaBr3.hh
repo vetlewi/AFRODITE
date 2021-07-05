@@ -10,46 +10,49 @@ class G4Polycone;
 class G4MultiUnion;
 class G4Material;
 
+namespace Detector {
 
+    class OCLLaBr3 : public Detector::DetectorFactory {
 
-class OCLLaBr3 : public Detector::DetectorFactory {
+    public:
+        explicit OCLLaBr3(const bool &new_shield_design = true);
+        ~OCLLaBr3() override = default;
 
-public:
-    explicit OCLLaBr3(const bool &new_shield_design = true);
-    ~OCLLaBr3() override = default;
+        G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
+        void SetParameters(const Parameters *param) override {};
 
+    private:
 
-private:
+        // Materials for the different components
+        G4Material *fMatAir;
+        G4Material *fMatAluminium;
+        G4Material *fMatPlexiGlass;
+        G4Material *fMatMgO;
+        G4Material *fMatLaBr3_Ce;
+        G4Material *fMatSiO2;
+        G4Material *fMatBialkali;
 
-    // Materials for the different components
-    G4Material *fMatAir;
-    G4Material *fMatAluminium;
-    G4Material *fMatPlexiGlass;
-    G4Material *fMatMgO;
-    G4Material *fMatLaBr3_Ce;
-    G4Material *fMatSiO2;
-    G4Material *fMatBialkali;
+        // Parts for the housing of the detector
+        G4Tubs *Detector_Solid;
+        G4VSolid *Shielding_Solid;
+        G4Tubs *Shields_Tube_Solids[3];
+        G4MultiUnion *Union_Shielding_Solid;
 
-    // Parts for the housing of the detector
-    G4Tubs *Detector_Solid;
-    G4VSolid *Shielding_Solid;
-    G4Tubs *Shields_Tube_Solids[3];
-    G4MultiUnion *Union_Shielding_Solid;
+        // Parts for the crystal
+        G4Tubs *Coating_Solid;
+        G4Tubs *PlexiGlas_Coating_Solid;
+        G4Tubs *Reflector_Solid;
+        G4Tubs *Crystal_Solid;
+        G4Tubs *Crystal_Window_Solid;
 
-    // Parts for the crystal
-    G4Tubs *Coating_Solid;
-    G4Tubs *PlexiGlas_Coating_Solid;
-    G4Tubs *Reflector_Solid;
-    G4Tubs *Crystal_Solid;
-    G4Tubs *Crystal_Window_Solid;
+        // PMT
+        G4Tubs *PMT_Window_Solid;
+        G4Tubs *Cathode_Solid;
+        G4Polycone *PMT_Body_Solid;
 
-    // PMT
-    G4Tubs *PMT_Window_Solid;
-    G4Tubs *Cathode_Solid;
-    G4Polycone *PMT_Body_Solid;
+    };
 
-};
+}
 
-#endif
+#endif // OCLLABR3_H

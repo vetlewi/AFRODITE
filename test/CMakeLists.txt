@@ -27,6 +27,7 @@ CPMAddPackage(
 CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 add_executable(AFRODITEtests
+        ${CMAKE_CURRENT_LIST_DIR}/source/Detector.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/main.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/MeshReader.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/Slot.cpp)

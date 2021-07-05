@@ -19,6 +19,10 @@
 #include <G4MultiUnion.hh>
 #include <G4AssemblyVolume.hh>
 
+using namespace Detector;
+
+
+
 class HPGeFactory : public Detector::DetectorFactory {
 
 public:
@@ -42,6 +46,8 @@ public:
         if ( !fMatVaccum || !fMatAluminium || !fMatGe )
             throw std::runtime_error("Could not find materials needed.");
     }
+
+    void SetParameters(const Parameters *param) override {}
 
     ~HPGeFactory() override = default;
 
@@ -181,6 +187,8 @@ public:
 
         }
 
+    void SetParameters(const Parameters *param) override {}
+
     G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) override
     {
         auto *assembly = new G4AssemblyVolume();
@@ -265,9 +273,24 @@ G4ThreeVector ShieldFactory::offset_PMT = G4ThreeVector(0*cm, 0*cm, 0*cm);
 
 CloverFactory::CloverFactory(const bool &have_HPGe, const bool &have_Shield)
     : Detector::DetectorFactory( Detector::Type::clover )
-    , crystalFactory( have_HPGe ? new HPGeFactory : nullptr)
+    , crystalFactory( have_HPGe ? new HPGeFactory : nullptr )
     , shieldFactory( have_Shield ? new ShieldFactory : nullptr )
 {}
+
+void CloverFactory::SetParameters(const Parameters *param)
+{
+    auto params = reinterpret_cast<const CloverParameters *>(param);
+
+    if ( params->have_HPGe ){
+        if ( !crystalFactory )
+            crystalFactory = new HPGeFactory;
+    }
+
+    if ( params->have_Shield ){
+        if ( !shieldFactory )
+            shieldFactory = new ShieldFactory;
+    }
+}
 
 CloverFactory::~CloverFactory()
 {

@@ -13,54 +13,44 @@
 
 constexpr const int number_of_large_frame_positions = 16;
 constexpr const int number_of_small_frame_positions = 8;
-#define NUMBER_OF_LARGE_FRAME_POSITIONS 16
-#define NUMBER_OF_SMALL_FRAME_POSITIONS 8
 
-class G4UIdirectory;
-class G4UIcmdWithAString;
-
-struct STDSlotInfo_t {
-    int detectorID; // 0 - 15
-    Detector::Type type;
-    double slotDistance;
-
-    STDSlotInfo_t() : detectorID( 0 ), type( Detector::none ), slotDistance( 0 ){}
-    STDSlotInfo_t(const int &id, const Detector::Type &typ, const double &distance)
-        : detectorID( id ), type( typ ), slotDistance( distance ){}
-
-    STDSlotInfo_t(const char *param);
+struct DetectorInfo_t
+{
+    int detector_id;        //! Detector number, separate for each detector type
+    Detector::Type type;    //! Type of the detector
+    double distance;        //! Distance of the detector from the target
 };
 
-class CMDSlotID : public G4UIcommand
+namespace Slot {
+    enum Type {
+        standard,
+        small
+    };
+}
+
+struct SlotInfo_t
 {
-public:
-    CMDSlotID(const char* theCommandPath, G4UImessenger* theMessenger);
-    ~CMDSlotID() override = default;
-    static std::pair<int, STDSlotInfo_t> GetSlotInfo(const char *param);
+    int slot_id;
+    Slot::Type type;
+    DetectorInfo_t detector;
+
+    double GetTheta() const;    //! Return the theta angle of the slot
+    double GetPhi() const;      //! Return the phi angle of the slot
 };
 
-class DetectorSetupMessenger : public G4UImessenger
+class FrameSetupMessenger : public G4UImessenger
 {
-private:
-    G4UIdirectory *fDirectory;
-    CMDSlotID *slotCmd;
-
-
-    STDSlotInfo_t std_slots[number_of_large_frame_positions];
-
 public:
-    DetectorSetupMessenger();
-    ~DetectorSetupMessenger() override;
-
+    FrameSetupMessenger();
+    ~FrameSetupMessenger();
 
     void SetNewValue(G4UIcommand* command, G4String newValue) override;
+    G4String GetCurrentValue(G4UIcommand * command);
 
-    inline STDSlotInfo_t GetSlot(const size_t &n) const { return std_slots[n]; }
+private:
 
-//#if TEST_INTERFACE
-    inline G4UIcommand *getSlotCMD(){ return slotCmd; }
-//#endif // TEST_INTERFACE
 
 };
+
 
 #endif //AFRODITE_DETECTORSETUPMESSENGER_H

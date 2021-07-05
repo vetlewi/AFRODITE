@@ -153,6 +153,8 @@ private:
     /////////////////////////////////////
     //  K600 BACTAR Target Chamber
     G4bool      AFRODITE_MathisTC_Presence;
+
+    G4bool      AFRODITE_Frame_Presence;
     
     /////////////////////////////////////
     //  K600 Target

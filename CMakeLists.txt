@@ -48,6 +48,7 @@ target_link_libraries(MeshReader PRIVATE assimp::assimp ${Geant4_LIBRARIES})
 set_target_properties(MeshReader PROPERTIES CXX_STANDARD 17)
 
 add_library(detector
+        source/Detectors/DetectorFactories.cc
         source/Detectors/CloverFactory.cc
         source/Detectors/OCLLaBr3.cc
         source/Detectors/FTALaBr3.cc
@@ -68,7 +69,7 @@ target_include_directories(detector
 target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 set_target_properties(detector PROPERTIES CXX_STANDARD 17)
 target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES} assimp::assimp
-        PRIVATE AFRODITE::MeshReader)
+        PRIVATE AFRODITE::MeshReader magic_enum::magic_enum)
 
 add_library(AFRODITE
         source/G4User/ActionInitialization.cc

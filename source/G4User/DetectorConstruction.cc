@@ -88,6 +88,7 @@
 #endif // PLY_PATH
 
 INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply");
+INCBIN(DetectorFrame, PLY_PATH"/STRUCTURES/Frame/OuterFrame_100umTolerance.ply");
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -358,6 +359,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     ////////////////////////////////////////////////
     ////    New AFRODITE Target Chamber by Mathis
     AFRODITE_MathisTC_Presence = true;
+
+    AFRODITE_Frame_Presence = true;
     
     /////////////////////////////////////
     ////    AFRODITE Target
@@ -391,12 +394,13 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                                  [](const G4bool &p){ return p; });
     bool have_shield = std::any_of(CLOVER_Shield_Presence, CLOVER_Shield_Presence+sizeof(CLOVER_Shield_Presence),
                                    [](const G4bool &p){ return p; });
-    CloverFactory cloverFactory(have_HPGe, have_shield);
-    OCLLaBr3 ocl_factory(false);
-    FTALaBr3 labr_factory;
+    Detector::CloverFactory cloverFactory(have_HPGe, have_shield);
+    Detector::OCLLaBr3 ocl_factory(false);
+    Detector::FTALaBr3 labr_factory;
 
     G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
     MeshReader targetChamber({gTargetChamberData, gTargetChamberSize}, "TargetChamber", offset_MathisTC);
+    MeshReader detectorFrame({gDetectorFrameData, gDetectorFrameSize}, "DetectorFrame", offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
@@ -466,10 +470,29 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                           false,           // no boolean operations
                           0,               // copy number
                           fCheckOverlaps); // checking overlaps*/
-    
-    
-    
-    
+
+
+    //////////////////////////////////////////////////////////
+    //              Detector frame - CADMesh
+    //////////////////////////////////////////////////////////
+
+    if ( AFRODITE_Frame_Presence ) {
+        G4VSolid *solidDF = detectorFrame.GetSolid();
+
+        G4LogicalVolume *logicDF = new G4LogicalVolume(solidDF, G4_Al_Material, "DetectorFrameLogic");
+
+        G4VisAttributes* AFRODITE_DF_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+        AFRODITE_DF_VisAtt->SetForceSolid(true);
+        logicDF->SetVisAttributes(AFRODITE_DF_VisAtt);
+
+        new G4PVPlacement(0, G4ThreeVector(),
+                          logicDF,
+                          "DetectorFrame",
+                          LogicVacuumChamber,
+                          false,
+                          0,
+                          fCheckOverlaps);
+    }
     
     //////////////////////////////////////////////////////////
     //              Scattering Chamber - CADMesh
@@ -535,7 +558,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
        if ( !S2_Silicon_Presence[i] )
            continue;
 
-        S2Factory s2factory(S2_Silicon_Thickness[i]);
+        Detector::S2Factory s2factory(S2_Silicon_Thickness[i]);
         auto *assembly = s2factory.GetAssembly(0, fCheckOverlaps);
 
        S2_Silicon_position[i] = S2_Silicon_Distance[i]
