@@ -47,8 +47,6 @@ public:
             throw std::runtime_error("Could not find materials needed.");
     }
 
-    void SetParameters(const Parameters *param) override {}
-
     ~HPGeFactory() override = default;
 
     G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) override {
@@ -187,8 +185,6 @@ public:
 
         }
 
-    void SetParameters(const Parameters *param) override {}
-
     G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &overlap) override
     {
         auto *assembly = new G4AssemblyVolume();
@@ -276,21 +272,6 @@ CloverFactory::CloverFactory(const bool &have_HPGe, const bool &have_Shield)
     , crystalFactory( have_HPGe ? new HPGeFactory : nullptr )
     , shieldFactory( have_Shield ? new ShieldFactory : nullptr )
 {}
-
-void CloverFactory::SetParameters(const Parameters *param)
-{
-    auto params = reinterpret_cast<const CloverParameters *>(param);
-
-    if ( params->have_HPGe ){
-        if ( !crystalFactory )
-            crystalFactory = new HPGeFactory;
-    }
-
-    if ( params->have_Shield ){
-        if ( !shieldFactory )
-            shieldFactory = new ShieldFactory;
-    }
-}
 
 CloverFactory::~CloverFactory()
 {

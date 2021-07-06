@@ -9,9 +9,6 @@ class G4AssemblyVolume;
 
 namespace Detector {
 
-    struct Parameters {
-    };
-
     enum Type
     {
         none,
@@ -36,8 +33,6 @@ namespace Detector {
         //virtual void PlaceAssembly(const int &copy_no, const bool &overlap) = 0;
 
         inline Detector::Type GetType() const { return detector_type; }
-
-        virtual void SetParameters(const Parameters *param) = 0;
 
     };
 }

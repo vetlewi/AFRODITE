@@ -20,8 +20,6 @@ namespace Detector {
 
         G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
-        void SetParameters(const Parameters *param) override {};
-
     private:
 
         // Materials for the different components

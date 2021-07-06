@@ -17,11 +17,6 @@ class G4LogicalVolume;
 
 namespace Detector {
 
-    struct S2Parameters : public Parameters
-    {
-        double thickness;
-    };
-
     class S2Factory : public Detector::DetectorFactory
     {
     public:
@@ -30,8 +25,6 @@ namespace Detector {
         ~S2Factory() override = default;
 
         G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
-
-        void SetParameters(const Parameters *param) override {};
 
         S2Factory GetFactory(const G4double &_thickness)
         {

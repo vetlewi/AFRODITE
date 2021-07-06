@@ -41,7 +41,7 @@
 #include <G4RotationMatrix.hh>
 #include <G4Transform3D.hh>
 
-
+#include "user/DetectorSetupMessenger.hh"
 #include "detector/OCLLaBr3.hh"
 #include "detector/FTALaBr3.hh"
 #include "Constants.hh"
@@ -56,7 +56,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
     DetectorConstruction();
-    ~DetectorConstruction() override = default;
+    ~DetectorConstruction() override { delete messenger; }
     
 public:
     G4VPhysicalVolume* Construct() override;
@@ -67,10 +67,17 @@ private:
     G4VPhysicalVolume* DefineVolumes();
     
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
+
+    DetectorSetupMessenger *messenger;
     
     /////////////////////////////
     //          WORLD
     G4double WorldSize;
+
+    G4int num_particle_arrays;
+    G4int num_clover;
+    G4int num_fta;
+    G4int num_ocl;
 
     /////////////////////////////
     // List of all frame slots

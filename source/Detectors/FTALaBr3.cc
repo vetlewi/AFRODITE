@@ -49,22 +49,8 @@ extern G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, c
 
 using namespace Detector;
 
-FTAParameters::FTAParameters()
-    : HousingHalfHeight( 233.*mm/2. ), HousingRadius( 62.*mm/2. ), CrystalHousingRadius( 57.5*mm/2. )
-    , CrystalHousingHalfThickness( 0.5*mm/2. ), CrystalHousingHalfHeight( 49.*mm/2. ), CrystalRadius( 50.8*mm/2. )
-    , CrystalHalfHeight( 50.8*mm/2. ), PlexiWindowHalfHeight( 1.0*mm/2. ), PMTHouseThickness( 0.5*mm/2. )
-    , PMTWindowThickness( 1.0*mm ), PMTHalfHeight( 121.*mm/2. ), PMTRadius( 52.0*mm/2. ), PMTCathodeRadius( 46.*mm/2. )
-    , PMTCathodeHalfHeight( 0.005*mm ){}
-
-FTAParameters::FTAParameters(const FTAParameters &param)
-{
-    G4Exception("FTAParameters", "Not Implemented", G4ExceptionSeverity::FatalErrorInArgument,
-                "FTA factory does not support custom parameters for the FTA detectors.");
-}
-
-FTALaBr3::FTALaBr3(const FTAParameters *params)
+FTALaBr3::FTALaBr3()
     : Detector::DetectorFactory( Detector::Type::fta_labr )
-    , parameters( ( params ) ? *params : FTAParameters() )
     , fMatLaBr3Vacuum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
     , fMatLaBr3Housing( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
     , fMatLaBr3Reflector( G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON") )

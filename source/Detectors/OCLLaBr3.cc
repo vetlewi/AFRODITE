@@ -146,7 +146,7 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
 
     hiddenVIS->SetVisibility(false);
     shieldVIS->SetVisibility(true);
-    crystalVIS->SetVisibility(false);
+    crystalVIS->SetVisibility(true);
     coatingVIS->SetVisibility(false);
     reflectorVIS->SetVisibility(false);
     plexiCoatingVIS->SetVisibility(false);

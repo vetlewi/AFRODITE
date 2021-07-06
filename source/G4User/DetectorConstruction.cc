@@ -69,6 +69,7 @@
 #include <G4FieldManager.hh>
 #include <G4TransportationManager.hh>
 
+#include "detector/DetectorFactories.hh"
 #include "detector/CloverFactory.hh"
 #include "detector/S2Factory.hh"
 
@@ -87,15 +88,34 @@
 #define PLY_PATH SRC_PATH"Mesh-Models"
 #endif // PLY_PATH
 
-INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply");
+INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_100umTolerance.ply");
 INCBIN(DetectorFrame, PLY_PATH"/STRUCTURES/Frame/OuterFrame_100umTolerance.ply");
+
+constexpr double std_theta[] = {135.*deg, 135.*deg, 135.*deg, 135.*deg,
+                                   90.*deg, 90.*deg, 90.*deg, 90.*deg, 90.*deg, 90.*deg, 90.*deg, 90.*deg,
+                                   45.*deg, 45.*deg, 45.*deg, 45.*deg};
+
+constexpr double std_phi[] = {90.*deg, 180.*deg, 270.*deg, 0.*deg,
+                              90.*deg, 135.*deg, 180.*deg, 215.*deg, 270.*deg, 315.*deg, 0.*deg, 45.*deg,
+                              90.*deg, 180.*deg, 270.*deg, 0.*deg};
+
+constexpr double small_theta[] = {125.*deg, 125.*deg, 125.*deg, 125.*deg,
+                                  55.*deg, 55.*deg, 55.*deg, 55.*deg};
+
+constexpr double small_phi[] = {135.*deg, 225.*deg, 315.*deg, 45.*deg,
+                                135.*deg, 225.*deg, 315.*deg, 45.*deg};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
     , fCheckOverlaps( false )
+    , messenger( new DetectorSetupMessenger )
     , WorldSize( 5. * m )
+    , num_particle_arrays( 0 )
+    , num_clover( 0 )
+    , num_ocl( 0 )
+    , num_fta( 0 )
 {
 }
 
@@ -103,271 +123,256 @@ DetectorConstruction::DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-    
+    //////////////////////////////////////
+    //          Get Materials           //
+    //////////////////////////////////////
+
+    ////    NIST Defined Elemental Material
+    G4Material* G4_Al_Material  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+
+    ////    NIST Defined Materials and Compounds
+    G4Material* G4_Galactic_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+    G4Material* G4_Air_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR");
+    G4Material* G4_LITHIUM_CARBONATE_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
+    G4Material* G4_concrete_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
+
+    Detector::DetectorFactories factories;
+
+    std::unique_ptr<MeshReader> targetChamber;
+    std::unique_ptr<MeshReader> detectorFrame;
+
+    if ( messenger->TargetChamberPresent() ) {
+        targetChamber.reset(new MeshReader({gTargetChamberData, gTargetChamberSize},
+                                           "TargetChamber",
+                                           G4ThreeVector(0 * cm, 0 * cm, 0 * cm)));
+    }
+    if ( messenger->FramePresent() ){
+        detectorFrame.reset(new MeshReader({gDetectorFrameData, gDetectorFrameSize},
+                                           "DetectorFrame",
+                                           G4ThreeVector(0 * cm, 0 * cm, 0 * cm)));
+    }
+
     //////////////////////////////////////////////////////////
-    ////                                                  ////
-    ////            DETECTOR ARRAY POSITIONING            ////
-    ////                                                  ////
+    //                      WORLD                           //
     //////////////////////////////////////////////////////////
 
-    /////////////////////////////////
-    ////    S2 Silicon SETUP      ///
-    /////////////////////////////////
+    G4Box* SolidWorld = new G4Box("World", (5*m + 50*cm)/2, 200*cm/2., (5*m + 50*cm)/2);
+
+    G4LogicalVolume *LogicWorld = new G4LogicalVolume(SolidWorld,                //its solid
+                                                      G4_Galactic_Material,      //its material
+                                                "World");                  //its name
+
+    G4VisAttributes* World_VisAtt= new G4VisAttributes(G4Colour(0., 0., 0.));
+    World_VisAtt->SetVisibility(true);
+    LogicWorld->SetVisAttributes(World_VisAtt);
+
+    G4VPhysicalVolume*
+            PhysiWorld = new G4PVPlacement(0,                        //no rotation
+                                           G4ThreeVector(),          //at (0,0,0)
+                                           LogicWorld,               //its logical volume
+                                           "World",                  //its name
+                                           0,                        //its mother  volume
+                                           false,                    //no boolean operation
+                                           0);                       //copy number
 
 
-    S2_Silicon_AllPresent_Override = false;
-    S2_Silicon_AllAbsent_Override = false;
+    //////////////////////////////////////////////////////////
+    //              Concrete walls                          //
+    //////////////////////////////////////////////////////////
 
-    S2_Silicon_Presence[0] = true;
-    S2_Silicon_Thickness[0] = 330*um;
-    S2_Silicon_Distance[0] = 22.5*mm;
-    S2_Silicon_phi[0] = 0;
-    S2_Silicon_theta[0] = 0;
+    G4Box *solidConcrete = new G4Box("Concrete_box", (5*m + 50*cm)/2, 200*cm/2., (5*m + 50*cm)/2);
+    G4LogicalVolume*
+            LogicConcrete = new G4LogicalVolume(solidConcrete,                //its solid
+                                                G4_concrete_Material,      //its material
+                                                "Concrete");                  //its name
 
-    S2_Silicon_Presence[1] = true;
-    S2_Silicon_Thickness[1] = 1090*um;
-    S2_Silicon_Distance[1] = 25.5*mm;
-    S2_Silicon_phi[1] = 0;
-    S2_Silicon_theta[1] = 0;
+    new G4PVPlacement(0, G4ThreeVector(),
+                      LogicConcrete,
+                      "ConcretePhysical",
+                      LogicWorld,
+                      false,
+                      0,
+                      fCheckOverlaps);
 
-    for (G4int i=0; i<numberOfSi; i++)
-    {
-        S2_Silicon_rotm[i].rotateY(S2_Silicon_theta[i]);
-        S2_Silicon_rotm[i].rotateZ(S2_Silicon_phi[i]);
+    //////////////////////////////////////////////////////////
+    //                 Air inside concrete                  //
+    //////////////////////////////////////////////////////////
 
-        if(S2_Silicon_AllPresent_Override) S2_Silicon_Presence[i] = true;
-        if(S2_Silicon_AllAbsent_Override) S2_Silicon_Presence[i] = false;
-        if(S2_Silicon_AllPresent_Override && S2_Silicon_AllAbsent_Override) S2_Silicon_Presence[i] = false;
-    }
-    
-    /////////////////////////////
-    ////    CLOVER SETUP      ///
-    /////////////////////////////
-    
-    CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = false;
-    
-    CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
-    
-    
-    //  CLOVER 1
-    CLOVER_Presence[0] = true;
-    CLOVER_Shield_Presence[0] = true;
-    CLOVER_Distance[0] = (21.-7.3)*cm;
-    CLOVER_phi[0] = 0.*deg;
-    CLOVER_theta[0] = 90.*deg;
-    
-    //  CLOVER 2
-    CLOVER_Presence[1] = true;
-    CLOVER_Shield_Presence[1] = true;
-    CLOVER_Distance[1] = (21.-7.3)*cm;
-    CLOVER_phi[1] = 45*deg;
-    CLOVER_theta[1] = 90*deg;
-    
-    //  CLOVER 3
-    CLOVER_Presence[2] = true;
-    CLOVER_Shield_Presence[2] = true;
-    CLOVER_Distance[2] = (21.-7.3)*cm;
-    CLOVER_phi[2] = 135*deg;
-    CLOVER_theta[2] = 90*deg;
+    G4Box* air_solid = new G4Box("Air", (5*m)/2, 150*cm/2., (5*m)/2);
+    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(air_solid, G4_Air_Material,"VacuumChamber");
+    PhysiVacuumChamber =
+            new G4PVPlacement(0, G4ThreeVector(), LogicVacuumChamber,
+                              "VaccumChamber",LogicConcrete, false, 0, fCheckOverlaps);
 
-    //  CLOVER 4
-    CLOVER_Presence[3] = true;
-    CLOVER_Shield_Presence[3] = true;
-    CLOVER_Distance[3] = (21.-7.3)*cm;
-    CLOVER_phi[3] = 180*deg;
-    CLOVER_theta[3] = 90*deg;
 
-    //  CLOVER 5
-    CLOVER_Presence[4] = true;
-    CLOVER_Shield_Presence[4] = true;
-    CLOVER_Distance[4] = (21.-7.3)*cm;
-    CLOVER_phi[4] = 315*deg;
-    CLOVER_theta[4] = 90*deg;
-    
-    //  CLOVER 6
-    CLOVER_Presence[5] = true;
-    CLOVER_Shield_Presence[5] = true;
-    CLOVER_Distance[5] = (21.-7.3)*cm;
-    CLOVER_phi[5] = 0*deg;
-    CLOVER_theta[5] = 135*deg;
-    
-    //  CLOVER 7
-    CLOVER_Presence[6] = true;
-    CLOVER_Shield_Presence[6] = true;
-    CLOVER_Distance[6] = (21.-7.3)*cm;
-    CLOVER_phi[6] = 90*deg;
-    CLOVER_theta[6] = 135*deg;
+    //////////////////////////////////////////////////////////
+    //                    Detector frame                    //
+    //////////////////////////////////////////////////////////
 
-    //  CLOVER 8
-    CLOVER_Presence[7] = true;
-    CLOVER_Shield_Presence[7] = true;
-    CLOVER_Distance[7] = (21.-7.3)*cm;
-    CLOVER_phi[7] = 180*deg;
-    CLOVER_theta[7] = 135*deg;
-    
-    for (G4int i=0; i<numberOf_CLOVER; i++)
-    {
+    if ( detectorFrame ){
 
-        CLOVER_rotm[i].rotateX(180.*deg);
-        CLOVER_rotm[i].rotateY(CLOVER_theta[i]);
-        CLOVER_rotm[i].rotateZ(CLOVER_phi[i]);
+        G4VSolid *solidDF = detectorFrame->GetSolid();
+        G4LogicalVolume *logicDF = new G4LogicalVolume(solidDF, G4_Al_Material, "DetectorFrameLogic");
 
-        if(CLOVER_AllPresent_Override) CLOVER_Presence[i] = true;
-        if(CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
-        if(CLOVER_AllPresent_Override && CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
-        
-        if(CLOVER_Shield_AllPresent_Override) CLOVER_Shield_Presence[i] = true;
-        if(CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
-        if(CLOVER_Shield_AllPresent_Override && CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
+        G4VisAttributes* AFRODITE_DF_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+        AFRODITE_DF_VisAtt->SetForceSolid(true);
+        logicDF->SetVisAttributes(AFRODITE_DF_VisAtt);
+
+        new G4PVPlacement(0, G4ThreeVector(),
+                          logicDF,
+                          "DetectorFrame",
+                          LogicVacuumChamber,
+                          false,
+                          0,
+                          fCheckOverlaps);
+
     }
 
-   
+    //////////////////////////////////////////////////////////
+    //                 Target Chamber                       //
+    //////////////////////////////////////////////////////////
 
-    ////////////////////////////
-    ////    OCL LaBr3 Detectors
-    
-    OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
-    
-    
-    // LaBr3 Detector 1
-    OCLLaBr3_Presence[0] = true;
-    OCLLaBr3_Distance[0] = 14.*cm;
-    OCLLaBr3_phi[0] = 0.*deg;
-    OCLLaBr3_theta[0] = 45.*deg;
-    
-    //  LaBr3 Detector 2
-    OCLLaBr3_Presence[1] = true;
-    OCLLaBr3_Distance[1] = 14.*cm;
-    OCLLaBr3_phi[1] = 90.*deg;
-    OCLLaBr3_theta[1] = 45.*deg;
-
-    // LaBr3 Detector 3
-    OCLLaBr3_Presence[2] = false;
-    OCLLaBr3_Distance[2] = 14.*cm;
-    OCLLaBr3_phi[2] = 180.*deg;
-    OCLLaBr3_theta[2] = 45.*deg;
-
-    //  LaBr3 Detector 4
-    OCLLaBr3_Presence[3] = false;
-    OCLLaBr3_Distance[3] = 14.*cm;
-    OCLLaBr3_phi[3] = 270.*deg;
-    OCLLaBr3_theta[3] = 45.*deg;
-
-    // LaBr3 Detector 5
-    OCLLaBr3_Presence[4] = false;
-    OCLLaBr3_Distance[4] = 14.*cm;
-    OCLLaBr3_phi[4] = 225.*deg;
-    OCLLaBr3_theta[4] = 90.*deg;
-
-    //  LaBr3 Detector 6
-    OCLLaBr3_Presence[5] = false;
-    OCLLaBr3_Distance[5] = 14.*cm;
-    OCLLaBr3_phi[5] = 270.*deg;
-    OCLLaBr3_theta[5] = 135.*deg;
-
-    
-    for (G4int i=0; i<numberOf_OCLLaBr3; i++)
+    if( targetChamber )
     {
-        OCLLaBr3_rotm[i].rotateY(OCLLaBr3_theta[i]);
-        OCLLaBr3_rotm[i].rotateZ(OCLLaBr3_phi[i]);
 
-        if(OCLLaBr3_AllPresent_Override) OCLLaBr3_Presence[i] = true;
-        if(OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
-        if(OCLLaBr3_AllPresent_Override && OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
+        G4VSolid * SolidMathisTC = targetChamber->GetSolid();
+
+        G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
+        G4RotationMatrix *rot = new G4RotationMatrix();
+        rot->rotateY(180*deg);
+        new G4PVPlacement(rot,               // no rotation
+                          G4ThreeVector(), // at (x,y,z)
+                          LogicMathisTC,       // its logical volume
+                          "BACTAR",       // its name
+                          LogicVacuumChamber,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
+
+
+        //  Visualisation
+        G4VisAttributes* AFRODITE_MathisTC_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+        AFRODITE_MathisTC_VisAtt->SetForceSolid(true);
+        LogicMathisTC->SetVisAttributes(AFRODITE_MathisTC_VisAtt);
     }
 
-    ////////////////////////////
-    ////    FTA LaBr3 Detectors
-    ////////////////////////////
+    //////////////////////////////////////////////////////////
+    //                      Target                          //
+    //////////////////////////////////////////////////////////
 
-    // NOTE: Angles are defined differently for FTA detectors.
+    if ( messenger->TargetPresent() ){
+        G4Box* SolidTarget = new G4Box("Target", (20./2)*mm, (20./2)*mm, (2.42/2)*um);
+        G4LogicalVolume* LogicTarget = new G4LogicalVolume(SolidTarget, G4_LITHIUM_CARBONATE_Material,"Target");
 
-    FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = false;
+        G4VisAttributes* Target_VisAtt= new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));
+        LogicTarget->SetVisAttributes(Target_VisAtt);
 
+        new G4PVPlacement(0,               // no rotation
+                          G4ThreeVector(0, 0, 0), // at (x,y,z)
+                          LogicTarget,       // its logical volume
+                          "Target",       // its name
+                          LogicVacuumChamber,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
+    }
 
-    // LaBr3 Detector 1
-    FTALaBr3_Presence[0] = true;
-    FTALaBr3_Distance[0] = 14.*cm;
-    FTALaBr3_phi[0] = 45.*deg;
-    FTALaBr3_theta[0] = 55*deg;
+    //////////////////////////////////////////////////////////
+    //                  Particle telescope                  //
+    //////////////////////////////////////////////////////////
 
+    for ( auto &volume : messenger->GetParticleArray() ){
+        if ( volume.type == Detector::none )
+            continue;
 
-    // LaBr3 Detector 2
-    FTALaBr3_Presence[1] = true;
-    FTALaBr3_Distance[1] = 14.*cm;
-    FTALaBr3_phi[1] = 135.*deg;
-    FTALaBr3_theta[1] = 55*deg;
+        auto factory = reinterpret_cast<Detector::S2Factory *>(factories.GetFactory(volume.type))->GetFactory(volume.thickness);;
+        auto assembly = factory.GetAssembly(num_particle_arrays, fCheckOverlaps);
 
-    // LaBr3 Detector 3
-    FTALaBr3_Presence[2] = true;
-    FTALaBr3_Distance[2] = 14.*cm;
-    FTALaBr3_phi[2] = 225.*deg;
-    FTALaBr3_theta[2] = 55*deg;
+        auto pos = volume.distance*G4ThreeVector(0, 0, 1);
 
-    // LaBr3 Detector 4
-    FTALaBr3_Presence[3] = true;
-    FTALaBr3_Distance[3] = 14.*cm;
-    FTALaBr3_phi[3] = 225.*deg;
-    FTALaBr3_theta[3] = (180-55)*deg;
+        auto rot = G4Transform3D(G4RotationMatrix(), pos);
 
+        assembly->MakeImprint(LogicVacuumChamber, rot, num_particle_arrays++);
+    }
 
-    // LaBr3 Detector 5
-    FTALaBr3_Presence[4] = true;
-    FTALaBr3_Distance[4] = 14.*cm;
-    FTALaBr3_phi[4] = 315.*deg;
-    FTALaBr3_theta[4] = 55.*deg;
+    //////////////////////////////////////////////////////////
+    //                  Standard detectors                  //
+    //////////////////////////////////////////////////////////
 
-    // LaBr3 Detector 6
-    FTALaBr3_Presence[5] = true;
-    FTALaBr3_Distance[5] = 14.*cm;
-    FTALaBr3_phi[5] = 315.*deg;
-    FTALaBr3_theta[5] = (180.-55.)*deg;
+    int pos_no = 0;
+    std::map<Detector::Type, int*> map_num = {{Detector::clover, &num_clover}, {Detector::ocl_labr, &num_ocl}, {Detector::fta_labr, &num_fta}};
+    std::map<Detector::Type, double> map_rot = {{Detector::clover, 180.*deg}, {Detector::ocl_labr, 0.*deg}, {Detector::fta_labr, 0*deg}};
 
+    for ( auto &volume : messenger->GetStdSlot() ){
+        if ( volume.type == Detector::none ) {
+            ++pos_no;
+            continue;
+        }
 
-    for (G4int i=0; i<numberOf_FTALaBr3; i++)
-    {
-        FTALaBr3_rotm[i].rotateX(270*deg);
-        FTALaBr3_rotm[i].rotateZ(FTALaBr3_theta[i]);
-        FTALaBr3_rotm[i].rotateY(FTALaBr3_phi[i]);
+        auto factory = factories.GetFactory(volume.type);
+        int *num = map_num.find(volume.type)->second;
+        auto assembly = factory->GetAssembly(*num, fCheckOverlaps);
 
-        if(FTALaBr3_AllPresent_Override) FTALaBr3_Presence[i] = true;
-        if(FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
-        if(FTALaBr3_AllPresent_Override && FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
+        auto pos = volume.distance * G4ThreeVector(sin(std_theta[pos_no]) * cos(std_phi[pos_no]),
+                                                   sin(std_theta[pos_no]) * sin(std_phi[pos_no]),
+                                                   cos(std_theta[pos_no]));
+        G4RotationMatrix rotm;
+        rotm.rotateX(map_rot[volume.type]);
+        rotm.rotateY(std_theta[pos_no]);
+        rotm.rotateZ(std_phi[pos_no]);
+
+        auto transform = G4Transform3D(rotm, pos);
+
+        assembly->MakeImprint(LogicVacuumChamber, transform, *num);
+
+        if ( volume.type == Detector::clover ){
+            auto nVolumes = assembly->TotalImprintedVolumes();
+            int copy_no = 0;
+            for ( auto vol = assembly->GetVolumesIterator() ;
+                  vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
+                if ( fCheckOverlaps )
+                    (*vol)->CheckOverlaps();
+                if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
+                    (*vol)->SetCopyNo(num_clover * numberOf_BGO_Crystals + copy_no++);
+                    (*vol)->SetName("CLOVER_Shield_BGOCrystal");
+                }
+            }
+        }
+        ++(*num);
+        ++pos_no;
+    }
+
+    pos_no = 0;
+    for ( auto &volume : messenger->GetSmallSlot() ){
+        if ( volume.type == Detector::none ) {
+            ++pos_no;
+            continue;
+        }
+
+        auto factory = factories.GetFactory(volume.type);
+        int *num = map_num.find(volume.type)->second;
+        auto assembly = factory->GetAssembly(*num, fCheckOverlaps);
+
+        auto pos = volume.distance * G4ThreeVector(sin(small_theta[pos_no]) * cos(small_phi[pos_no]),
+                                                   sin(small_theta[pos_no]) * sin(small_phi[pos_no]),
+                                                   cos(small_theta[pos_no]));
+        G4RotationMatrix rotm;
+        rotm.rotateX(map_rot[volume.type]);
+        rotm.rotateY(small_theta[pos_no]);
+        rotm.rotateZ(small_phi[pos_no]);
+
+        auto transform = G4Transform3D(rotm, pos);
+
+        assembly->MakeImprint(LogicVacuumChamber, transform, *num);
+
+        ++(*num);
+        ++pos_no;
+
     }
 
 
-    
-    
-    ////////////////////////////////////////////////////
-    ////                                            ////
-    ////            AFRODITE VAULT SETUP            ////
-    ////                                            ////
-    ////////////////////////////////////////////////////
 
-    
-    ////////////////////////////////////////////////////////
-    ////                                                ////
-    ////        AFRODITE VAULT - STRUCTURE SETUP        ////
-    ////                                                ////
-    ////////////////////////////////////////////////////////
-    
-    
-    ////////////////////////////////////////////////
-    ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = true;
-
-    AFRODITE_Frame_Presence = true;
-    
-    /////////////////////////////////////
-    ////    AFRODITE Target
-    AFRODITE_Target_Presence = true;
-    
-    // Define volumes
-    return DefineVolumes();
+    return PhysiWorld;
 }
 
 
@@ -453,23 +458,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //////////////////////////////////////////////////////////
     //                      VACUUM CHAMBER
     //////////////////////////////////////////////////////////
-    
-   /* G4ThreeVector positionVacuumChamber = G4ThreeVector(0,0,0);
 
-    
-    G4Box* SolidVacuumChamber = new G4Box("VacuumChamber", (200./2)*cm, (200./2)*cm, (200./2)*cm);
-    
-    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(SolidVacuumChamber, G4_Galactic_Material,"VacuumChamber");
-    
-    PhysiVacuumChamber =
-        new G4PVPlacement(0,               // no rotation
-                          positionVacuumChamber, // at (x,y,z)
-                          LogicVacuumChamber,       // its logical volume
-                          "VacuumChamber",       // its name
-                          LogicWorld,         // its mother  volume
-                          false,           // no boolean operations
-                          0,               // copy number
-                          fCheckOverlaps); // checking overlaps*/
 
 
     //////////////////////////////////////////////////////////
@@ -568,7 +557,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
        S2_Silicon_transform[i] = G4Transform3D(S2_Silicon_rotm[i],S2_Silicon_position[i]);
 
-        assembly->MakeImprint(LogicVacuumChamber, S2_Silicon_transform[i], i);
+       assembly->MakeImprint(LogicVacuumChamber, S2_Silicon_transform[i], i);
 
     }
     
@@ -688,15 +677,5 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     return PhysiWorld;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/*void DetectorConstruction::ConstructSDandField()
-{
-
-    // FTA detectors
-    auto *FTALaBrSD = new EnergyDepSD("LaBr/FTA", "TrackerHitsCollection");
-    G4SDManager::GetSDMpointer()->AddNewDetector(FTALaBrSD);
-    SetSensitiveDetector("FTA_Crystal", FTALaBrSD, true);
-}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

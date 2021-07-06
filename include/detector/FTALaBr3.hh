@@ -15,68 +15,17 @@ class G4AssemblyVolume;
 
 namespace Detector {
 
-    struct FTAParameters : public Parameters
-    {
-        // Currently we haven't implemented anything yet.
-        // Everything atm are hard coded.
-        // TODO: Move all parameters to this object
-
-        double HousingHalfHeight;
-        double HousingRadius;
-
-        double CrystalHousingRadius;
-        double CrystalHousingHalfThickness;
-        double CrystalHousingHalfHeight;
-
-        double CrystalRadius;
-        double CrystalHalfHeight;
-
-        [[nodiscard]] double ReflectorThickness() const
-            { return CrystalHousingRadius - 2*CrystalHousingHalfThickness - CrystalRadius; }
-
-        [[nodiscard]] double ReflectorHalfThickness() const
-            { return ReflectorThickness()/2.; }
-
-        [[nodiscard]] double ReflectorRadius() const
-            { return CrystalRadius + ReflectorThickness(); }
-
-        [[nodiscard]] double ReflectorHalfHeight() const
-            { return CrystalHalfHeight + ReflectorHalfThickness(); }
-
-        [[nodiscard]] double PlexiWindowRadius() const { return ReflectorRadius(); }
-        double PlexiWindowHalfHeight;
-
-        double PMTHouseThickness;
-        [[nodiscard]] double PMTHouseOuterRadius() const { return HousingRadius; }
-        [[nodiscard]] double PMTHouseInnerRadius() const { return PMTHouseOuterRadius() - PMTHouseThickness; }
-        [[nodiscard]] double PMTHouseHalfHeight() const { return HousingHalfHeight - CrystalHousingHalfHeight; }
-
-        double PMTWindowThickness;
-        double PMTHalfHeight;
-        double PMTRadius;
-        [[nodiscard]] double PMTVacuumRadius() const { return PMTRadius - PMTWindowThickness; }
-        [[nodiscard]] double PMTVacuumHalfHeight() const { return PMTHalfHeight - PMTWindowThickness; }
-
-        double PMTCathodeRadius;
-        double PMTCathodeHalfHeight;
-
-        FTAParameters();
-        FTAParameters(const FTAParameters &param);
-    };
-
     class FTALaBr3 : public Detector::DetectorFactory
     {
     public:
 
-        explicit FTALaBr3(const FTAParameters *params = nullptr);
+        FTALaBr3();
 
         ~FTALaBr3() override = default;
 
         G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
     private:
-        FTAParameters parameters;
-
         G4Material *fMatLaBr3Vacuum;
         G4Material *fMatLaBr3Housing;
         G4Material *fMatLaBr3Reflector;
