@@ -18,7 +18,8 @@ CPMAddPackage(
 
 CPMAddPackage(gh:ikalnytskyi/termcolor@2.0.0)
 
-#CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+#CPMAddPackage(NAME G4mpi SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../external/G4mpi)
 
 # ---- Create standalone executable ----
 

@@ -35,7 +35,7 @@
 //
 
 #include "user/RunAction.hh"
-#include "Analysis.hh"
+#include "user/Analysis.hh"
 #include "Constants.hh"
 
 #include "G4Run.hh"
@@ -59,17 +59,13 @@ RunAction::RunAction()
     G4RunManager::GetRunManager()->SetPrintProgress(10000);
     
     // Create analysis manager
-    // The choice of analysis technology is done via selectin of a namespace
-    // in Analysis.hh
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    G4cout << "Using " << analysisManager->GetType() << G4endl;
     
     // Create directories
-    //analysisManager->SetHistoDirectoryName("histograms");
-    //analysisManager->SetNtupleDirectoryName("ntuple");
     analysisManager->SetVerboseLevel(1);
-    //analysisManager->SetFirstHistoId(1);
-    
+    analysisManager->SetNtupleMerging(true);
+
+
     // Book histograms, ntuple
    
     // Creating ntuple
@@ -80,29 +76,29 @@ RunAction::RunAction()
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER*numberOf_CLOVER_Crystals ; ++n ){
-        sprintf(name, "CLOVER_Energy%d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
-        analysisManager->CreateNtupleDColumn(0, name);
+        sprintf(name, "CLOVER_Energy%02d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
+        analysisManager->CreateNtupleDColumn(name);
     }
     
      ////////////////////////////////////////////////////
     ////    BGO Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
         sprintf(name, "BGO_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, name);
+        analysisManager->CreateNtupleDColumn(name);
     }
     
     ////////////////////////////////////////////////////
     ////    OCL LABR Detectors
     for ( G4int n = 0 ; n < numberOf_OCLLaBr3 ; ++n ){
         sprintf(name, "OCLLABR_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, name);
+        analysisManager->CreateNtupleDColumn(name);
     }
 
     ////////////////////////////////////////////////////
     ////    FTA LABR Detectors
     for ( G4int n = 0 ; n < numberOf_FTALaBr3 ; ++n ){
         sprintf(name, "FTALABR_Energy%d", n);
-        analysisManager->CreateNtupleDColumn(0, name);
+        analysisManager->CreateNtupleDColumn(name);
     }
 #if ANALYZE_SI_DETECTORS
     ////////////////////////////////////////////////////

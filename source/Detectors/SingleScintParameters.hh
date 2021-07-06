@@ -95,4 +95,4 @@ namespace OCL {
 
 }
 
-#endif /* PARAMETERS__HH_ */
+#endif /* SingleScintPARAMETERS__HH_ */
