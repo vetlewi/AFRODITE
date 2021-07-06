@@ -36,7 +36,7 @@
 
 #include "user/EventAction.hh"
 #include "user/RunAction.hh"
-#include "Analysis.hh"
+#include "user/Analysis.hh"
 
 #include <G4RunManager.hh>
 #include <G4Event.hh>

@@ -26,7 +26,6 @@ if(WITH_GEANT4_UIVIS)
 else()
   find_package(Geant4 REQUIRED)
 endif()
-#include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
 # Detector factory library
@@ -48,6 +47,7 @@ target_link_libraries(MeshReader PRIVATE assimp::assimp ${Geant4_LIBRARIES})
 set_target_properties(MeshReader PROPERTIES CXX_STANDARD 17)
 
 add_library(detector
+        source/Detectors/DetectorFactories.cc
         source/Detectors/CloverFactory.cc
         source/Detectors/OCLLaBr3.cc
         source/Detectors/FTALaBr3.cc
@@ -68,13 +68,13 @@ target_include_directories(detector
 target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 set_target_properties(detector PROPERTIES CXX_STANDARD 17)
 target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES} assimp::assimp
-        PRIVATE AFRODITE::MeshReader)
+        PRIVATE AFRODITE::MeshReader magic_enum::magic_enum)
 
 add_library(AFRODITE
         source/G4User/ActionInitialization.cc
 
         source/G4User/DetectorConstruction.cc
-        source/DetectorSetupMessenger.cc
+        source/G4User/DetectorSetupMessenger.cc
         source/G4User/EventAction.cc
         source/G4User/PrimaryGeneratorAction.cc
         source/G4User/RunAction.cc
@@ -84,5 +84,5 @@ add_library(AFRODITE::AFRODITE ALIAS AFRODITE)
 set_target_properties(AFRODITE PROPERTIES CXX_STANDARD 17)
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(AFRODITE PUBLIC detector ${Geant4_LIBRARIES} magic_enum::magic_enum)
+target_link_libraries(AFRODITE PUBLIC detector ${Geant4_LIBRARIES} magic_enum::magic_enum MeshReader)
 target_compile_definitions(AFRODITE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")

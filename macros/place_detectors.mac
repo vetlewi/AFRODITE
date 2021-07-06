@@ -1,0 +1,39 @@
+
+
+# Place no particle detectors
+/Detector/particle/present 0 false
+/Detector/particle/present 1 false
+
+# Turn of target chamber and target
+/Detector/targetchamber true
+/Detector/target false
+/Detector/frame false
+
+# Turn of detectors in all positions except 0
+/Detector/gamma/std/type 0 ocl_labr
+/Detector/gamma/std/type 1 none
+/Detector/gamma/std/type 2 none
+/Detector/gamma/std/type 3 none
+/Detector/gamma/std/type 4 none
+/Detector/gamma/std/type 5 none
+/Detector/gamma/std/type 6 none
+/Detector/gamma/std/type 7 none
+/Detector/gamma/std/type 8 none
+/Detector/gamma/std/type 9 none
+/Detector/gamma/std/type 10 none
+/Detector/gamma/std/type 11 none
+/Detector/gamma/std/type 12 none
+/Detector/gamma/std/type 13 none
+/Detector/gamma/std/type 14 none
+/Detector/gamma/std/type 15 none
+
+# Turn off small detectors in all positions except 0
+/Detector/gamma/small/type 0 fta_labr
+/Detector/gamma/small/type 1 none
+/Detector/gamma/small/type 2 none
+/Detector/gamma/small/type 3 none
+/Detector/gamma/small/type 4 fta_labr
+/Detector/gamma/small/type 5 none
+/Detector/gamma/small/type 6 none
+/Detector/gamma/small/type 7 none
+
