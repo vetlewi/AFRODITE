@@ -45,17 +45,16 @@ constexpr G4double PMTCathodeRadius = 46.*mm/2;
 constexpr G4double PMTCathodeHalfHeight = 0.005*mm;
 
 
-
-
 extern G4Element *MakeIfNotFound(const G4String &name, const G4String &symbol, const G4double &Zeff, const G4double &Aeff);
 
+using namespace Detector;
 
 FTALaBr3::FTALaBr3()
     : Detector::DetectorFactory( Detector::Type::fta_labr )
     , fMatLaBr3Vacuum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )
     , fMatLaBr3Housing( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
     , fMatLaBr3Reflector( G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON") )
-    , fMatLaBr3Crystal( G4NistManager::Instance()->FindOrBuildMaterial("Labr3_Ce") )
+    , fMatLaBr3Crystal( G4Material::GetMaterial("LaBr3_Ce")/*G4NistManager::Instance()->FindOrBuildMaterial("Labr3_Ce")*/ )
     , fMatLaBr3LightGuide( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLEXIGLASS") )
     , fMatLaBr3PMTWindow( G4NistManager::Instance()->FindOrBuildMaterial("Borosilicate glass") )
     , fMatLaBr3PMTCathode( G4NistManager::Instance()->FindOrBuildMaterial("Bialkali") )

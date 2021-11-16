@@ -16,25 +16,27 @@
 
 #include <meshreader/MeshReader.hh>
 
-class CADMesh;
-
 class HPGeFactory;
 class ShieldFactory;
 
-class CloverFactory : public Detector::DetectorFactory {
+namespace Detector {
 
-public:
+    class CloverFactory : public Detector::DetectorFactory
+    {
 
-    CloverFactory(const bool &have_HPGe = true, const bool &have_Shield = true);
+    public:
 
-    ~CloverFactory() override;
+        explicit CloverFactory(const bool &have_HPGe = true, const bool &have_Shield = true);
 
-    G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
+        ~CloverFactory() override;
 
-private:
-    HPGeFactory *crystalFactory;
-    ShieldFactory *shieldFactory;
+        G4AssemblyVolume *GetAssembly(const int &copy_no, const bool &checkOverlap) override;
 
-};
+    private:
+        HPGeFactory *crystalFactory;
+        ShieldFactory *shieldFactory;
+
+    };
+}
 
 #endif // CLOVERFACTORY_HH
