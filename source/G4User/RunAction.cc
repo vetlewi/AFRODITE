@@ -68,6 +68,7 @@ RunAction::RunAction()
     //analysisManager->SetHistoDirectoryName("histograms");
     //analysisManager->SetNtupleDirectoryName("ntuple");
     analysisManager->SetVerboseLevel(1);
+    analysisManager->SetNtupleMerging(true);
     //analysisManager->SetFirstHistoId(1);
     
     // Book histograms, ntuple
