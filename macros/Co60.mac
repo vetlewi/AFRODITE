@@ -1,0 +1,54 @@
+# Setup the detectors in correct positions
+
+/Detector/targetchamber true
+/Detector/target true
+/Detector/frame true
+
+/Detector/particle/present 0 true
+/Detector/particle/present 1 true
+
+/Detector/gamma/std/type 0 clover
+/Detector/gamma/std/type 1 clover
+/Detector/gamma/std/type 2 none
+/Detector/gamma/std/type 3 clover
+/Detector/gamma/std/type 4 none
+/Detector/gamma/std/type 5 clover
+/Detector/gamma/std/type 6 clover
+/Detector/gamma/std/type 7 none
+/Detector/gamma/std/type 8 none
+/Detector/gamma/std/type 9 clover
+/Detector/gamma/std/type 10 clover
+/Detector/gamma/std/type 11 clover
+/Detector/gamma/std/type 12 ocl_labr
+/Detector/gamma/std/type 13 none
+/Detector/gamma/std/type 14 none
+/Detector/gamma/std/type 15 ocl_labr
+
+
+/Detector/gamma/small/type 0 fta_labr
+/Detector/gamma/small/type 1 fta_labr
+/Detector/gamma/small/type 2 fta_labr
+/Detector/gamma/small/type 3 fta_labr
+/Detector/gamma/small/type 4 fta_labr
+/Detector/gamma/small/type 5 none
+/Detector/gamma/small/type 6 none
+/Detector/gamma/small/type 7 fta_labr
+
+/run/initialize
+
+/FilePath/output Co60.root
+
+/grdm/verbose 0
+/grdm/noVolumes
+/grdm/selectVolume Target
+
+/gps/position 0 0 0
+/gps/energy 0 keV
+/gps/particle ion
+
+/grdm/nucleusLimits 60 60 27 27
+/gps/ion 27 60 0 0
+
+/run/beamOn 1000000
+
+

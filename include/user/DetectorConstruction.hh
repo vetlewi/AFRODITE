@@ -61,6 +61,11 @@ public:
 public:
     G4VPhysicalVolume* Construct() override;
 
+    inline G4int GetNumParticleArrays() const { return num_particle_arrays; }
+    inline G4int GetNumClover() const { return num_clover; }
+    inline G4int GetNumFTA() const { return num_fta; }
+    inline  G4int GetNumOCL() const { return num_ocl; }
+
 private:
     // methods
     //

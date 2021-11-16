@@ -1,9 +1,7 @@
 # Macro file for the initialization of example B4
 # in interactive session
 #
-
-/control/execute place_detectors.mac
-
+/control/execute Co60.mac
 # Set some default verbose
 #
 /control/verbose 2

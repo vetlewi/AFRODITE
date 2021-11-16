@@ -44,29 +44,52 @@
 #include "user/SteppingAction.hh"
 
 class G4Event;
+class DetectorConstruction;
+
+template<typename T>
+class SimpleVec
+{
+private:
+    size_t size;
+    T *data;
+public:
+    explicit SimpleVec(const size_t &length) : size( length ), data( new T[size] ){}
+    ~SimpleVec(){ delete[] data; }
+
+    inline T* begin() const { return data; }
+    inline T* end() const { return data+size; }
+
+    inline T &operator[](const size_t &n){ return data[size]; }
+
+    inline void reset(){ memset(data, 0, sizeof(T) * size); }
+
+};
 
 class EventAction : public G4UserEventAction
 {
 public:
     EventAction();
 
-    virtual ~EventAction();
+    ~EventAction() override;
 
-    virtual void BeginOfEventAction(const G4Event *event);
+    void BeginOfEventAction(const G4Event *event) override;
+    void EndOfEventAction(const G4Event *event) override;
 
-    virtual void EndOfEventAction(const G4Event *event);
+private:
+    const DetectorConstruction *geometry;
 
 protected:
 
-    G4double CLOVER_energy[numberOf_CLOVER*numberOf_CLOVER_Crystals];
-    G4double BGO_energy[numberOf_CLOVER];
+    SimpleVec<G4double> CLOVER_energy;
+    SimpleVec<G4double> BGO_energy;
 
-    G4double OCLLABR_energy[numberOf_OCLLaBr3];
-    G4double FTALABR_energy[numberOf_FTALaBr3];
+    SimpleVec<G4double> OCLLABR_energy;
+    SimpleVec<G4double> FTALABR_energy;
 
+#if ANALYZE_SI_DETECTORS
     G4double DeltaE_ring_energy[numberOf_SiRings];
     G4double DeltaE_sector_energy[numberOf_SiSectors];
-#if ANALYZE_SI_DETECTORS
+
     G4double E_ring_energy[numberOf_SiRings];
     G4double E_sector_energy[numberOf_SiSectors];
 #endif // ANALYZE_SI_DETECTORS

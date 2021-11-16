@@ -37,6 +37,7 @@
 #include "user/EventAction.hh"
 #include "user/RunAction.hh"
 #include "user/Analysis.hh"
+#include "user/DetectorConstruction.hh"
 
 #include <G4RunManager.hh>
 #include <G4Event.hh>
@@ -45,11 +46,22 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::EventAction() : G4UserEventAction(){}
+EventAction::EventAction()
+    : G4UserEventAction()
+    , geometry( reinterpret_cast<const DetectorConstruction *>(G4RunManager::GetRunManager()->GetUserDetectorConstruction()) )
+    , CLOVER_energy( geometry->GetNumClover() * numberOf_CLOVER_Crystals )
+    , BGO_energy( geometry->GetNumClover() )
+    , OCLLABR_energy( geometry->GetNumOCL() )
+    , FTALABR_energy( geometry->GetNumFTA() )
+{
+
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EventAction::~EventAction(){}
+EventAction::~EventAction()
+{
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -57,10 +69,12 @@ void EventAction::BeginOfEventAction(const G4Event*)
 {
     ////////////////////////////////////////////////////////////////////
     ////    Flushing all the arrays
-    memset(CLOVER_energy, 0, sizeof(CLOVER_energy));
-    memset(BGO_energy, 0, sizeof(CLOVER_energy));
-    memset(OCLLABR_energy, 0, sizeof(CLOVER_energy));
-    memset(FTALABR_energy, 0, sizeof(CLOVER_energy));
+    ////////////////////////////////////////////////////////////////////
+    CLOVER_energy.reset();
+    BGO_energy.reset();
+    OCLLABR_energy.reset();
+    FTALABR_energy.reset();
+
 #if ANALYZE_SI_DETECTORS
     memset(DeltaE_ring_energy, 0, sizeof(DeltaE_ring_energy));
     memset(DeltaE_sector_energy, 0, sizeof (DeltaE_sector_energy));
@@ -82,10 +96,10 @@ void EventAction::EndOfEventAction(const G4Event *)
         analysisManager->FillNtupleDColumn(idx++, clover);
     for ( auto &bgo : BGO_energy )
         analysisManager->FillNtupleDColumn(idx++, bgo);
-    for ( auto &labr : OCLLABR_energy)
-        analysisManager->FillNtupleDColumn(idx++, labr);
-    for ( auto &labr : FTALABR_energy )
-        analysisManager->FillNtupleDColumn(idx++, labr);
+    for ( auto &ocl_labr : OCLLABR_energy)
+        analysisManager->FillNtupleDColumn(idx++, ocl_labr);
+    for ( auto &fta_labr : FTALABR_energy )
+        analysisManager->FillNtupleDColumn(idx++, fta_labr);
 #if ANALYZE_SI_DETECTORS
     for ( auto &ring : DeltaE_ring_energy )
         analysisManager->FillNtupleDColumn(idx++, ring);
