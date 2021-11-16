@@ -18,11 +18,8 @@
 constexpr int numberOfSectors = 16;
 constexpr int numberOfRings = 48;
 
-using namespace Detector;
-
-S2Factory::S2Factory(const G4double &_thickness)
+S2Factory::S2Factory(const G4double &thickness)
     : Detector::DetectorFactory( Detector::Type::s2_silicon )
-    , thickness( _thickness )
     , fMatPCB( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE") )
     , fMatSi( G4NistManager::Instance()->FindOrBuildMaterial("G4_Si") )
     , fMatVaccum( G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic") )

@@ -27,12 +27,11 @@ CPMAddPackage(
 CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 add_executable(AFRODITEtests
-        ${CMAKE_CURRENT_LIST_DIR}/source/Detector.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/main.cpp
         ${CMAKE_CURRENT_LIST_DIR}/source/MeshReader.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/source/SetupMessenger.cpp)
+        ${CMAKE_CURRENT_LIST_DIR}/source/Slot.cpp)
 
-target_compile_definitions(AFRODITEtests PRIVATE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/../" TEST_INTERFACE)
+target_compile_definitions(AFRODITEtests PRIVATE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/../")
 target_link_libraries(AFRODITEtests doctest::doctest AFRODITE::MeshReader AFRODITE::AFRODITE magic_enum::magic_enum)
 set_target_properties(AFRODITEtests PROPERTIES CXX_STANDARD 17)
 

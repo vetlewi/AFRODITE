@@ -48,10 +48,10 @@ class ActionInitialization : public G4VUserActionInitialization
 {
 public:
     ActionInitialization();
-    ~ActionInitialization() override = default;
+    virtual ~ActionInitialization();
     
-    void BuildForMaster() const override;
-    void Build() const override;
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
     
 };
 

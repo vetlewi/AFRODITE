@@ -34,7 +34,6 @@ G4VSolid *GetShielding_Solid(const bool &tapered)
         return new G4Tubs("Shielding_Solid", shieldingInnerR, shieldingConeOuterRBack, shieldingConeHalfLength, startPhi, deltaPhi);
 }
 
-using namespace Detector;
 
 OCLLaBr3::OCLLaBr3(const bool &new_shield_design)
     : Detector::DetectorFactory( Detector::Type::ocl_labr )
@@ -42,7 +41,7 @@ OCLLaBr3::OCLLaBr3(const bool &new_shield_design)
     , fMatAluminium( G4NistManager::Instance()->FindOrBuildMaterial("G4_Al") )
     , fMatPlexiGlass( G4NistManager::Instance()->FindOrBuildMaterial("G4_PLEXIGLASS") )
     , fMatMgO( G4NistManager::Instance()->FindOrBuildMaterial("MgO") )
-    , fMatLaBr3_Ce( G4Material::GetMaterial("LaBr3_Ce")/*G4NistManager::Instance()->FindOrBuildMaterial("LaBr3_Ce")*/ )
+    , fMatLaBr3_Ce( G4NistManager::Instance()->FindOrBuildMaterial("LaBr3_Ce") )
     , fMatSiO2( G4NistManager::Instance()->FindOrBuildMaterial("G4_SILICON_DIOXIDE") )
     , fMatBialkali( G4NistManager::Instance()->FindOrBuildMaterial("Bialkali") )
     , Detector_Solid( new G4Tubs("Detector_Solid", 0.*mm, coatingOuterR, PMTandAirHalfLength, startPhi, deltaPhi) )
@@ -146,7 +145,7 @@ G4AssemblyVolume * OCLLaBr3::GetAssembly(const int &copy_no, const bool &checkOv
 
     hiddenVIS->SetVisibility(false);
     shieldVIS->SetVisibility(true);
-    crystalVIS->SetVisibility(true);
+    crystalVIS->SetVisibility(false);
     coatingVIS->SetVisibility(false);
     reflectorVIS->SetVisibility(false);
     plexiCoatingVIS->SetVisibility(false);

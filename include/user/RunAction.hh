@@ -40,8 +40,6 @@
 #include <G4UserRunAction.hh>
 #include <G4String.hh>
 
-#include <chrono>
-
 class G4Run;
 class G4GenericMessenger;
 
@@ -51,8 +49,6 @@ class RunAction : public G4UserRunAction
 private:
     G4GenericMessenger *fMessenger;
     G4String fOutput_file;
-
-    std::chrono::time_point<std::chrono::high_resolution_clock> start;
 
 public:
     RunAction();

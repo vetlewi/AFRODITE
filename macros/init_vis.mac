@@ -1,7 +1,6 @@
 # Macro file for the initialization of example B4
 # in interactive session
 #
-/control/execute Co60.mac
 # Set some default verbose
 #
 /control/verbose 2
@@ -13,7 +12,6 @@
 #
 # Initialize kernel
 /run/initialize
-#/control/execute place_detectors.mac
 #
 # Visualization setting
 /control/execute vis.mac

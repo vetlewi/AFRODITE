@@ -19,7 +19,7 @@ CPMAddPackage(
 CPMAddPackage(gh:ikalnytskyi/termcolor@2.0.0)
 
 CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
-#CPMAddPackage(NAME G4mpi SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../external/G4mpi)
+
 
 # ---- Create standalone executable ----
 
@@ -27,12 +27,6 @@ add_executable(AFRODITEStandalone AFRODITE.cc)
 set_target_properties(AFRODITEStandalone PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "AFRODITE")
 target_compile_definitions(AFRODITEStandalone PRIVATE G4VIS_USE=1 G4UI_USE=1)
 target_link_libraries(AFRODITEStandalone AFRODITE::AFRODITE cxxopts termcolor::termcolor)
-
-
-#add_executable(AFRODITEStandaloneMPI AFRODITE_MPI.cc)
-#set_target_properties(AFRODITEStandaloneMPI PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "AFRODITE_MPI")
-#target_compile_definitions(AFRODITEStandaloneMPI PRIVATE G4VIS_USE=1 G4UI_USE=1)
-#target_link_libraries(AFRODITEStandaloneMPI AFRODITE::AFRODITE cxxopts termcolor::termcolor G4mpi)
 
 
 #----------------------------------------------------------------------------

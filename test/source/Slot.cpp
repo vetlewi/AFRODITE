@@ -17,7 +17,7 @@
 
 std::ostream &operator<<(std::ostream &os, const STDSlotInfo_t &slotInfo)
 {
-    os << "Slot " << slotInfo.detectorID << "\n";
+    os << "Slot " << slotInfo.slotID << "\n";
     os << "\tType: " << magic_enum::enum_name(slotInfo.type) << "\n";
     os << "\tDistance: " << slotInfo.slotDistance;
     return os;
@@ -43,8 +43,9 @@ TEST_CASE("Slot converter")
     SUBCASE("Test mm conversion") {
         auto test_str = "4 clover 32 mm";
         auto res = GetValues(test_str);
+        std::cout << res << std::endl;
 
-        REQUIRE(res.detectorID == 4);
+        REQUIRE(res.slotID == 4);
         REQUIRE(res.slotDistance == 32 * mm);
         REQUIRE(res.type == Detector::Type::clover);
     }
@@ -52,18 +53,11 @@ TEST_CASE("Slot converter")
     SUBCASE("Test cm conversion"){
         auto test_str = "4 clover 32 cm";
         auto res = GetValues(test_str);
+        std::cout << res << std::endl;
 
-        REQUIRE(res.detectorID == 4);
+        REQUIRE(res.slotID == 4);
         REQUIRE(res.slotDistance == 32 * cm);
         REQUIRE(res.type == Detector::Type::clover);
-    }
-
-    SUBCASE("Detector messenger"){
-        auto test_str = "7 8 clover 32 cm";
-        DetectorSetupMessenger messenger;
-        messenger.SetNewValue(messenger.getSlotCMD(), test_str);
-        assert(messenger.GetSlot(7).detectorID == 8);
-        assert(messenger.GetSlot(7).type == Detector::clover);
     }
 
 }

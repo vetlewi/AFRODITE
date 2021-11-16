@@ -35,8 +35,7 @@
 //
 
 #include "user/RunAction.hh"
-#include "user/Analysis.hh"
-#include "user/DetectorConstruction.hh"
+#include "Analysis.hh"
 #include "Constants.hh"
 
 #include "G4Run.hh"
@@ -57,16 +56,20 @@ RunAction::RunAction()
     outputCmd.SetDefaultValue("AFRODITE.root");
 
     // set printing event number per 10 000 event
-    auto *geometry = reinterpret_cast<const DetectorConstruction *>(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     G4RunManager::GetRunManager()->SetPrintProgress(10000);
     
     // Create analysis manager
+    // The choice of analysis technology is done via selectin of a namespace
+    // in Analysis.hh
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+    G4cout << "Using " << analysisManager->GetType() << G4endl;
     
     // Create directories
+    //analysisManager->SetHistoDirectoryName("histograms");
+    //analysisManager->SetNtupleDirectoryName("ntuple");
     analysisManager->SetVerboseLevel(1);
-    analysisManager->SetNtupleMerging(true);
-
+    //analysisManager->SetFirstHistoId(1);
+    
     // Book histograms, ntuple
    
     // Creating ntuple
@@ -76,33 +79,30 @@ RunAction::RunAction()
     
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
-    ////////////////////////////////////////////////////
-    for ( G4int n = 0 ; n < geometry->GetNumClover()*numberOf_CLOVER_Crystals ; ++n ){
-        sprintf(name, "CLOVER_Energy%02d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
-        analysisManager->CreateNtupleDColumn(name);
+    for ( G4int n = 0 ; n < numberOf_CLOVER*numberOf_CLOVER_Crystals ; ++n ){
+        sprintf(name, "CLOVER_Energy%d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
     
-    ////////////////////////////////////////////////////
+     ////////////////////////////////////////////////////
     ////    BGO Detectors
-    ////////////////////////////////////////////////////
-    for ( G4int n = 0 ; n < geometry->GetNumClover() ; ++n ){
-        sprintf(name, "BGO_Energy%02d", n);
-        analysisManager->CreateNtupleDColumn(name);
+    for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
+        sprintf(name, "BGO_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
     
     ////////////////////////////////////////////////////
     ////    OCL LABR Detectors
-    for ( G4int n = 0 ; n < geometry->GetNumOCL() ; ++n ){
-        sprintf(name, "OCLLABR_Energy%02d", n);
-        analysisManager->CreateNtupleDColumn(name);
+    for ( G4int n = 0 ; n < numberOf_OCLLaBr3 ; ++n ){
+        sprintf(name, "OCLLABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
 
     ////////////////////////////////////////////////////
     ////    FTA LABR Detectors
-    ////////////////////////////////////////////////////
-    for ( G4int n = 0 ; n < geometry->GetNumFTA() ; ++n ){
-        sprintf(name, "FTALABR_Energy%02d", n);
-        analysisManager->CreateNtupleDColumn(name);
+    for ( G4int n = 0 ; n < numberOf_FTALaBr3 ; ++n ){
+        sprintf(name, "FTALABR_Energy%d", n);
+        analysisManager->CreateNtupleDColumn(0, name);
     }
 #if ANALYZE_SI_DETECTORS
     ////////////////////////////////////////////////////
@@ -150,8 +150,6 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
     // G4cin>>fileName;
     G4cout << "Writing to file: " << fileName << G4endl;
     analysisManager->OpenFile(fileName);
-
-    start = std::chrono::high_resolution_clock::now();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -169,10 +167,6 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
     //
     analysisManager->Write();
     analysisManager->CloseFile();
-
-    auto runtime = std::chrono::high_resolution_clock::now() - start;
-    G4cout << "Total runtime: " << std::chrono::duration_cast<std::chrono::microseconds>(runtime).count()/1.0e6;
-    G4cout << " s" << G4endl;
     
 }
 
