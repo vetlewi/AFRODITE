@@ -9,7 +9,7 @@ def make_block(energy, count):
 
     base_string = [
         f"/gps/energy {energy} keV",
-        f"/FilePath/output {outname}",
+        f"/FilePath/output result/{outname}",
         f"/run/beamOn {count}",
     ]
 
