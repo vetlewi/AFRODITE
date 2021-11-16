@@ -88,6 +88,7 @@
 #endif // PLY_PATH
 
 INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply");
+INCBIN(DetectorFrame, PLY_PATH"/STRUCTURES/Frame/OuterFrame_100umTolerance.ply");
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -362,6 +363,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     /////////////////////////////////////
     ////    AFRODITE Target
     AFRODITE_Target_Presence = true;
+    AFRODITE_Frame_Presence = true;
     
     // Define volumes
     return DefineVolumes();
@@ -397,6 +399,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 
     G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
     MeshReader targetChamber({gTargetChamberData, gTargetChamberSize}, "TargetChamber", offset_MathisTC);
+    MeshReader DetectorFrame({gDetectorFrameData, gDetectorFrameSize}, "DetectorFrame", offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
@@ -500,6 +503,37 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         G4VisAttributes* AFRODITE_MathisTC_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
         AFRODITE_MathisTC_VisAtt->SetForceSolid(true);
         LogicMathisTC->SetVisAttributes(AFRODITE_MathisTC_VisAtt);
+    }
+
+    //////////////////////////////////////////////////////////
+    //              Detector frame - CADMesh
+    //////////////////////////////////////////////////////////
+
+    if(AFRODITE_Frame_Presence)
+    {
+        /*G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
+        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
+        G4cout << "Reading TC from " << TC_path << G4endl;
+        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);*/
+        G4VSolid * SolidFrame = DetectorFrame.GetSolid();//mesh_MathisTC->TessellatedMesh();
+
+        G4LogicalVolume* LogicFrame = new G4LogicalVolume(SolidFrame, G4_Al_Material, "FRAME_logic", 0, 0, 0);
+        G4RotationMatrix *rot = new G4RotationMatrix();
+        //rot->rotateY(180*deg);
+        new G4PVPlacement(rot,               // no rotation
+                          G4ThreeVector(), // at (x,y,z)
+                          LogicFrame,       // its logical volume
+                          "FRAME_phys",       // its name
+                          LogicVacuumChamber,         // its mother  volume
+                          false,           // no boolean operations
+                          0,               // copy number
+                          fCheckOverlaps); // checking overlaps
+
+
+        //  Visualisation
+        G4VisAttributes* AFRODITE_Frame_VisAtt = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+        AFRODITE_Frame_VisAtt->SetForceSolid(true);
+        LogicFrame->SetVisAttributes(AFRODITE_Frame_VisAtt);
     }
     
     

@@ -157,6 +157,7 @@ private:
     /////////////////////////////////////
     //  K600 Target
     G4bool      AFRODITE_Target_Presence;
+    G4bool      AFRODITE_Frame_Presence;
     
     
 };
