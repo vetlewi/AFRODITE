@@ -22,7 +22,7 @@ void th1_to_mama(TH1* m, const char* filename, const char* comment="none")
     TAxis *xax = m->GetXaxis();
 
     const int nx = xax->GetNbins();
-    std::cout << "histogram is " << nx  << "; comment='" << comment << "'" << std::endl;
+    //std::cout << "histogram is " << nx  << "; comment='" << comment << "'" << std::endl;
 
     std::ofstream mama(filename);
     mama << "!FILE=Disk \n"

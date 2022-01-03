@@ -10,6 +10,8 @@
 #include <TH1.h>
 #include <TH2.h>
 
+#include "indicators.hpp"
+
 #define NUM_CLOVER 8
 #define NUM_OCL 2
 #define NUM_FTA 6
@@ -129,7 +131,7 @@ public:
 
     AnalyseSims(TTree *chain, const size_t &last_bin);
     ~AnalyseSims();
-    size_t loop();
+    size_t loop(indicators::DynamicProgress<indicators::ProgressBar> &bars);
 
     TH1 *GetCloverTot(){ return clover_tot; }
     TH1 *GetOCLTot(){ return clover_tot; }

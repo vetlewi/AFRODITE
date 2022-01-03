@@ -44,12 +44,14 @@ AnalyseSims::~AnalyseSims()
     delete fta_indv;
 }
 
-size_t AnalyseSims::loop()
+size_t AnalyseSims::loop(indicators::DynamicProgress<indicators::ProgressBar> &bars)
 {
     fChain->SetBranchStatus("*",1);
     int num_entries = fChain->GetEntries();
-
     Long64_t nbytes=0, nb=0;
+
+    bars[1].set_progress(0);
+    bars[1].set_option(indicators::option::PostfixText{std::to_string(0) + "/" + std::to_string(num_entries)});
 
     for ( int i = 0 ; i < num_entries ; ++i ){
         nbytes += fChain->GetEntry(i);
@@ -65,7 +67,13 @@ size_t AnalyseSims::loop()
         for ( auto &l : fta_labr ){
             l.FillSpec(fta_tot, fta_indv);
         }
+
+        if ( i % 10000 == 0 ){
+            bars[1].set_progress(i*100.0/num_entries);
+            bars[1].set_option(indicators::option::PostfixText{std::to_string(i) + "/" + std::to_string(num_entries)});
+        }
+
     }
-    std::cout << "Read " << nbytes / 1e6 << " mb" << std::endl;
+    //std::cout << "Read " << nbytes / 1e6 << " mb" << std::endl;
     return num_entries;
 }
