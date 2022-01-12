@@ -33,12 +33,13 @@
 //
 //      email: likevincw@gmail.com
 //
-
 #include "user/PrimaryGeneratorAction.hh"
+
+#include "user/Co60SourceGenerator.hh"
 
 #include <G4RunManager.hh>
 #include <G4Event.hh>
-#include <G4GeneralParticleSource.hh>
+#include <G4ParticleGun.hh>
 
 #include <G4ParticleTable.hh>
 #include <G4ThreeVector.hh>
@@ -47,12 +48,11 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
+    : fParticleGun( new G4ParticleGun( 1 ) )
+    , fGenerator( new Co60EventGenerator( fParticleGun ) )
 {
     
-    // Default values  
-    
-    fParticleGun = new G4GeneralParticleSource();
-    fParticleGun->SetCurrentSourceIntensity(1);
+    // Default values
     fParticleGun->SetParticlePosition(G4ThreeVector());
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
     fParticleGun->SetParticleDefinition(particleDefinition);
@@ -63,17 +63,19 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
+    delete fGenerator;
     delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
     
     
    //create vertex
-    fParticleGun->GeneratePrimaryVertex(event);
+   //fParticleGun->GeneratePrimaryVertex(event);
+    fGenerator->GeneratePrimaries(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

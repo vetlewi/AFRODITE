@@ -40,8 +40,9 @@
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4Types.hh>
 
-class G4GeneralParticleSource;
+class G4ParticleGun;
 class G4Event;
+class Co60EventGenerator;
 
 /// The primary generator action class with particle gum.
 ///
@@ -59,8 +60,8 @@ public:
     void GeneratePrimaries(G4Event* event) override;
     
 private:
-    G4GeneralParticleSource*  fParticleGun; // G4 particle gun 
-    
+    G4ParticleGun*  fParticleGun; // G4 particle gun
+    Co60EventGenerator* fGenerator;
     
 };
 
