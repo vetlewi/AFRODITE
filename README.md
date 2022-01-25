@@ -1,5 +1,5 @@
 
-# AFRODITE [![MacOS](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml/badge.svg?branch=master)](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml) [![Ubuntu](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml) [![codecov](https://codecov.io/gh/vetlewi/AFRODITE/branch/master/graph/badge.svg?token=Mp6QwsKF7j)](https://codecov.io/gh/vetlewi/AFRODITE)
+# AFRODITE [![MacOS](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml/badge.svg?branch=master)](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml) [![Ubuntu](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml) [![codecov](https://codecov.io/gh/vetlewi/AFRODITE/branch/master/graph/badge.svg?token=Mp6QwsKF7j)](https://codecov.io/gh/vetlewi/AFRODITE) [![DOI](https://zenodo.org/badge/348759776.svg)](https://zenodo.org/badge/latestdoi/348759776)
 A GEANT4 simulation of the AFRODITE vault at iThemba LABS, composed of the AFRODITE array of HPGe clover detectors along with various ancillary detectors
 
 This package can be used for realistic simulation of typical experimental setups. This can be useful
