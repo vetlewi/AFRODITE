@@ -39,6 +39,7 @@
 
 #include <G4RunManager.hh>
 #include <G4Event.hh>
+#include <G4GeneralParticleSource.hh>
 #include <G4ParticleGun.hh>
 
 #include <G4ParticleTable.hh>
@@ -48,10 +49,12 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
-    : fParticleGun( new G4ParticleGun( 1 ) )
-    , fGenerator( new Co60EventGenerator( fParticleGun ) )
+    : fParticleGun( new G4GeneralParticleSource() )
+    //, fParticleGun2( new G4ParticleGun( 1 ) )
+    //, fGenerator( new Co60EventGenerator( fParticleGun2 ) )
 {
-    
+    fParticleGun->SetCurrentSourceIntensity(1);
+
     // Default values
     fParticleGun->SetParticlePosition(G4ThreeVector());
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
@@ -63,8 +66,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-    delete fGenerator;
+    //delete fGenerator;
     delete fParticleGun;
+    //delete fParticleGun2;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,8 +78,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     
    //create vertex
-   //fParticleGun->GeneratePrimaryVertex(event);
-    fGenerator->GeneratePrimaries(anEvent);
+   fParticleGun->GeneratePrimaryVertex(anEvent);
+   //fGenerator->GeneratePrimaries(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

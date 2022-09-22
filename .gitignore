@@ -323,5 +323,8 @@ Thumbs.db #thumbnail cache on Windows
 # profiling data
 .prof
 
+# Analysis data
+analysis/mama_spectra
+
 
 # End of https://www.toptal.com/developers/gitignore/api/clion+all,cmake,python,c++,macos
