@@ -234,37 +234,37 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     // LaBr3 Detector 1
     OCLLaBr3_Presence[0] = true;
-    OCLLaBr3_Distance[0] = 14.*cm;
+    OCLLaBr3_Distance[0] = 16.*cm;
     OCLLaBr3_phi[0] = 0.*deg;
     OCLLaBr3_theta[0] = 45.*deg;
     
     //  LaBr3 Detector 2
     OCLLaBr3_Presence[1] = true;
-    OCLLaBr3_Distance[1] = 14.*cm;
+    OCLLaBr3_Distance[1] = 16.*cm;
     OCLLaBr3_phi[1] = 90.*deg;
     OCLLaBr3_theta[1] = 45.*deg;
 
     // LaBr3 Detector 3
     OCLLaBr3_Presence[2] = true;
-    OCLLaBr3_Distance[2] = 14.*cm;
+    OCLLaBr3_Distance[2] = 16.*cm;
     OCLLaBr3_phi[2] = 180.*deg;
     OCLLaBr3_theta[2] = 45.*deg;
 
     //  LaBr3 Detector 4
     OCLLaBr3_Presence[3] = true;
-    OCLLaBr3_Distance[3] = 14.*cm;
+    OCLLaBr3_Distance[3] = 16.*cm;
     OCLLaBr3_phi[3] = 270.*deg;
     OCLLaBr3_theta[3] = 45.*deg;
 
     // LaBr3 Detector 5
     OCLLaBr3_Presence[4] = true;
-    OCLLaBr3_Distance[4] = 14.*cm;
+    OCLLaBr3_Distance[4] = 16.*cm;
     OCLLaBr3_phi[4] = 225.*deg;
     OCLLaBr3_theta[4] = 90.*deg;
 
     //  LaBr3 Detector 6
     OCLLaBr3_Presence[5] = true;
-    OCLLaBr3_Distance[5] = 14.*cm;
+    OCLLaBr3_Distance[5] = 16.*cm;
     OCLLaBr3_phi[5] = 270.*deg;
     OCLLaBr3_theta[5] = 135.*deg;
 
