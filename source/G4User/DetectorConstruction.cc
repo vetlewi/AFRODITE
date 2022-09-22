@@ -621,7 +621,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
               vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
             if ( fCheckOverlaps )
                 (*vol)->CheckOverlaps();
-#if ( G4VERSION_NUMBER < 1100 )
+#if G4VERSION_NUMBER >= 1100
             if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
 #else
             if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
