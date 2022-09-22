@@ -245,25 +245,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     OCLLaBr3_theta[1] = 45.*deg;
 
     // LaBr3 Detector 3
-    OCLLaBr3_Presence[2] = false;
+    OCLLaBr3_Presence[2] = true;
     OCLLaBr3_Distance[2] = 14.*cm;
     OCLLaBr3_phi[2] = 180.*deg;
     OCLLaBr3_theta[2] = 45.*deg;
 
     //  LaBr3 Detector 4
-    OCLLaBr3_Presence[3] = false;
+    OCLLaBr3_Presence[3] = true;
     OCLLaBr3_Distance[3] = 14.*cm;
     OCLLaBr3_phi[3] = 270.*deg;
     OCLLaBr3_theta[3] = 45.*deg;
 
     // LaBr3 Detector 5
-    OCLLaBr3_Presence[4] = false;
+    OCLLaBr3_Presence[4] = true;
     OCLLaBr3_Distance[4] = 14.*cm;
     OCLLaBr3_phi[4] = 225.*deg;
     OCLLaBr3_theta[4] = 90.*deg;
 
     //  LaBr3 Detector 6
-    OCLLaBr3_Presence[5] = false;
+    OCLLaBr3_Presence[5] = true;
     OCLLaBr3_Distance[5] = 14.*cm;
     OCLLaBr3_phi[5] = 270.*deg;
     OCLLaBr3_theta[5] = 135.*deg;
@@ -620,7 +620,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
               vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
             if ( fCheckOverlaps )
                 (*vol)->CheckOverlaps();
-            if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
+            if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
                 (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
                 (*vol)->SetName("CLOVER_Shield_BGOCrystal");
             }
