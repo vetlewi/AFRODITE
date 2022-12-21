@@ -51,7 +51,6 @@ size_t AnalyseSims::loop(indicators::DynamicProgress<indicators::ProgressBar> &b
     Long64_t nbytes=0, nb=0;
 
     bars[n].set_progress(0);
-
     bars[n].set_option(indicators::option::PostfixText{std::to_string(0) + "/" + std::to_string(num_entries)});
 
     for ( int i = 0 ; i < num_entries ; ++i ){

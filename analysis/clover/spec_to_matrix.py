@@ -55,8 +55,6 @@ def compton(vec, energy):
         cntDE = get_counts_bgsubtract(vec, energy-511*2, extend=10)
         cnt511 = get_counts_bgsubtract(vec, 511, extend=5)
 
-
-
 def get_efficiencies(vec, energy):
     """ Get total, photopeak (...) efficiencies
     Args:
@@ -120,7 +118,6 @@ if __name__ == "__main__":
 
     response_outdir = Path("response_export")
     response_outdir.mkdir(exist_ok=True)
-
     specdir = Path("../mama_spectra")
 
     files = subprocess.run([f'find {str(specdir)}/energy_clover_*.m'], shell=True, capture_output=True).stdout

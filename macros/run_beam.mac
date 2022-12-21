@@ -1,0 +1,13 @@
+
+
+/run/initialize
+/gps/number 1
+/gps/particle proton
+/gps/energy 16 MeV
+/gps/ang/type beam1d
+/gps/pos/type Beam
+/gps/pos/centre 0 0 -50 cm
+/gps/direction 0 0 1
+
+/run/printProgress 10000
+/run/beamOn 10000000
