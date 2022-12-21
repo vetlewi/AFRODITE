@@ -131,11 +131,11 @@ public:
 
     AnalyseSims(TTree *chain, const size_t &last_bin);
     ~AnalyseSims();
-    size_t loop(indicators::DynamicProgress<indicators::ProgressBar> &bars);
+    size_t loop(indicators::DynamicProgress<indicators::ProgressBar> &bars, const int &n);
 
     TH1 *GetCloverTot(){ return clover_tot; }
-    TH1 *GetOCLTot(){ return clover_tot; }
-    TH1 *GetFTATot(){ return clover_tot; }
+    TH1 *GetOCLTot(){ return ocl_tot; }
+    TH1 *GetFTATot(){ return fta_tot; }
 
     TH2 *GetCloverIndv(){ return clover_indv; }
     TH2 *GetOCLIndv(){ return ocl_indv; }

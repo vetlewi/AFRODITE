@@ -42,6 +42,9 @@
 *.out
 *.app
 
+# CERN ROOT files
+*.pcm
+
 ### CLion+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -325,6 +328,15 @@ Thumbs.db #thumbnail cache on Windows
 
 # Analysis data
 analysis/mama_spectra
+analysis/mama_spectra_*
+analysis/*/figs
+analysis/*/mama_export
+analysis/*/response_export
+analysis/*/ompy_interpolate
+
+analysis/ocl_response
+analysis/fta_response
+analysis/clover_response
 
 
 # End of https://www.toptal.com/developers/gitignore/api/clion+all,cmake,python,c++,macos

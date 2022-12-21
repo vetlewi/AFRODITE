@@ -3,7 +3,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import subprocess
 
 import ompy as om
 
@@ -19,6 +18,7 @@ def get_area(vec, E1, E2):
 
 def get_counts_bgsubtract(vec, energy, extend=10, ext_bg=None):
     """ Get background subtracted nr counts at energy [+- extend]
+
     Args:
         vec: vector to process
         energy: photopeak energy
@@ -32,34 +32,22 @@ def get_counts_bgsubtract(vec, energy, extend=10, ext_bg=None):
 
     bg_below = get_area(vec, energy-ext_bg, energy-ext_bg+extend)
     bg_above = get_area(vec, energy+extend,  energy+ext_bg)
-    bg_avg = (bg_below + bg_above) / (2*(ext_bg-extend))
+    # note that bg is summed one additional channel
+    bg_avg = (bg_below + bg_above) / (2*(ext_bg-extend+1))
 
     peak_counts = get_area(vec, energy-extend, energy+extend)
     peak_wo_bg = peak_counts - bg_avg*extend
 
     return peak_wo_bg
 
-def compton(vec, energy):
-    """ Remove photopeak, ...
-    Args:
-        vec: Unfolded spectrum
-        energy: Energy of the FE peak.
-    Returns: Spectrum with only contribution from Compton scattering
-    """
-
-    cntFE = get_counts_bgsubtract(vec, energy, extend=10)
-    cntSE, cntDE, cnt511 = 0, 0, 0
-
-    if energy > 2*511.:
-        cntSE = get_counts_bgsubtract(vec, energy-511, extend=10)
-        cntDE = get_counts_bgsubtract(vec, energy-511*2, extend=10)
-        cnt511 = get_counts_bgsubtract(vec, 511, extend=5)
 
 def get_efficiencies(vec, energy):
     """ Get total, photopeak (...) efficiencies
+
     Args:
         vec: vector to analyze, should not be folded with energy resolution yet
         energy: Energy of the FE peak
+
     """
     df = pd.Series()
     df["E"] = energy
@@ -112,34 +100,24 @@ def efficiency_plots(efficiencies: pd.DataFrame, energy_grid):
     fig.tight_layout(pad=0.02)
     return fig, ax
 
+
 if __name__ == "__main__":
     figs_dir = Path("figs")
     figs_dir.mkdir(exist_ok=True)
 
     response_outdir = Path("response_export")
     response_outdir.mkdir(exist_ok=True)
-    specdir = Path("../mama_spectra")
 
-    files = subprocess.run([f'find {str(specdir)}/energy_clover_*.m'], shell=True, capture_output=True).stdout
-    files = list(filter(None, files.decode('utf-8').split('\n')))
+    energy_grid = np.arange(50, 1e4, 10, dtype=int)
+    nevents = np.linspace(6e5, 3e6, len(energy_grid), dtype=np.int)
 
-    # First we will get all energies from the strings
-    energy_grid = []
-    nevents = []
-    for file in files:
-        energy_grid.append(int(file[file.find("clover_")+7:file.find("keV")]))
-        nevents.append(int(file[file.find("keV_")+4:file.find("entries")]))
-
-    # Sort by energy
-    energy_grid = np.array(energy_grid)
-    nevents = np.array(nevents)[energy_grid.argsort()]
-    files = np.array(files)[energy_grid.argsort()]
-    energy_grid = energy_grid[energy_grid.argsort()]
+    energy_grid = np.append(energy_grid, [int(1.2e4), int(1.5e4), int(2e4)])
+    nevents = np.append(nevents, [int(3e6), int(3e6), int(3e6)])
 
     fwhm_pars = np.array([60.6499, 0.458252, 0.000265552])
 
-    energy_out = np.array(energy_grid)
-    #energy_out_uncut = np.arange(0, 21000, 10)
+    energy_out = np.arange(energy_grid[0], 21000, 10)
+    energy_out_uncut = np.arange(0, 21000, 10)
     # response mat. with x: incident energy; y: outgoing
     respmat = om.Matrix(values=np.zeros((len(energy_grid), len(energy_out))),
                         Ex=energy_grid,
@@ -149,23 +127,26 @@ if __name__ == "__main__":
                                 "fe", "se", "de", "511"])
     eff["E"] = energy_grid
 
+    specdir = Path("from_geant")
+    # fig, ax = plt.subplots()
+    # fig_plain, ax_plain = plt.subplots()
+
     for i, (energy, nevent) in enumerate(zip(tqdm(energy_grid), nevents)):
 
         # if energy > 1000: # just for testing
         #     break
 
-        #fn = specdir / f"energy_clover_{energy}keV_{nevent}entries.m"
-        fn = Path(files[i])
+        fn = specdir / f"grid_{energy}keV_n{nevent}.root.m"
         if not fn.exists():
             continue
 
-        vec = om.Vector(path=fn, units="keV")
+        vec = om.Vector(path=fn, units="MeV")
         vec.to_keV()
 
         eff.loc[i] = get_efficiencies(vec, eff["E"][i])
 
         # rebin and smooth; rebin first to same time smoothing
-        #vec.rebin(mids=energy_out_uncut)
+        vec.rebin(mids=energy_out_uncut)
         vec.values = om.gauss_smoothing(vec.values, vec.E,
                                         fFWHM(vec.E, fwhm_pars))
         vec.rebin(mids=energy_out)

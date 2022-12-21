@@ -17,11 +17,13 @@ void export_hist()
 {
     std::vector<string> fnames;
     string fout_name = "Peaks.dat";
-    system("xterm -e 'mkdir mama_spectra'"); // create dir for mama spectra, if not already existend
+    system("xterm -e 'mkdir mama_spectra_clover'"); // create dir for mama spectra, if not already existend
+    system("xterm -e 'mkdir mama_spectra_ocl'"); // create dir for mama spectra, if not already existend
+    system("xterm -e 'mkdir mama_spectra_fta'"); // create dir for mama spectra, if not already existend
     string outdir = "mama_spectra";
 
     string fname_tmp;
-    system("xterm -e 'find /Volumes/PR271/result/*.root > tmp.txt'");
+    system("xterm -e 'find ../build/app/result/*.root > tmp.txt'");
     ifstream tmpfile("tmp.txt", ios::in);
     while(tmpfile>>fname_tmp){
         fnames.push_back(fname_tmp); //adding data in to the vector
@@ -47,19 +49,28 @@ void export_hist()
         AnalyseSims t(DataTreeSim, 22000);
         
         bars[1].set_option(indicators::option::PrefixText{"Processing file '"+fname+"'"});
-        auto entries = t.loop(bars);
+        auto entries = t.loop(bars, 1);
 
-        std::string outname = outdir + "/" + "energy_clover_" + std::to_string(energy_keV) + "keV_";
-        outname += std::to_string(entries) + "entries.m";
+        std::string outname = outdir + "_clover/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".m";
         th1_to_mama(t.GetCloverTot(), outname.c_str());
+        outname = outdir + "_clover/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".root";
+        t.GetCloverTot()->SaveAs(outname.c_str());
 
-        outname = outdir + "/" + "energy_ocl_" + std::to_string(energy_keV) + "keV_";
-        outname += std::to_string(entries) + "entries.m";
+        outname = outdir + "_ocl/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".m";
         th1_to_mama(t.GetOCLTot(), outname.c_str());
+        outname = outdir + "_ocl/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".root";
+        t.GetOCLTot()->SaveAs(outname.c_str());
 
-        outname = outdir + "/" + "energy_fta_" + std::to_string(energy_keV) + "keV_";
-        outname += std::to_string(entries) + "entries.m";
+        outname = outdir + "_fta/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".m";
         th1_to_mama(t.GetFTATot(), outname.c_str());
+        outname = outdir + "_fta/" + "energy_" + std::to_string(energy_keV) + "keV_e";
+        outname += std::to_string(entries) + ".root";
+        t.GetFTATot()->SaveAs(outname.c_str());
 
         bars[0].set_option(indicators::option::PostfixText{std::to_string(++i) + "/" + std::to_string(fnames.size())});
         bars[0].tick();
