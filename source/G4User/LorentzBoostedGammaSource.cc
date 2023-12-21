@@ -47,3 +47,13 @@ void LorentzBoostedGammaSource::GeneratePrimaries(G4Event *anEvent)
     fParticleGun->SetParticleEnergy(EnergyLab);
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
+
+void LorentzBoostedGammaSource::SetEnergy(const G4double &energy)
+{
+
+}
+
+void LorentzBoostedGammaSource::SetVelocity(const G4ThreeVector &velocity)
+{
+
+}

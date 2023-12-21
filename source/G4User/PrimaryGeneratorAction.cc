@@ -34,29 +34,33 @@
 //      email: likevincw@gmail.com
 //
 #include "user/PrimaryGeneratorAction.hh"
+#include "user/PrimaryGeneratorActionMessenger.hh"
 
-#include "user/Co60SourceGenerator.hh"
+#include <Randomize.hh>
 
-#include <G4RunManager.hh>
 #include <G4Event.hh>
-#include <G4GeneralParticleSource.hh>
 #include <G4ParticleGun.hh>
 
 #include <G4ParticleTable.hh>
 #include <G4ThreeVector.hh>
+#include <G4SystemOfUnits.hh>
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
-    : fParticleGun( new G4GeneralParticleSource() )
-    //, fParticleGun2( new G4ParticleGun( 1 ) )
-    //, fGenerator( new Co60EventGenerator( fParticleGun2 ) )
+    : fParticleGun( new G4ParticleGun( 1 ) )
+    , fMessenger( new PrimaryGeneratorActionMessenger(this) )
+    , fEnergy( 1332.492 * keV )
+    , fBeta( 0. )
+    , fGamma( 1/sqrt(1 - fBeta*fBeta) )
+    , fVelVertex( G4ThreeVector(0,0,0) )
 {
-    fParticleGun->SetCurrentSourceIntensity(1);
+
 
     // Default values
-    fParticleGun->SetParticlePosition(G4ThreeVector());
+    fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
     G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
     fParticleGun->SetParticleDefinition(particleDefinition);
 
@@ -66,20 +70,41 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-    //delete fGenerator;
+    delete fMessenger;
     delete fParticleGun;
-    //delete fParticleGun2;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-    
-    
+
+    // First we generate the direction since we will always need a direction. Easier w/r/t branching I would imagine
+    double theta = M_PI * G4UniformRand();
+    double phi = 2 * M_PI * G4UniformRand();
+
+    G4ThreeVector eventVertex(std::sin(theta)*std::cos(phi), std::sin(theta)*std::sin(phi), std::cos(theta));
+
+    fParticleGun->SetParticleMomentumDirection(eventVertex);
+
+    double scattering_angle = fVelVertex.angle(eventVertex);
+    double labEnergy = fEnergy/(fGamma*(1 - fBeta*cos(scattering_angle)));
+
    //create vertex
+   fParticleGun->SetParticleEnergy(labEnergy);
    fParticleGun->GeneratePrimaryVertex(anEvent);
-   //fGenerator->GeneratePrimaries(anEvent);
+}
+
+void PrimaryGeneratorAction::SetEnergy(const G4double &energy)
+{
+    fEnergy = energy;
+}
+
+void PrimaryGeneratorAction::SetVelocity(const G4ThreeVector &velocity)
+{
+    fBeta = velocity.mag();
+    fGamma = 1/sqrt(1 - fBeta*fBeta);
+    fVelVertex = velocity.unit();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

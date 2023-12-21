@@ -7,6 +7,7 @@
 
 #include <globals.hh>
 #include <G4ThreeVector.hh>
+#include <G4PhysicalConstants.hh>
 
 class G4ParticleGun;
 class G4Event;
@@ -19,6 +20,11 @@ public:
     ~LorentzBoostedGammaSource() = default;
 
     void GeneratePrimaries(G4Event *);
+
+    void SetEnergy(const G4double &energy);
+    G4double GetEnergy() const { return fEnergy; }
+    void SetVelocity(const G4ThreeVector &velocity);
+    G4ThreeVector GetVelocity() const { return fVelNormed * fBeta * c_light; }
 
 private:
     G4ParticleGun *fParticleGun;

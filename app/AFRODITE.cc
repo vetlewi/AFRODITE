@@ -75,7 +75,7 @@ int main(int argc,char** argv)
             ("t,threads", "Number of worker threads", cxxopts::value<int>()->default_value(std::to_string(std::thread::hardware_concurrency())))
             ("h,help", "Print usage");
 
-    G4UIExecutive* ui;
+    G4UIExecutive* ui = nullptr;
     std::string macro;
     unsigned int threads = std::thread::hardware_concurrency();
     if ( argc == 1 ) {
@@ -116,15 +116,12 @@ int main(int argc,char** argv)
 
     G4VModularPhysicsList* physicsList = new FTFP_BERT;
     physicsList->RegisterPhysics(new G4EmStandardPhysics());
-    physicsList->RegisterPhysics(new G4RadioactiveDecayPhysics());
     runManager->SetUserInitialization(physicsList);
-
-
     runManager->SetUserInitialization(new ActionInitialization);
 
     // Initialize visualization
     //
-    G4VisManager* visManager = new G4VisExecutive;
+    auto visManager = new G4VisExecutive;
     visManager->Initialize();
 
     // Get the pointer to the User Interface manager
@@ -154,7 +151,6 @@ int main(int argc,char** argv)
     //
     delete visManager;
     delete runManager;
-
     return 0;
 }
 

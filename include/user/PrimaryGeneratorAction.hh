@@ -39,11 +39,13 @@
 
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4Types.hh>
+#include <G4ThreeVector.hh>
+#include <G4PhysicalConstants.hh>
 
 class G4ParticleGun;
-class G4GeneralParticleSource;
 class G4Event;
-class Co60EventGenerator;
+class PrimaryGeneratorActionMessenger;
+
 
 
 /// The primary generator action class with particle gum.
@@ -60,12 +62,21 @@ public:
     ~PrimaryGeneratorAction() override;
     
     void GeneratePrimaries(G4Event* event) override;
+
+    void SetEnergy(const G4double &newEnergy);
+    G4double GetEnergy() const { return fEnergy; }
+
+    void SetVelocity(const G4ThreeVector &newVelocity);
+    G4ThreeVector GetVelocity() const { return fVelVertex * fBeta; }
     
 private:
-    G4GeneralParticleSource*  fParticleGun; // G4 particle gun
-    //G4ParticleGun*  fParticleGun2; // G4 particle gun
-    //Co60EventGenerator* fGenerator;
-    
+    G4ParticleGun*  fParticleGun; // G4 particle gun
+    PrimaryGeneratorActionMessenger *fMessenger;
+
+    G4double fEnergy; // Energy of the gamma-ray
+    G4double fBeta, fGamma; // Beta and gamma coefficients
+    G4ThreeVector fVelVertex; // Velocity vertex
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
