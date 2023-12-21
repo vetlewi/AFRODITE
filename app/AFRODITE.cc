@@ -75,9 +75,9 @@ int main(int argc,char** argv)
             ("t,threads", "Number of worker threads", cxxopts::value<int>()->default_value(std::to_string(std::thread::hardware_concurrency())))
             ("h,help", "Print usage");
 
-    G4UIExecutive* ui = 0;
-    std::string macro = "";
-    G4int threads = std::thread::hardware_concurrency();
+    G4UIExecutive* ui;
+    std::string macro;
+    unsigned int threads = std::thread::hardware_concurrency();
     if ( argc == 1 ) {
         ui = new G4UIExecutive(argc, argv);
     } else {
@@ -105,7 +105,7 @@ int main(int argc,char** argv)
     G4Random::setTheSeed( seed );
 
     auto *runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
-    runManager->SetNumberOfThreads(threads);
+    runManager->SetNumberOfThreads(int(threads));
 
     // Initialize classes
     runManager->SetUserInitialization(new DetectorConstruction);

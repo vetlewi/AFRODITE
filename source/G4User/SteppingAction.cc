@@ -66,6 +66,16 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     // get volume name of the current step
     const char *volumeName = volume->GetName().c_str();
 
+    /*if ( fEventAction->primary_ended ){
+        std::cout << "Hit #" << hit_no++ << ", Volume: " << volumeName;
+        if ( strcmp(volumeName, "OCL_Crystal") == 0 )
+            std::cout << "ID: " << volume->GetCopyNo();
+        std::cout << ", ParentID: " << aStep->GetTrack()->GetParentID();
+        std::cout << ", CreatorModel: " << aStep->GetTrack()->GetCreatorModelName();
+        std::cout << ", Deposited energy: " << aStep->GetTotalEnergyDeposit()/keV << " keV";
+        //std::cout << "\tTotal energy deposited: " << fEventAction->OCLLABR_energy[volume->GetCopyNo()] + aStep->GetTotalEnergyDeposit()/keV << " keV" << std::endl;
+        std::cout << std::endl;
+    }*/
 
     if ( strcmp(volumeName, "CLOVER_HPGeCrystal") == 0 ){
         fEventAction->CLOVER_energy[volume->GetCopyNo()] +=aStep->GetTotalEnergyDeposit()/keV;
@@ -73,6 +83,22 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
         fEventAction->BGO_energy[volume->GetCopyNo()/16] += aStep->GetTotalEnergyDeposit()/keV;
     } else if ( strcmp(volumeName, "OCL_Crystal") == 0 ){
         fEventAction->OCLLABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
+        /*if ( ( aStep->GetTrack()->GetTrackStatus() == fStopAndKill && aStep->GetTrack()->GetParentID() == 0 )
+             //|| ( aStep->IsLastStepInVolume() && aStep->GetTrack()->GetParentID() == 0)
+             ){
+            hit_no = 0;
+            fEventAction->initial_hit = volume->GetCopyNo();
+            std::cout << "------------start of event------------" << std::endl;
+            std::cout << "Primary interaction: " << aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName() << std::endl;
+            std::cout << "Energy before interaction: " << aStep->GetPreStepPoint()->GetTotalEnergy()/keV << " keV" << std::endl;
+            std::cout << "Energy deposited in step: " << aStep->GetTotalEnergyDeposit()/keV << " keV" << std::endl;
+            std::cout << "Total energy deposited: " << fEventAction->OCLLABR_energy[volume->GetCopyNo()]  << " keV" << std::endl;
+            std::cout << "Secondary particles:" << std::endl;
+            for (auto &sec : *aStep->GetSecondary() ){
+                std::cout << "\tCause: " << sec->GetCreatorModelName() << std::endl;
+            }
+            fEventAction->primary_ended = true;
+        }*/
     } else if ( strcmp(volumeName, "LaBr3_Crystal_Physical") == 0 ){
         fEventAction->FTALABR_energy[volume->GetCopyNo()] += aStep->GetTotalEnergyDeposit()/keV;
     }

@@ -58,6 +58,9 @@ public:
 
 protected:
 
+    bool primary_ended;
+    int initial_hit;
+
     G4double CLOVER_energy[numberOf_CLOVER*numberOf_CLOVER_Crystals];
     G4double BGO_energy[numberOf_CLOVER];
 

@@ -61,6 +61,10 @@ void EventAction::BeginOfEventAction(const G4Event*)
     memset(BGO_energy, 0, sizeof(CLOVER_energy));
     memset(OCLLABR_energy, 0, sizeof(CLOVER_energy));
     memset(FTALABR_energy, 0, sizeof(CLOVER_energy));
+
+    primary_ended = false;
+    initial_hit = 0;
+
 #if ANALYZE_SI_DETECTORS
     memset(DeltaE_ring_energy, 0, sizeof(DeltaE_ring_energy));
     memset(DeltaE_sector_energy, 0, sizeof (DeltaE_sector_energy));
@@ -69,12 +73,16 @@ void EventAction::BeginOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::EndOfEventAction(const G4Event *)
+void EventAction::EndOfEventAction(const G4Event *evt)
 {
 
     // get analysis manager
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
+    /*if ( primary_ended ) {
+        std::cout << "Total energy deposited in detector: " << OCLLABR_energy[initial_hit] << " keV" << std::endl;
+        std::cout << "-------------end of event-------------" << std::endl;
+    }*/
 
     //Fill ntuple here
     G4int idx = 0;
@@ -82,8 +90,9 @@ void EventAction::EndOfEventAction(const G4Event *)
         analysisManager->FillNtupleDColumn(idx++, clover);
     for ( auto &bgo : BGO_energy )
         analysisManager->FillNtupleDColumn(idx++, bgo);
-    for ( auto &labr : OCLLABR_energy)
+    for ( auto &labr : OCLLABR_energy) {
         analysisManager->FillNtupleDColumn(idx++, labr);
+    }
     for ( auto &labr : FTALABR_energy )
         analysisManager->FillNtupleDColumn(idx++, labr);
 #if ANALYZE_SI_DETECTORS

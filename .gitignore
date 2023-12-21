@@ -326,6 +326,8 @@ Thumbs.db #thumbnail cache on Windows
 # profiling data
 .prof
 
+build2
+
 # Analysis data
 analysis/mama_spectra
 analysis/mama_spectra_*
@@ -337,6 +339,22 @@ analysis/*/ompy_interpolate
 analysis/ocl_response
 analysis/fta_response
 analysis/clover_response
+
+analysis_6labr/mama_spectra
+analysis_6labr/mama_spectra_*
+analysis_6labr/figs
+analysis_6labr/mama_export
+analysis_6labr/response_export
+analysis_6labr/ompy_interpolate
+analysis_6labr/export
+analysis_6labr/ocl
+
+analysis*/*_response
+
+
+analysis_6labr/ocl_response
+analysis_6labr/fta_response
+analysis_6labr/clover_response
 
 
 # End of https://www.toptal.com/developers/gitignore/api/clion+all,cmake,python,c++,macos

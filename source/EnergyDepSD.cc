@@ -13,11 +13,11 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-EnergyDepSD::EnergyDepSD(const G4String &name, const G4String &hitsCollectionName)
+EnergyDepSD::EnergyDepSD(const G4String &name)
     : G4VSensitiveDetector(name)
     , fHitsCollection( nullptr )
 {
-    collectionName.insert(hitsCollectionName);
+    collectionName.insert("LaBrHitCollection");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -28,8 +28,7 @@ void EnergyDepSD::Initialize(G4HCofThisEvent *hitCollection)
             new DetectorHitsCollection(SensitiveDetectorName, collectionName[0]);
 
     // Add this collection in hitCollection
-    G4int hcID =
-            G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+    G4int hcID = GetCollectionID(0);
     hitCollection->AddHitsCollection(hcID, fHitsCollection);
 }
 
@@ -41,8 +40,9 @@ G4bool EnergyDepSD::ProcessHits(G4Step *step, G4TouchableHistory*)
 
     if ( edep == 0 ) return false;
 
-    auto newHit = new DetectorHit(step->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(),
-                                  step->GetTrack()->GetTrackID(), edep, step->GetPostStepPoint()->GetPosition());
+    auto newHit = new DetectorHit(step->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+    newHit->AddEdep(edep);
+    step->GetTrack();
     fHitsCollection->insert( newHit );
     return true;
 }

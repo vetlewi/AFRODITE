@@ -14,7 +14,6 @@ class G4HCofThisEvent;
 class EnergyDepSD : public G4VSensitiveDetector {
 
 public:
-
     EnergyDepSD(const G4String &name, const G4String &hitsCollectionName);
     ~EnergyDepSD() override = default;
 
@@ -22,10 +21,7 @@ public:
     G4bool ProcessHits(G4Step* step, G4TouchableHistory* history) override;
     void EndOfEvent(G4HCofThisEvent* hitCollection) override;
 
-    void SetDetectorID(const G4int &id){ fDetectorID = id; }
-
 private:
-    G4int fDetectorID;
     DetectorHitsCollection *fHitsCollection;
 
 };

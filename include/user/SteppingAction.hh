@@ -58,7 +58,7 @@ public:
     
 private:
     EventAction*  fEventAction;
-
+    int hit_no;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

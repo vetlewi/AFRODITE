@@ -73,6 +73,7 @@ target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES} assimp::assimp
 add_library(AFRODITE
         source/G4User/ActionInitialization.cc
         source/G4User/Co60SourceGenerator.cc
+        source/G4User/LorentzBoostedGammaSource.cc
         source/G4User/DetectorConstruction.cc
         source/DetectorSetupMessenger.cc
         source/G4User/EventAction.cc
