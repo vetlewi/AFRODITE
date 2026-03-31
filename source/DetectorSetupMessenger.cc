@@ -4,7 +4,7 @@
 
 #include "DetectorSetupMessenger.hh"
 
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include <G4UnitsTable.hh>
 
