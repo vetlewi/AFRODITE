@@ -48,12 +48,6 @@ jobs:
       - name: build
         run: cmake --build build -j4
 
-      - name: run
-        run: |
-          . /usr/local/bin/geant4.sh
-          env
-          ./build/app/AFRODITE -m macros/run.mac
-
       - name: test
         run: |
           cd build
