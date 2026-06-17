@@ -11,9 +11,15 @@ option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 # Download and locate external dependencies
 include(${PROJECT_SOURCE_DIR}/cmake/tools.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/CPM.cmake)
-include(${PROJECT_SOURCE_DIR}/cmake/Modules/FindAssimp.cmake)
 
 CPMAddPackage("gh:Neargye/magic_enum@0.9.7")
+
+#----------------------------------------------------------------------------
+# happly: header-only .ply parser, vendored under external/happly
+add_library(happly INTERFACE)
+add_library(happly::happly ALIAS happly)
+target_include_directories(happly INTERFACE ${PROJECT_SOURCE_DIR}/external/happly)
+target_compile_features(happly INTERFACE cxx_std_11)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -44,7 +50,7 @@ target_include_directories(MeshReader
         ${PROJECT_SOURCE_DIR}/include/meshreader
 )
 
-target_link_libraries(MeshReader PRIVATE assimp::assimp ${Geant4_LIBRARIES})
+target_link_libraries(MeshReader PRIVATE happly::happly ${Geant4_LIBRARIES})
 set_target_properties(MeshReader PROPERTIES CXX_STANDARD 17)
 
 add_library(detector
@@ -67,7 +73,7 @@ target_include_directories(detector
 
 target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
 set_target_properties(detector PROPERTIES CXX_STANDARD 17)
-target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES} assimp::assimp
+target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES}
         PRIVATE AFRODITE::MeshReader)
 
 add_library(AFRODITE

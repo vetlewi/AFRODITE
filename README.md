@@ -21,7 +21,7 @@ This packages depends on the following packages:
 - `Geant4`, for installation see [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/index.html)
 - `CADMesh <= 1.1.0`, included in the build tree (no need for manual install)
 - `tetgen`, also included in the build tree (no need for manual install)
-- `assimp`, available in most package managers
+- `happly`, header-only `.ply` parser, vendored in the build tree (no need for manual install)
 
 ### Build
 1) Clone this project
