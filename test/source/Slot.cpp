@@ -6,7 +6,7 @@
 
 #include <detector/DetectorFactory.hh>
 #include <DetectorSetupMessenger.hh>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include <G4SystemOfUnits.hh>
 #include <G4UnitsTable.hh>

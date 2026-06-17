@@ -4,7 +4,10 @@
 
 #include "meshreader/MeshReader.hh"
 
+#include <array>
+#include <sstream>
 #include <string>
+#include <vector>
 
 #include <G4SystemOfUnits.hh>
 #include <G4Exception.hh>
@@ -12,44 +15,44 @@
 #include <G4ThreeVector.hh>
 #include <G4TessellatedSolid.hh>
 #include <G4TriangularFacet.hh>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
+#include <happly.h>
 
 
-G4VSolid *GetMeshFromScene(const aiScene *scene, const char *name, const double &scale,
-                              const G4ThreeVector &offset, const bool &reverse)
+namespace {
+
+//! Build a G4TessellatedSolid from raw vertex positions and face index lists.
+//! Vertices are scaled and offset; faces with more than three vertices are
+//! fan-triangulated. The PLY meshes shipped with AFRODITE are already
+//! triangulated, so the fan loop is only a safety net for other inputs.
+G4VSolid *BuildSolid(const std::vector<std::array<double, 3>> &vertices,
+                     const std::vector<std::vector<size_t>> &faces,
+                     const char *name, const double &scale,
+                     const G4ThreeVector &offset, const bool &reverse)
 {
-    auto mesh = scene->mMeshes[0];
     auto solid = new G4TessellatedSolid(name);
 
-    G4ThreeVector point_1;
-    G4ThreeVector point_2;
-    G4ThreeVector point_3;
+    auto toPoint = [&](const size_t &index) {
+        const auto &v = vertices[index];
+        return G4ThreeVector(v[0] * scale + offset.x(),
+                             v[1] * scale + offset.y(),
+                             v[2] * scale + offset.z());
+    };
 
-    for(unsigned int i=0; i < mesh->mNumFaces; ++i)
-    {
-        const aiFace& face = mesh->mFaces[i];
+    for (const auto &face : faces) {
+        for (size_t i = 2; i < face.size(); ++i) {
+            const G4ThreeVector point_1 = toPoint(face[0]);
+            const G4ThreeVector point_2 = toPoint(face[i - 1]);
+            const G4ThreeVector point_3 = toPoint(face[i]);
 
-        point_1.setX(mesh->mVertices[face.mIndices[0]].x * scale + offset.x());
-        point_1.setY(mesh->mVertices[face.mIndices[0]].y * scale + offset.y());
-        point_1.setZ(mesh->mVertices[face.mIndices[0]].z * scale + offset.z());
-
-        point_2.setX(mesh->mVertices[face.mIndices[1]].x * scale + offset.x());
-        point_2.setY(mesh->mVertices[face.mIndices[1]].y * scale + offset.y());
-        point_2.setZ(mesh->mVertices[face.mIndices[1]].z * scale + offset.z());
-
-        point_3.setX(mesh->mVertices[face.mIndices[2]].x * scale + offset.x());
-        point_3.setY(mesh->mVertices[face.mIndices[2]].y * scale + offset.y());
-        point_3.setZ(mesh->mVertices[face.mIndices[2]].z * scale + offset.z());
-
-        G4TriangularFacet * facet;
-        if ( !reverse ) {
-            facet = new G4TriangularFacet(point_1, point_2, point_3, ABSOLUTE);
-        } else {
-            facet = new G4TriangularFacet(point_2, point_1, point_3, ABSOLUTE);
+            G4TriangularFacet *facet;
+            if ( !reverse ) {
+                facet = new G4TriangularFacet(point_1, point_2, point_3, ABSOLUTE);
+            } else {
+                facet = new G4TriangularFacet(point_2, point_1, point_3, ABSOLUTE);
+            }
+            solid->AddFacet((G4VFacet*) facet);
         }
-        solid->AddFacet((G4VFacet*) facet);
     }
 
     solid->SetSolidClosed(true);
@@ -62,32 +65,45 @@ G4VSolid *GetMeshFromScene(const aiScene *scene, const char *name, const double 
     return solid;
 }
 
+//! Read vertices and faces out of a parsed PLY and turn them into a solid.
+G4VSolid *BuildFromPLY(happly::PLYData &ply, const char *name, const double &scale,
+                       const G4ThreeVector &offset, const bool &reverse)
+{
+    return BuildSolid(ply.getVertexPositions(), ply.getFaceIndices<size_t>(),
+                      name, scale, offset, reverse);
+}
+
+} // namespace
+
 G4VSolid *GetMesh(const char *fname, const char *name, double scale, G4ThreeVector offset, bool reverse)
 {
-    Assimp::Importer importer;
-    auto *scene = importer.ReadFile(fname,aiProcess_Triangulate|aiProcess_JoinIdenticalVertices|aiProcess_CalcTangentSpace);
-    if ( !scene ){
+    try {
+        happly::PLYData ply{std::string(fname)};
+        return BuildFromPLY(ply, name, scale, offset, reverse);
+    } catch (const std::exception &e) {
         G4Exception(__PRETTY_FUNCTION__,
                     "Cannot load mesh",
                     G4ExceptionSeverity::FatalException,
-                    std::string("Could not open file '" + std::string(fname) + "'").c_str());
+                    std::string("Could not read PLY file '" + std::string(fname) + "': " + e.what()).c_str());
+        return nullptr;
     }
-    return GetMeshFromScene(scene, name, scale, offset, reverse);
 }
 
 G4VSolid *GetMesh(const void *buffer, const size_t &length, const char *name, double scale, G4ThreeVector offset,
                   bool reverse)
 {
-    Assimp::Importer importer;
-    auto *scene = importer.ReadFileFromMemory(buffer, length, aiProcess_Triangulate|aiProcess_JoinIdenticalVertices|aiProcess_CalcTangentSpace,
-                                              "PLY");
-    if ( !scene ){
+    try {
+        // happly reads from a std::istream; wrap the in-memory PLY in one.
+        std::istringstream stream(std::string(static_cast<const char*>(buffer), length));
+        happly::PLYData ply(stream);
+        return BuildFromPLY(ply, name, scale, offset, reverse);
+    } catch (const std::exception &e) {
         G4Exception(__PRETTY_FUNCTION__,
                     "Cannot load mesh",
                     G4ExceptionSeverity::FatalException,
-                    "Could not open file");
+                    std::string("Could not read PLY from memory buffer: " + std::string(e.what())).c_str());
+        return nullptr;
     }
-    return GetMeshFromScene(scene, name, scale, offset, reverse);
 }
 
 

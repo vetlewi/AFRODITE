@@ -12,11 +12,13 @@ include(${CMAKE_CURRENT_LIST_DIR}/../cmake/CPM.cmake)
 
 CPMAddPackage(
         GITHUB_REPOSITORY jarro2783/cxxopts
-        VERSION 2.2.1
+        VERSION 3.3.1
         OPTIONS "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_BUILD_EXAMPLES NO"
 )
 
-CPMAddPackage(gh:ikalnytskyi/termcolor@2.0.0)
+CPMAddPackage(
+        GITHUB_REPOSITORY ikalnytskyi/termcolor
+        GIT_TAG 89f20096bef51de347ec6f99345f65147359bd7c)
 
 CPMAddPackage(NAME AFRODITE SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
