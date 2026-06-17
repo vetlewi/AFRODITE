@@ -17,16 +17,16 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Update Homebrew
         run: |
           brew tap vetlewi/formula
-          brew update --preinstall
-          cat "$(brew --repository)/Library/Taps/vetlewi/homebrew-formula/geant4.rb" > .github/brew-formulae
+          brew trust vetlewi/formula
+          brew update
 
       - name: Configure Homebrew cache
-        uses: actions/cache@v2
+        uses: actions/cache@v5
         with:
           path: |
             ~/Library/Cache/Homebrew/geant4--*
@@ -35,12 +35,9 @@ jobs:
           key: brew-${{ hashFiles('.github/brew-formulae') }}
 
       - name: Install Homebrew dependencies
-        run: brew install qt@5 expat xerces-c
+        run: brew install geant4
 
-      - name: Installing Geant4
-        run: brew install --force-bottle geant4
-
-      - uses: actions/cache@v2
+      - uses: actions/cache@v5
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}

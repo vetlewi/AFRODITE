@@ -10,9 +10,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
@@ -24,7 +24,7 @@ jobs:
           cat "$(brew --repository)/Library/Taps/vetlewi/homebrew-formula/geant4.rb" > .github/brew-formulae
 
       - name: Configure Homebrew cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/Library/Cache/Homebrew/geant4--*

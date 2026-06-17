@@ -47,9 +47,7 @@
 
 #include <G4Material.hh>
 #include <G4MaterialPropertiesTable.hh>
-#include <G4Box.hh>
 #include <G4Tubs.hh>
-#include <G4LogicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4SDManager.hh>
 #include <G4GeometryTolerance.hh>
@@ -451,41 +449,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
                               "VaccumChamber",LogicConcrete, false, 0, fCheckOverlaps);
 
     //////////////////////////////////////////////////////////
-    //                      VACUUM CHAMBER
+    //              Scattering Chamber
     //////////////////////////////////////////////////////////
-    
-   /* G4ThreeVector positionVacuumChamber = G4ThreeVector(0,0,0);
 
-    
-    G4Box* SolidVacuumChamber = new G4Box("VacuumChamber", (200./2)*cm, (200./2)*cm, (200./2)*cm);
-    
-    G4LogicalVolume* LogicVacuumChamber = new G4LogicalVolume(SolidVacuumChamber, G4_Galactic_Material,"VacuumChamber");
-    
-    PhysiVacuumChamber =
-        new G4PVPlacement(0,               // no rotation
-                          positionVacuumChamber, // at (x,y,z)
-                          LogicVacuumChamber,       // its logical volume
-                          "VacuumChamber",       // its name
-                          LogicWorld,         // its mother  volume
-                          false,           // no boolean operations
-                          0,               // copy number
-                          fCheckOverlaps); // checking overlaps*/
-    
-    
-    
-    
-    
-    //////////////////////////////////////////////////////////
-    //              Scattering Chamber - CADMesh
-    //////////////////////////////////////////////////////////
-    
     if(AFRODITE_MathisTC_Presence)
     {
-        /*G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
-        G4cout << "Reading TC from " << TC_path << G4endl;
-        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);*/
-        G4VSolid * SolidMathisTC = targetChamber.GetSolid();//mesh_MathisTC->TessellatedMesh();
+        G4VSolid * SolidMathisTC = targetChamber.GetSolid();
         
         G4LogicalVolume* LogicMathisTC = new G4LogicalVolume(SolidMathisTC, G4_Al_Material, "BACTAR", 0, 0, 0);
         G4RotationMatrix *rot = new G4RotationMatrix();
@@ -507,16 +476,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     }
 
     //////////////////////////////////////////////////////////
-    //              Detector frame - CADMesh
+    //              Detector frame
     //////////////////////////////////////////////////////////
 
     if(AFRODITE_Frame_Presence)
     {
-        /*G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-        const char *TC_path = PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply";
-        G4cout << "Reading TC from " << TC_path << G4endl;
-        CADMesh * mesh_MathisTC = new CADMesh(TC_path, "PLY", mm, offset_MathisTC, false);*/
-        G4VSolid * SolidFrame = DetectorFrame.GetSolid();//mesh_MathisTC->TessellatedMesh();
+        G4VSolid * SolidFrame = DetectorFrame.GetSolid();
 
         G4LogicalVolume* LogicFrame = new G4LogicalVolume(SolidFrame, G4_Al_Material, "FRAME_logic", 0, 0, 0);
         G4RotationMatrix *rot = new G4RotationMatrix();
@@ -594,11 +559,6 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
         if ( !CLOVER_Presence[i] )
             continue;
 
-        /*CLOVER_position[i] = CLOVER_Distance[i]
-        *G4ThreeVector( -sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
-                        cos(CLOVER_theta[i]),
-                        sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]));*/
-
         CLOVER_position[i] = CLOVER_Distance[i]
                              *G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
                                              sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]),
@@ -624,7 +584,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 #if G4VERSION_NUMBER >= 1100
             if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
 #else
-            if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
+            if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
 #endif // G4VERSION_NUMBER < 1100
                 (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
                 (*vol)->SetName("CLOVER_Shield_BGOCrystal");
@@ -703,16 +663,5 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //
     return PhysiWorld;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/*void DetectorConstruction::ConstructSDandField()
-{
-
-    // FTA detectors
-    auto *FTALaBrSD = new EnergyDepSD("LaBr/FTA", "TrackerHitsCollection");
-    G4SDManager::GetSDMpointer()->AddNewDetector(FTALaBrSD);
-    SetSensitiveDetector("FTA_Crystal", FTALaBrSD, true);
-}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
