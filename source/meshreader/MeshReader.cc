@@ -78,7 +78,7 @@ G4VSolid *BuildFromPLY(happly::PLYData &ply, const char *name, const double &sca
 G4VSolid *GetMesh(const char *fname, const char *name, double scale, G4ThreeVector offset, bool reverse)
 {
     try {
-        happly::PLYData ply(std::string(fname));
+        happly::PLYData ply{std::string(fname)};
         return BuildFromPLY(ply, name, scale, offset, reverse);
     } catch (const std::exception &e) {
         G4Exception(__PRETTY_FUNCTION__,
