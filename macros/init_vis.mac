@@ -10,6 +10,10 @@
 # Change the default number of threads (in multi-threaded mode)
 #/run/numberOfThreads 4
 #
+# Detector array setup (must run before /run/initialize, as the geometry is
+# built at initialization). Recreates the previously hard-coded layout.
+/control/execute default_detectors.mac
+#
 # Initialize kernel
 /run/initialize
 #
