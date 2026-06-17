@@ -83,6 +83,7 @@ add_library(AFRODITE
         source/G4User/PrimaryGeneratorActionMessenger.cc
         source/G4User/DetectorConstruction.cc
         source/DetectorSetupMessenger.cc
+        source/Frame/DetectorFrame.cc
         source/G4User/EventAction.cc
         source/G4User/PrimaryGeneratorAction.cc
         source/G4User/RunAction.cc

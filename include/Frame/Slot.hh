@@ -5,24 +5,28 @@
 #ifndef AFRODITE_SLOT_HH
 #define AFRODITE_SLOT_HH
 
-#include <Detectors/DetectorFactory.hh>
+#include <detector/DetectorFactory.hh>
 
-class Slot {
+//! A single mounting position on the AFRODITE frame.
+//!
+//! The direction of a slot (theta, phi) is a *fixed* property of the frame
+//! geometry and is never changed at runtime. What can be configured at runtime
+//! is which detector (if any) occupies the slot and at what distance.
+//!
+//! Angles are stored in the standard physical convention used throughout the
+//! geometry: theta is the polar angle measured from the +z beam axis and phi is
+//! the azimuthal angle measured from +x towards +y. Both are stored in Geant4
+//! internal units (radians); distance is stored in internal length units.
+struct Slot {
+    double theta = 0.;                              //!< fixed polar angle from +z (frame geometry)
+    double phi = 0.;                                //!< fixed azimuthal angle from +x (frame geometry)
 
-private:
+    Detector::Type type = Detector::Type::none;     //!< runtime: occupant; none means empty
+    double distance = 0.;                           //!< runtime: detector-centre distance from target
+    bool shield = true;                             //!< runtime: CLOVER BGO shield (ignored for other types)
 
-    int detector_number;
-    Detector::DetectorFactory *factory;
-
-public:
-
-    // Construction of a slot is done by giving it a detector type and a distance
-    Slot(const int &dnum = 0, Detector::DetectorFactory *factory = nullptr);
-
-    // Build the detector in place
-    void Assemble();
-
+    //! A slot is occupied when it holds an actual detector.
+    bool occupied() const { return type != Detector::Type::none; }
 };
-
 
 #endif //AFRODITE_SLOT_HH
