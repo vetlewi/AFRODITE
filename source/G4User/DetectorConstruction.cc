@@ -584,7 +584,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
 #if G4VERSION_NUMBER >= 1100
             if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
 #else
-            if ( (*vol)->GetName().contains("LogicCLOVERShieldBGOCrystal") ) {
+            if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
 #endif // G4VERSION_NUMBER < 1100
                 (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
                 (*vol)->SetName("CLOVER_Shield_BGOCrystal");
