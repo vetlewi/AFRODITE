@@ -1,30 +1,47 @@
-AFRODITE
-========
-[![DOI](https://zenodo.org/badge/104993422.svg)](https://zenodo.org/badge/latestdoi/104993422)
 
-(The DOI above is always for the latest release. Earlier verions can be cited by a specific "version" DOI, if necessary)
-
+# AFRODITE [![MacOS](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml/badge.svg?branch=master)](https://github.com/vetlewi/AFRODITE/actions/workflows/macos.yaml) [![Ubuntu](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/vetlewi/AFRODITE/actions/workflows/ubuntu.yaml) [![codecov](https://codecov.io/gh/vetlewi/AFRODITE/branch/master/graph/badge.svg?token=Mp6QwsKF7j)](https://codecov.io/gh/vetlewi/AFRODITE) [![DOI](https://zenodo.org/badge/348759776.svg)](https://zenodo.org/badge/latestdoi/348759776)
 A GEANT4 simulation of the AFRODITE vault at iThemba LABS, composed of the AFRODITE array of HPGe clover detectors along with various ancillary detectors
 
-The primary objective of this simulation is to write the first standard simulation package specifically for AFRODITE that can be utilised by all students/staff that are interested. The compilation of the many different detectors (and other experimental equipment) that are available at iThemba is also of great import.
+This package can be used for realistic simulation of typical experimental setups. This can be useful
+to determine important information about the setup such as the gamma energy response, etc.
 
-I would like to thank the numerous staff at iThemba who put up with my requests to dig through their old documents in the hopes of finding such treasures as detector drawings. Even greater are my thanks to those who have themselves delved into the depths of archives. I hope that this project for iThemba repays your effort.
+Currently this package implements the following:
+- CLOVER HPGe detectors (Eurogam type), manufactured by Canberra.
+- Scattering chamber built for the AFRODITE frame
+- Large volume LaBr3:Ce detectors (3.5x8")
+- Fast timing LaBr3:Ce detectors (2x2")
+- Silicon particle detectors of type S2 from Micron Semiconductor Ltd. (geometry is somewhat approximate)
+- Aluminium shield and tunnel for the silicon detectors
+- The AFRODITE frame (To be added)
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+## Installation
 
-The current implemented detectors include the following:
+### Dependencies
+This packages depends on the following packages:
+- `Geant4`, for installation see [here](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/index.html)
+- `CADMesh <= 1.1.0`, included in the build tree (no need for manual install)
+- `tetgen`, also included in the build tree (no need for manual install)
+- `assimp`, available in most package managers
 
-- Clover HPGe detectors (Eurogam type), manufactured by Canberra.
-- The BGO shield complimenting the Clover HPGe detectors (Eurogam type), manufactured by Eurisys.
-- LEPS HPGe detectors, manufactured by Eurisys.
-- A neutron wall, composed of a total of 12 plastic scintillators (NE102).
-- The "new" scattering chamber built for AFRODITE
-- LaBr3 Detectors from Oslo
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-A CAD model import interface called CADMesh (authored primarily by Christopher Poole) is used within this simulation for implementing complex geometries. This needs to be obtained from the following GitHub repository: https://github.com/christopherpoole/CADMesh
-
-Alternatively, one could comment out the relevant CADMesh associated code and use only the hard-coded geometrical objects. It should be noted that an effort has been made to hard-code the geometries in GEANT4 when possible as this has computational advantages.
-
-
+### Build
+1) Clone this project
+    ```
+    git clone https://github.com/vetlewi/AFRODITE
+    ```
+2) Configure using CMake
+    ```
+   cd AFRODITE
+   cmake -DCMAKE_BUILD_TYPE=Release -H. -Bbuild
+   ```
+3) Build
+    ```
+   cd build
+   make -j4
+   ```
+4) Run
+    ```
+   ./AFRODITE
+   ```
+   
+## Limitation
+Currently the setup hasn't 

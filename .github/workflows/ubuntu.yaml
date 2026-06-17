@@ -1,0 +1,55 @@
+name: Ubuntu
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Geant4 dependencies
+        run: sudo apt install -qq libtbb-dev libassimp-dev libxmu-dev libexpat-dev libxerces-c-dev qt5-default
+
+      - name: Download Geant4
+        run: |
+          wget https://github.com/vetlewi/homebrew-formula/releases/download/v1.0/Geant4-10.7.1-Linux.sh
+          chmod +x Geant4-10.7.1-Linux.sh
+
+      - name: Install Geant4
+        run: sudo ./Geant4-10.7.1-Linux.sh --skip-license --prefix=/usr
+
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/cpm_modules"
+          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: configure
+        run: |
+          source /usr/bin/geant4.sh
+          cmake -Stest -Bbuild -DENABLE_TEST_COVERAGE=0 -DCMAKE_BUILD_TYPE=Debug
+
+      - name: build
+        run: |
+          source /usr/bin/geant4.sh
+          cmake --build build -j4
+
+      - name: test
+        run: |
+          source /usr/bin/geant4.sh
+          cd build
+          ctest --build-config Debug
+      - name: collect code coverage
+        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"

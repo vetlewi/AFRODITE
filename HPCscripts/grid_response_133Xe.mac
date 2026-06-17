@@ -1,0 +1,311 @@
+/run/initialize
+/source/velocity 0 0 0.0865
+/source/energy 100 keV
+/FilePath/output energy_100keV.root
+/run/beamOn 5000000
+/source/energy 200 keV
+/FilePath/output energy_200keV.root
+/run/beamOn 5000000
+/source/energy 300 keV
+/FilePath/output energy_300keV.root
+/run/beamOn 5000000
+/source/energy 400 keV
+/FilePath/output energy_400keV.root
+/run/beamOn 5000000
+/source/energy 500 keV
+/FilePath/output energy_500keV.root
+/run/beamOn 5000000
+/source/energy 600 keV
+/FilePath/output energy_600keV.root
+/run/beamOn 5000000
+/source/energy 700 keV
+/FilePath/output energy_700keV.root
+/run/beamOn 5000000
+/source/energy 800 keV
+/FilePath/output energy_800keV.root
+/run/beamOn 5000000
+/source/energy 900 keV
+/FilePath/output energy_900keV.root
+/run/beamOn 5000000
+/source/energy 1000 keV
+/FilePath/output energy_1000keV.root
+/run/beamOn 5000000
+/source/energy 1100 keV
+/FilePath/output energy_1100keV.root
+/run/beamOn 5000000
+/source/energy 1200 keV
+/FilePath/output energy_1200keV.root
+/run/beamOn 5000000
+/source/energy 1300 keV
+/FilePath/output energy_1300keV.root
+/run/beamOn 5000000
+/source/energy 1400 keV
+/FilePath/output energy_1400keV.root
+/run/beamOn 5000000
+/source/energy 1500 keV
+/FilePath/output energy_1500keV.root
+/run/beamOn 5000000
+/source/energy 1600 keV
+/FilePath/output energy_1600keV.root
+/run/beamOn 5000000
+/source/energy 1700 keV
+/FilePath/output energy_1700keV.root
+/run/beamOn 5000000
+/source/energy 1800 keV
+/FilePath/output energy_1800keV.root
+/run/beamOn 5000000
+/source/energy 1900 keV
+/FilePath/output energy_1900keV.root
+/run/beamOn 5000000
+/source/energy 2000 keV
+/FilePath/output energy_2000keV.root
+/run/beamOn 5000000
+/source/energy 2100 keV
+/FilePath/output energy_2100keV.root
+/run/beamOn 5000000
+/source/energy 2200 keV
+/FilePath/output energy_2200keV.root
+/run/beamOn 5000000
+/source/energy 2300 keV
+/FilePath/output energy_2300keV.root
+/run/beamOn 5000000
+/source/energy 2400 keV
+/FilePath/output energy_2400keV.root
+/run/beamOn 5000000
+/source/energy 2500 keV
+/FilePath/output energy_2500keV.root
+/run/beamOn 5000000
+/source/energy 2600 keV
+/FilePath/output energy_2600keV.root
+/run/beamOn 5000000
+/source/energy 2700 keV
+/FilePath/output energy_2700keV.root
+/run/beamOn 5000000
+/source/energy 2800 keV
+/FilePath/output energy_2800keV.root
+/run/beamOn 5000000
+/source/energy 2900 keV
+/FilePath/output energy_2900keV.root
+/run/beamOn 5000000
+/source/energy 3000 keV
+/FilePath/output energy_3000keV.root
+/run/beamOn 5000000
+/source/energy 3100 keV
+/FilePath/output energy_3100keV.root
+/run/beamOn 5000000
+/source/energy 3200 keV
+/FilePath/output energy_3200keV.root
+/run/beamOn 5000000
+/source/energy 3300 keV
+/FilePath/output energy_3300keV.root
+/run/beamOn 5000000
+/source/energy 3400 keV
+/FilePath/output energy_3400keV.root
+/run/beamOn 5000000
+/source/energy 3500 keV
+/FilePath/output energy_3500keV.root
+/run/beamOn 5000000
+/source/energy 3600 keV
+/FilePath/output energy_3600keV.root
+/run/beamOn 5000000
+/source/energy 3700 keV
+/FilePath/output energy_3700keV.root
+/run/beamOn 5000000
+/source/energy 3800 keV
+/FilePath/output energy_3800keV.root
+/run/beamOn 5000000
+/source/energy 3900 keV
+/FilePath/output energy_3900keV.root
+/run/beamOn 5000000
+/source/energy 4000 keV
+/FilePath/output energy_4000keV.root
+/run/beamOn 5000000
+/source/energy 4100 keV
+/FilePath/output energy_4100keV.root
+/run/beamOn 5000000
+/source/energy 4200 keV
+/FilePath/output energy_4200keV.root
+/run/beamOn 5000000
+/source/energy 4300 keV
+/FilePath/output energy_4300keV.root
+/run/beamOn 5000000
+/source/energy 4400 keV
+/FilePath/output energy_4400keV.root
+/run/beamOn 5000000
+/source/energy 4500 keV
+/FilePath/output energy_4500keV.root
+/run/beamOn 5000000
+/source/energy 4600 keV
+/FilePath/output energy_4600keV.root
+/run/beamOn 5000000
+/source/energy 4700 keV
+/FilePath/output energy_4700keV.root
+/run/beamOn 5000000
+/source/energy 4800 keV
+/FilePath/output energy_4800keV.root
+/run/beamOn 5000000
+/source/energy 4900 keV
+/FilePath/output energy_4900keV.root
+/run/beamOn 5000000
+/source/energy 5000 keV
+/FilePath/output energy_5000keV.root
+/run/beamOn 5000000
+/source/energy 5100 keV
+/FilePath/output energy_5100keV.root
+/run/beamOn 5000000
+/source/energy 5200 keV
+/FilePath/output energy_5200keV.root
+/run/beamOn 5000000
+/source/energy 5300 keV
+/FilePath/output energy_5300keV.root
+/run/beamOn 5000000
+/source/energy 5400 keV
+/FilePath/output energy_5400keV.root
+/run/beamOn 5000000
+/source/energy 5500 keV
+/FilePath/output energy_5500keV.root
+/run/beamOn 5000000
+/source/energy 5600 keV
+/FilePath/output energy_5600keV.root
+/run/beamOn 5000000
+/source/energy 5700 keV
+/FilePath/output energy_5700keV.root
+/run/beamOn 5000000
+/source/energy 5800 keV
+/FilePath/output energy_5800keV.root
+/run/beamOn 5000000
+/source/energy 5900 keV
+/FilePath/output energy_5900keV.root
+/run/beamOn 5000000
+/source/energy 6000 keV
+/FilePath/output energy_6000keV.root
+/run/beamOn 5000000
+/source/energy 6100 keV
+/FilePath/output energy_6100keV.root
+/run/beamOn 5000000
+/source/energy 6200 keV
+/FilePath/output energy_6200keV.root
+/run/beamOn 5000000
+/source/energy 6300 keV
+/FilePath/output energy_6300keV.root
+/run/beamOn 5000000
+/source/energy 6400 keV
+/FilePath/output energy_6400keV.root
+/run/beamOn 5000000
+/source/energy 6500 keV
+/FilePath/output energy_6500keV.root
+/run/beamOn 5000000
+/source/energy 6600 keV
+/FilePath/output energy_6600keV.root
+/run/beamOn 5000000
+/source/energy 6700 keV
+/FilePath/output energy_6700keV.root
+/run/beamOn 5000000
+/source/energy 6800 keV
+/FilePath/output energy_6800keV.root
+/run/beamOn 5000000
+/source/energy 6900 keV
+/FilePath/output energy_6900keV.root
+/run/beamOn 5000000
+/source/energy 7000 keV
+/FilePath/output energy_7000keV.root
+/run/beamOn 5000000
+/source/energy 7100 keV
+/FilePath/output energy_7100keV.root
+/run/beamOn 5000000
+/source/energy 7200 keV
+/FilePath/output energy_7200keV.root
+/run/beamOn 5000000
+/source/energy 7300 keV
+/FilePath/output energy_7300keV.root
+/run/beamOn 5000000
+/source/energy 7400 keV
+/FilePath/output energy_7400keV.root
+/run/beamOn 5000000
+/source/energy 7500 keV
+/FilePath/output energy_7500keV.root
+/run/beamOn 5000000
+/source/energy 7600 keV
+/FilePath/output energy_7600keV.root
+/run/beamOn 5000000
+/source/energy 7700 keV
+/FilePath/output energy_7700keV.root
+/run/beamOn 5000000
+/source/energy 7800 keV
+/FilePath/output energy_7800keV.root
+/run/beamOn 5000000
+/source/energy 7900 keV
+/FilePath/output energy_7900keV.root
+/run/beamOn 5000000
+/source/energy 8000 keV
+/FilePath/output energy_8000keV.root
+/run/beamOn 5000000
+/source/energy 8100 keV
+/FilePath/output energy_8100keV.root
+/run/beamOn 5000000
+/source/energy 8200 keV
+/FilePath/output energy_8200keV.root
+/run/beamOn 5000000
+/source/energy 8300 keV
+/FilePath/output energy_8300keV.root
+/run/beamOn 5000000
+/source/energy 8400 keV
+/FilePath/output energy_8400keV.root
+/run/beamOn 5000000
+/source/energy 8500 keV
+/FilePath/output energy_8500keV.root
+/run/beamOn 5000000
+/source/energy 8600 keV
+/FilePath/output energy_8600keV.root
+/run/beamOn 5000000
+/source/energy 8700 keV
+/FilePath/output energy_8700keV.root
+/run/beamOn 5000000
+/source/energy 8800 keV
+/FilePath/output energy_8800keV.root
+/run/beamOn 5000000
+/source/energy 8900 keV
+/FilePath/output energy_8900keV.root
+/run/beamOn 5000000
+/source/energy 9000 keV
+/FilePath/output energy_9000keV.root
+/run/beamOn 5000000
+/source/energy 9100 keV
+/FilePath/output energy_9100keV.root
+/run/beamOn 5000000
+/source/energy 9200 keV
+/FilePath/output energy_9200keV.root
+/run/beamOn 5000000
+/source/energy 9300 keV
+/FilePath/output energy_9300keV.root
+/run/beamOn 5000000
+/source/energy 9400 keV
+/FilePath/output energy_9400keV.root
+/run/beamOn 5000000
+/source/energy 9500 keV
+/FilePath/output energy_9500keV.root
+/run/beamOn 5000000
+/source/energy 9600 keV
+/FilePath/output energy_9600keV.root
+/run/beamOn 5000000
+/source/energy 9700 keV
+/FilePath/output energy_9700keV.root
+/run/beamOn 5000000
+/source/energy 9800 keV
+/FilePath/output energy_9800keV.root
+/run/beamOn 5000000
+/source/energy 9900 keV
+/FilePath/output energy_9900keV.root
+/run/beamOn 5000000
+/source/energy 10000 keV
+/FilePath/output energy_10000keV.root
+/run/beamOn 5000000
+/source/energy 12000 keV
+/FilePath/output energy_12000keV.root
+/run/beamOn 5000000
+/source/energy 15000 keV
+/FilePath/output energy_15000keV.root
+/run/beamOn 5000000
+/source/energy 20000 keV
+/FilePath/output energy_20000keV.root
+/run/beamOn 5000000
