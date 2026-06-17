@@ -22,6 +22,7 @@ jobs:
       - name: Update Homebrew
         run: |
           brew tap vetlewi/formula
+          brew trust vetlewi/formula
           brew update
 
       - name: Configure Homebrew cache
@@ -34,9 +35,6 @@ jobs:
           key: brew-${{ hashFiles('.github/brew-formulae') }}
 
       - name: Install Homebrew dependencies
-        run: brew install qt expat xerces-c
-
-      - name: Installing Geant4
         run: brew install geant4
 
       - uses: actions/cache@v5
