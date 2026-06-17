@@ -16,8 +16,6 @@
 
 #include <meshreader/MeshReader.hh>
 
-class CADMesh;
-
 class HPGeFactory;
 class ShieldFactory;
 
