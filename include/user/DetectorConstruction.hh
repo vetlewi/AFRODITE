@@ -41,13 +41,12 @@
 #include <G4RotationMatrix.hh>
 #include <G4Transform3D.hh>
 
-
-#include "detector/OCLLaBr3.hh"
-#include "detector/FTALaBr3.hh"
 #include "Constants.hh"
+#include "Frame/DetectorFrame.hh"
 
 
 class G4VPhysicalVolume;
+class DetectorSetupMessenger;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -56,8 +55,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
     DetectorConstruction();
-    ~DetectorConstruction() override = default;
-    
+    ~DetectorConstruction() override;
+
 public:
     G4VPhysicalVolume* Construct() override;
 
@@ -65,19 +64,23 @@ private:
     // methods
     //
     G4VPhysicalVolume* DefineVolumes();
-    
+
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
-    
+
     /////////////////////////////
     //          WORLD
     G4double WorldSize;
 
-    /////////////////////////////
-    // List of all frame slots
-    /////////////////////////////
+    /////////////////////////////////////
+    //  Runtime-configurable detector frame (slots) and its UI messenger.
+    //  All slots are empty by default; populate them via /AFRODITE/ macros.
+    /////////////////////////////////////
+    DetectorFrame           fFrame;
+    DetectorSetupMessenger *fMessenger;
 
     /////////////////////////////////////
     //          S2 SILICON DETECTORS
+    //  On-axis particle telescopes; not part of the frame slots.
     /////////////////////////////////////
     G4bool              S2_Silicon_AllPresent_Override;
     G4bool              S2_Silicon_AllAbsent_Override;
@@ -90,76 +93,11 @@ private:
     G4double            S2_Silicon_phi[numberOfSi];
     G4double            S2_Silicon_theta[numberOfSi];
 
-    /////////////////////////////////////
-    //          CLOVER DETECTORS
-    /////////////////////////////////////
-    
-    G4bool              CLOVER_AllPresent_Override;
-    G4bool              CLOVER_AllAbsent_Override;
-    G4bool              CLOVER_Presence[numberOf_CLOVER];
-    G4double            CLOVER_Distance[numberOf_CLOVER];
-    G4RotationMatrix    CLOVER_rotm[numberOf_CLOVER];
-    G4Transform3D       CLOVER_transform[numberOf_CLOVER];
-    G4ThreeVector       CLOVER_position[numberOf_CLOVER];
-    G4double            CLOVER_phi[numberOf_CLOVER];
-    G4double            CLOVER_theta[numberOf_CLOVER];
-    
-    ///////////////////////////////////////////////////////////////
-    //          CLOVER - BGO Shield   (Manufacturer: Cyberstar)
-    ///////////////////////////////////////////////////////////////
-    
-    G4bool              CLOVER_Shield_AllPresent_Override;
-    G4bool              CLOVER_Shield_AllAbsent_Override;
-    G4bool              CLOVER_Shield_Presence[numberOf_CLOVER_Shields];
-    
-    
-    /////////////////////////////////////
-    //          OCL LaBr3 DETECTORS
-    /////////////////////////////////////
-    G4bool              OCLLaBr3_AllPresent_Override;
-    G4bool              OCLLaBr3_AllAbsent_Override;
-    G4bool              OCLLaBr3_Presence[numberOf_OCLLaBr3];
-    G4double            OCLLaBr3_Distance[numberOf_OCLLaBr3];
-    G4RotationMatrix    OCLLaBr3_rotm[numberOf_OCLLaBr3];
-    G4Transform3D       OCLLaBr3_transform[numberOf_OCLLaBr3];
-    G4ThreeVector       OCLLaBr3_position[numberOf_OCLLaBr3];
-    G4double            OCLLaBr3_phi[numberOf_OCLLaBr3];
-    G4double            OCLLaBr3_theta[numberOf_OCLLaBr3];
-
-    /////////////////////////////////////
-    //          FTA LaBr3 DETECTORS
-    /////////////////////////////////////
-    G4bool              FTALaBr3_AllPresent_Override;
-    G4bool              FTALaBr3_AllAbsent_Override;
-    G4bool              FTALaBr3_Presence[numberOf_FTALaBr3];
-    G4double            FTALaBr3_Distance[numberOf_FTALaBr3];
-    G4RotationMatrix    FTALaBr3_rotm[numberOf_FTALaBr3];
-    G4Transform3D       FTALaBr3_transform[numberOf_FTALaBr3];
-    G4ThreeVector       FTALaBr3_position[numberOf_FTALaBr3];
-    G4double            FTALaBr3_phi[numberOf_FTALaBr3];
-    G4double            FTALaBr3_theta[numberOf_FTALaBr3];
-    
-
     //////////////////////////////////////
     //          Vacuum Chamber
     //////////////////////////////////////
 
     G4VPhysicalVolume* PhysiVacuumChamber;
-
-    ////////////////////////////////
-    ////        STRUCTURES      ////
-    ////////////////////////////////
-    
-    /////////////////////////////////////
-    //  K600 BACTAR Target Chamber
-    G4bool      AFRODITE_MathisTC_Presence;
-    
-    /////////////////////////////////////
-    //  K600 Target
-    G4bool      AFRODITE_Target_Presence;
-    G4bool      AFRODITE_Frame_Presence;
-    
-    
 };
 
 

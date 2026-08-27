@@ -1,0 +1,40 @@
+# default_detectors.mac
+# ---------------------------------------------------------------------------
+# Recreates the detector array that used to be hard-coded in
+# DetectorConstruction, expressed with the runtime /AFRODITE/ frame commands.
+#
+# All frame slots are empty by default, so execute this BEFORE /run/initialize
+# to obtain the historical default geometry. (The S2 silicon telescopes are
+# on-axis and always placed; they are not frame slots.)
+# ---------------------------------------------------------------------------
+
+# CLOVER HPGe detectors -- large slots 0-7, 13.7 cm, BGO shield on by default
+/AFRODITE/frame/large/set 0 clover 13.7 cm
+/AFRODITE/frame/large/set 1 clover 13.7 cm
+/AFRODITE/frame/large/set 2 clover 13.7 cm
+/AFRODITE/frame/large/set 3 clover 13.7 cm
+/AFRODITE/frame/large/set 4 clover 13.7 cm
+/AFRODITE/frame/large/set 5 clover 13.7 cm
+/AFRODITE/frame/large/set 6 clover 13.7 cm
+/AFRODITE/frame/large/set 7 clover 13.7 cm
+
+# OCL LaBr3 detectors -- large slots 8-13, 16 cm
+/AFRODITE/frame/large/set 8  ocl_labr 16 cm
+/AFRODITE/frame/large/set 9  ocl_labr 16 cm
+/AFRODITE/frame/large/set 10 ocl_labr 16 cm
+/AFRODITE/frame/large/set 11 ocl_labr 16 cm
+/AFRODITE/frame/large/set 12 ocl_labr 16 cm
+/AFRODITE/frame/large/set 13 ocl_labr 16 cm
+
+# FTA LaBr3 detectors -- small slots 0-5, 14 cm
+/AFRODITE/frame/small/set 0 fta_labr 14 cm
+/AFRODITE/frame/small/set 1 fta_labr 14 cm
+/AFRODITE/frame/small/set 2 fta_labr 14 cm
+/AFRODITE/frame/small/set 3 fta_labr 14 cm
+/AFRODITE/frame/small/set 4 fta_labr 14 cm
+/AFRODITE/frame/small/set 5 fta_labr 14 cm
+
+# Passive structures (present in the previous default build)
+/AFRODITE/structure/chamber true
+/AFRODITE/structure/frame   true
+/AFRODITE/structure/target  true

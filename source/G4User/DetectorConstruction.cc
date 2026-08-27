@@ -69,12 +69,19 @@
 #include <G4TransportationManager.hh>
 
 #include "detector/CloverFactory.hh"
+#include "detector/OCLLaBr3.hh"
+#include "detector/FTALaBr3.hh"
 #include "detector/S2Factory.hh"
+
+#include "DetectorSetupMessenger.hh"
+#include "Frame/DetectorFrame.hh"
 
 #include <meshreader/incbin.h>
 #include <meshreader/MeshReader.hh>
 
 
+#include <cmath>
+#include <memory>
 #include <fstream>
 #include <string>
 
@@ -95,7 +102,15 @@ DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
     , fCheckOverlaps( false )
     , WorldSize( 5. * m )
+    , fMessenger( new DetectorSetupMessenger( fFrame ) )
 {
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+DetectorConstruction::~DetectorConstruction()
+{
+    delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -139,231 +154,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if(S2_Silicon_AllPresent_Override && S2_Silicon_AllAbsent_Override) S2_Silicon_Presence[i] = false;
     }
     
-    /////////////////////////////
-    ////    CLOVER SETUP      ///
-    /////////////////////////////
-    
-    CLOVER_AllPresent_Override = false;
-    CLOVER_AllAbsent_Override = false;
-    
-    CLOVER_Shield_AllPresent_Override = false;
-    CLOVER_Shield_AllAbsent_Override = false;
-    
-    
-    //  CLOVER 1
-    CLOVER_Presence[0] = true;
-    CLOVER_Shield_Presence[0] = true;
-    CLOVER_Distance[0] = (21.-7.3)*cm;
-    CLOVER_phi[0] = 0.*deg;
-    CLOVER_theta[0] = 90.*deg;
-    
-    //  CLOVER 2
-    CLOVER_Presence[1] = true;
-    CLOVER_Shield_Presence[1] = true;
-    CLOVER_Distance[1] = (21.-7.3)*cm;
-    CLOVER_phi[1] = 45*deg;
-    CLOVER_theta[1] = 90*deg;
-    
-    //  CLOVER 3
-    CLOVER_Presence[2] = true;
-    CLOVER_Shield_Presence[2] = true;
-    CLOVER_Distance[2] = (21.-7.3)*cm;
-    CLOVER_phi[2] = 135*deg;
-    CLOVER_theta[2] = 90*deg;
-
-    //  CLOVER 4
-    CLOVER_Presence[3] = true;
-    CLOVER_Shield_Presence[3] = true;
-    CLOVER_Distance[3] = (21.-7.3)*cm;
-    CLOVER_phi[3] = 180*deg;
-    CLOVER_theta[3] = 90*deg;
-
-    //  CLOVER 5
-    CLOVER_Presence[4] = true;
-    CLOVER_Shield_Presence[4] = true;
-    CLOVER_Distance[4] = (21.-7.3)*cm;
-    CLOVER_phi[4] = 315*deg;
-    CLOVER_theta[4] = 90*deg;
-    
-    //  CLOVER 6
-    CLOVER_Presence[5] = true;
-    CLOVER_Shield_Presence[5] = true;
-    CLOVER_Distance[5] = (21.-7.3)*cm;
-    CLOVER_phi[5] = 0*deg;
-    CLOVER_theta[5] = 135*deg;
-    
-    //  CLOVER 7
-    CLOVER_Presence[6] = true;
-    CLOVER_Shield_Presence[6] = true;
-    CLOVER_Distance[6] = (21.-7.3)*cm;
-    CLOVER_phi[6] = 90*deg;
-    CLOVER_theta[6] = 135*deg;
-
-    //  CLOVER 8
-    CLOVER_Presence[7] = true;
-    CLOVER_Shield_Presence[7] = true;
-    CLOVER_Distance[7] = (21.-7.3)*cm;
-    CLOVER_phi[7] = 180*deg;
-    CLOVER_theta[7] = 135*deg;
-    
-    for (G4int i=0; i<numberOf_CLOVER; i++)
-    {
-
-        CLOVER_rotm[i].rotateX(180.*deg);
-        CLOVER_rotm[i].rotateY(CLOVER_theta[i]);
-        CLOVER_rotm[i].rotateZ(CLOVER_phi[i]);
-
-        if(CLOVER_AllPresent_Override) CLOVER_Presence[i] = true;
-        if(CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
-        if(CLOVER_AllPresent_Override && CLOVER_AllAbsent_Override) CLOVER_Presence[i] = false;
-        
-        if(CLOVER_Shield_AllPresent_Override) CLOVER_Shield_Presence[i] = true;
-        if(CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
-        if(CLOVER_Shield_AllPresent_Override && CLOVER_Shield_AllAbsent_Override) CLOVER_Shield_Presence[i] = false;
-    }
-
-   
-
-    ////////////////////////////
-    ////    OCL LaBr3 Detectors
-    
-    OCLLaBr3_AllPresent_Override = false;
-    OCLLaBr3_AllAbsent_Override = false;
-    
-    
-    // LaBr3 Detector 1
-    OCLLaBr3_Presence[0] = true;
-    OCLLaBr3_Distance[0] = 16.*cm;
-    OCLLaBr3_phi[0] = 0.*deg;
-    OCLLaBr3_theta[0] = 45.*deg;
-    
-    //  LaBr3 Detector 2
-    OCLLaBr3_Presence[1] = true;
-    OCLLaBr3_Distance[1] = 16.*cm;
-    OCLLaBr3_phi[1] = 90.*deg;
-    OCLLaBr3_theta[1] = 45.*deg;
-
-    // LaBr3 Detector 3
-    OCLLaBr3_Presence[2] = true;
-    OCLLaBr3_Distance[2] = 16.*cm;
-    OCLLaBr3_phi[2] = 180.*deg;
-    OCLLaBr3_theta[2] = 45.*deg;
-
-    //  LaBr3 Detector 4
-    OCLLaBr3_Presence[3] = true;
-    OCLLaBr3_Distance[3] = 16.*cm;
-    OCLLaBr3_phi[3] = 270.*deg;
-    OCLLaBr3_theta[3] = 45.*deg;
-
-    // LaBr3 Detector 5
-    OCLLaBr3_Presence[4] = true;
-    OCLLaBr3_Distance[4] = 16.*cm;
-    OCLLaBr3_phi[4] = 225.*deg;
-    OCLLaBr3_theta[4] = 90.*deg;
-
-    //  LaBr3 Detector 6
-    OCLLaBr3_Presence[5] = true;
-    OCLLaBr3_Distance[5] = 16.*cm;
-    OCLLaBr3_phi[5] = 270.*deg;
-    OCLLaBr3_theta[5] = 135.*deg;
-
-    
-    for (G4int i=0; i<numberOf_OCLLaBr3; i++)
-    {
-        OCLLaBr3_rotm[i].rotateY(OCLLaBr3_theta[i]);
-        OCLLaBr3_rotm[i].rotateZ(OCLLaBr3_phi[i]);
-
-        if(OCLLaBr3_AllPresent_Override) OCLLaBr3_Presence[i] = true;
-        if(OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
-        if(OCLLaBr3_AllPresent_Override && OCLLaBr3_AllAbsent_Override) OCLLaBr3_Presence[i] = false;
-    }
-
-    ////////////////////////////
-    ////    FTA LaBr3 Detectors
-    ////////////////////////////
-
-    // NOTE: Angles are defined differently for FTA detectors.
-
-    FTALaBr3_AllPresent_Override = false;
-    FTALaBr3_AllAbsent_Override = false;
-
-
-    // LaBr3 Detector 1
-    FTALaBr3_Presence[0] = true;
-    FTALaBr3_Distance[0] = 14.*cm;
-    FTALaBr3_phi[0] = 45.*deg;
-    FTALaBr3_theta[0] = 55*deg;
-
-
-    // LaBr3 Detector 2
-    FTALaBr3_Presence[1] = true;
-    FTALaBr3_Distance[1] = 14.*cm;
-    FTALaBr3_phi[1] = 135.*deg;
-    FTALaBr3_theta[1] = 55*deg;
-
-    // LaBr3 Detector 3
-    FTALaBr3_Presence[2] = true;
-    FTALaBr3_Distance[2] = 14.*cm;
-    FTALaBr3_phi[2] = 225.*deg;
-    FTALaBr3_theta[2] = 55*deg;
-
-    // LaBr3 Detector 4
-    FTALaBr3_Presence[3] = true;
-    FTALaBr3_Distance[3] = 14.*cm;
-    FTALaBr3_phi[3] = 225.*deg;
-    FTALaBr3_theta[3] = (180-55)*deg;
-
-
-    // LaBr3 Detector 5
-    FTALaBr3_Presence[4] = true;
-    FTALaBr3_Distance[4] = 14.*cm;
-    FTALaBr3_phi[4] = 315.*deg;
-    FTALaBr3_theta[4] = 55.*deg;
-
-    // LaBr3 Detector 6
-    FTALaBr3_Presence[5] = true;
-    FTALaBr3_Distance[5] = 14.*cm;
-    FTALaBr3_phi[5] = 315.*deg;
-    FTALaBr3_theta[5] = (180.-55.)*deg;
-
-
-    for (G4int i=0; i<numberOf_FTALaBr3; i++)
-    {
-        FTALaBr3_rotm[i].rotateX(270*deg);
-        FTALaBr3_rotm[i].rotateZ(FTALaBr3_theta[i]);
-        FTALaBr3_rotm[i].rotateY(FTALaBr3_phi[i]);
-
-        if(FTALaBr3_AllPresent_Override) FTALaBr3_Presence[i] = true;
-        if(FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
-        if(FTALaBr3_AllPresent_Override && FTALaBr3_AllAbsent_Override) FTALaBr3_Presence[i] = false;
-    }
-
-
-    
-    
-    ////////////////////////////////////////////////////
-    ////                                            ////
-    ////            AFRODITE VAULT SETUP            ////
-    ////                                            ////
-    ////////////////////////////////////////////////////
-
-    
-    ////////////////////////////////////////////////////////
-    ////                                                ////
-    ////        AFRODITE VAULT - STRUCTURE SETUP        ////
-    ////                                                ////
-    ////////////////////////////////////////////////////////
-    
-    
-    ////////////////////////////////////////////////
-    ////    New AFRODITE Target Chamber by Mathis
-    AFRODITE_MathisTC_Presence = true;
-    
-    /////////////////////////////////////
-    ////    AFRODITE Target
-    AFRODITE_Target_Presence = true;
-    AFRODITE_Frame_Presence = true;
-    
     // Define volumes
     return DefineVolumes();
 }
@@ -387,18 +177,12 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     G4Material* G4_LITHIUM_CARBONATE_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_LITHIUM_CARBONATE");
     G4Material* G4_concrete_Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
 
-    // Create factories
-    bool have_HPGe = std::any_of(CLOVER_Presence, CLOVER_Presence+sizeof(CLOVER_Presence),
-                                 [](const G4bool &p){ return p; });
-    bool have_shield = std::any_of(CLOVER_Shield_Presence, CLOVER_Shield_Presence+sizeof(CLOVER_Shield_Presence),
-                                   [](const G4bool &p){ return p; });
-    CloverFactory cloverFactory(have_HPGe, have_shield);
-    OCLLaBr3 ocl_factory(false);
-    FTALaBr3 labr_factory;
+    // Detector factories are created lazily below, only for the detector types
+    // that actually occupy a frame slot.
 
     G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
     MeshReader targetChamber({gTargetChamberData, gTargetChamberSize}, "TargetChamber", offset_MathisTC);
-    MeshReader DetectorFrame({gDetectorFrameData, gDetectorFrameSize}, "DetectorFrame", offset_MathisTC);
+    MeshReader frameMesh({gDetectorFrameData, gDetectorFrameSize}, "DetectorFrame", offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
@@ -452,7 +236,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //              Scattering Chamber
     //////////////////////////////////////////////////////////
 
-    if(AFRODITE_MathisTC_Presence)
+    if(fFrame.place_chamber)
     {
         G4VSolid * SolidMathisTC = targetChamber.GetSolid();
         
@@ -479,9 +263,9 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     //              Detector frame
     //////////////////////////////////////////////////////////
 
-    if(AFRODITE_Frame_Presence)
+    if(fFrame.place_frame)
     {
-        G4VSolid * SolidFrame = DetectorFrame.GetSolid();
+        G4VSolid * SolidFrame = frameMesh.GetSolid();
 
         G4LogicalVolume* LogicFrame = new G4LogicalVolume(SolidFrame, G4_Al_Material, "FRAME_logic", 0, 0, 0);
         G4RotationMatrix *rot = new G4RotationMatrix();
@@ -513,7 +297,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     
     G4LogicalVolume* LogicTarget = new G4LogicalVolume(SolidTarget, G4_LITHIUM_CARBONATE_Material,"Target",0,0,0);
     
-    if(AFRODITE_Target_Presence)
+    if(fFrame.place_target)
     {
         new G4PVPlacement(0,               // no rotation
                           positionTarget, // at (x,y,z)
@@ -550,93 +334,119 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     }
     
     ////////////////////////////////////////////////////
-    //               CLOVER INITIALIZATION            //
+    //               FRAME SLOT DETECTORS             //
     ////////////////////////////////////////////////////
+    //
+    // Every frame-mounted detector is placed from its slot. The slot direction
+    // (theta, phi) is fixed by the frame; the occupant type and distance come
+    // from the runtime configuration (see DetectorSetupMessenger). Factories are
+    // built lazily, only for the detector types that are actually used.
 
+    std::unique_ptr<CloverFactory> cloverWithShield;
+    std::unique_ptr<CloverFactory> cloverNoShield;
+    std::unique_ptr<OCLLaBr3>      oclFactory;
+    std::unique_ptr<FTALaBr3>      ftaFactory;
 
-    for(G4int i=0; i< numberOf_CLOVER ; i++)
+    auto placeSlot = [&](const Slot &slot, int copy_no)
     {
-        if ( !CLOVER_Presence[i] )
-            continue;
+        if ( !slot.occupied() )
+            return;
 
-        CLOVER_position[i] = CLOVER_Distance[i]
-                             *G4ThreeVector( sin(CLOVER_theta[i]) * cos(CLOVER_phi[i]),
-                                             sin(CLOVER_theta[i]) * sin(CLOVER_phi[i]),
-                                             cos(CLOVER_theta[i]));
+        // The detector centre lies along the (fixed) slot direction.
+        // (non-const: G4AssemblyVolume::MakeImprint takes it by reference)
+        G4ThreeVector position = slot.distance * G4ThreeVector(
+                std::sin(slot.theta) * std::cos(slot.phi),
+                std::sin(slot.theta) * std::sin(slot.phi),
+                std::cos(slot.theta));
 
-        CLOVER_transform[i] = G4Transform3D(CLOVER_rotm[i],CLOVER_position[i]);
+        G4RotationMatrix rotm;
+        G4AssemblyVolume *assembly = nullptr;
+        bool is_clover = false;
 
-        auto *assembly = cloverFactory.GetAssembly(i, fCheckOverlaps);
-        assembly->MakeImprint(LogicVacuumChamber, CLOVER_transform[i], i);
-
-        // Since assembly class will do create all the pysical volumes that
-        // we haven't made yet our self we will have to hack the names
-        // and copy number that we expect into the physical volumes our self.
-        // It isnt a good way of doing it, but it should work:/
-        // This is also the point where we will check that nothing overlaps, since
-        // we dont properly check during construction.
-        auto nVolumes = assembly->TotalImprintedVolumes();
-        int copy_no = 0;
-        for ( auto vol = assembly->GetVolumesIterator() ;
-              vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
-            if ( fCheckOverlaps )
-                (*vol)->CheckOverlaps();
-#if G4VERSION_NUMBER >= 1100
-            if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
-#else
-            if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
-#endif // G4VERSION_NUMBER < 1100
-                (*vol)->SetCopyNo(i * numberOf_BGO_Crystals + copy_no++);
-                (*vol)->SetName("CLOVER_Shield_BGOCrystal");
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////
-    //            OCL LaBr3 INITIALIZATION            //
-    ////////////////////////////////////////////////////
-    for(G4int i=0; i<numberOf_OCLLaBr3; i++)
-    {
-        OCLLaBr3_position[i] = OCLLaBr3_Distance[i]
-                              *G4ThreeVector( sin(OCLLaBr3_theta[i])*cos(OCLLaBr3_phi[i]),
-                                              sin(OCLLaBr3_theta[i]*sin(OCLLaBr3_phi[i])),
-                                              cos(OCLLaBr3_theta[i]));
-
-
-        if(OCLLaBr3_Presence[i])
+        switch ( slot.type )
         {
-            auto *assembly = ocl_factory.GetAssembly(i, fCheckOverlaps);
-            assembly->MakeImprint(LogicVacuumChamber, OCLLaBr3_position[i], &OCLLaBr3_rotm[i], i);
+            case Detector::Type::clover:
+            {
+                rotm.rotateX(180.*deg);
+                rotm.rotateY(slot.theta);
+                rotm.rotateZ(slot.phi);
+                auto &factory = slot.shield ? cloverWithShield : cloverNoShield;
+                if ( !factory )
+                    factory = std::make_unique<CloverFactory>(true, slot.shield);
+                assembly = factory->GetAssembly(copy_no, fCheckOverlaps);
+                is_clover = true;
+                break;
+            }
+            case Detector::Type::ocl_labr:
+            {
+                rotm.rotateY(slot.theta);
+                rotm.rotateZ(slot.phi);
+                if ( !oclFactory )
+                    oclFactory = std::make_unique<OCLLaBr3>(false);
+                assembly = oclFactory->GetAssembly(copy_no, fCheckOverlaps);
+                break;
+            }
+            case Detector::Type::fta_labr:
+            {
+                // The FTA orientation is historically expressed with the polar
+                // axis along +y; recover those native angles from the slot
+                // direction so the detector is oriented as it always has been.
+                const double theta_n = std::acos(std::sin(slot.theta) * std::sin(slot.phi));
+                const double phi_n = std::atan2(std::cos(slot.theta),
+                                                -std::sin(slot.theta) * std::cos(slot.phi));
+                rotm.rotateX(270.*deg);
+                rotm.rotateZ(theta_n);
+                rotm.rotateY(phi_n);
+                if ( !ftaFactory )
+                    ftaFactory = std::make_unique<FTALaBr3>();
+                assembly = ftaFactory->GetAssembly(copy_no, fCheckOverlaps);
+                break;
+            }
+            default:
+                return;
+        }
+
+        if ( is_clover )
+        {
+            G4Transform3D transform(rotm, position);
+            assembly->MakeImprint(LogicVacuumChamber, transform, copy_no);
+
+            // The assembly machinery creates the physical volumes for us; relabel
+            // the BGO shield crystals so the readout can identify them, and check
+            // for overlaps here since we do not check during construction.
             auto nVolumes = assembly->TotalImprintedVolumes();
+            int bgo_copy = 0;
             for ( auto vol = assembly->GetVolumesIterator() ;
                   vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
                 if ( fCheckOverlaps )
                     (*vol)->CheckOverlaps();
+#if G4VERSION_NUMBER >= 1100
+                if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
+#else
+                if ( G4StrUtil::contains((*vol)->GetName(), "LogicCLOVERShieldBGOCrystal") ) {
+#endif // G4VERSION_NUMBER < 1100
+                    (*vol)->SetCopyNo(copy_no * numberOf_BGO_Crystals + bgo_copy++);
+                    (*vol)->SetName("CLOVER_Shield_BGOCrystal");
+                }
             }
         }
-
-    }
-
-
-    ////////////////////////////////////////////////////
-    //            FTA LaBr3 INITIALIZATION            //
-    ////////////////////////////////////////////////////
-    for(G4int i=0; i < numberOf_FTALaBr3 ; i++)
-    {
-        FTALaBr3_position[i] = (FTALaBr3_Distance[i])
-                               *G4ThreeVector( -sin(FTALaBr3_theta[i]) * cos(FTALaBr3_phi[i]),
-                                               cos(FTALaBr3_theta[i]),
-                                               sin(FTALaBr3_theta[i]) * sin(FTALaBr3_phi[i]));
-
-        /////////////////////////////
-        //          LaBr3 Detectors
-        if(FTALaBr3_Presence[i])
+        else
         {
-            auto *assembly = labr_factory.GetAssembly(i, fCheckOverlaps);
-            assembly->MakeImprint(LogicVacuumChamber, FTALaBr3_position[i], &FTALaBr3_rotm[i], i);
+            assembly->MakeImprint(LogicVacuumChamber, position, &rotm, copy_no);
+            if ( fCheckOverlaps ){
+                auto nVolumes = assembly->TotalImprintedVolumes();
+                for ( auto vol = assembly->GetVolumesIterator() ;
+                      vol < assembly->GetVolumesIterator() + nVolumes ; ++vol){
+                    (*vol)->CheckOverlaps();
+                }
+            }
         }
+    };
 
-    }
+    for ( int i = 0 ; i < DetectorFrame::num_large ; ++i )
+        placeSlot(fFrame.large(i), i);
+    for ( int i = 0 ; i < DetectorFrame::num_small ; ++i )
+        placeSlot(fFrame.small(i), i);
     
     
     //////////////////////////////////////////////////////////
