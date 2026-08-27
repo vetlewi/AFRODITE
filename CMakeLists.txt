@@ -51,7 +51,7 @@ target_include_directories(MeshReader
 )
 
 target_link_libraries(MeshReader PRIVATE happly::happly ${Geant4_LIBRARIES})
-set_target_properties(MeshReader PROPERTIES CXX_STANDARD 17)
+set_target_properties(MeshReader PROPERTIES CXX_STANDARD 20)
 
 add_library(detector
         source/Detectors/CloverFactory.cc
@@ -72,7 +72,7 @@ target_include_directories(detector
 )
 
 target_compile_definitions(detector PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/")
-set_target_properties(detector PROPERTIES CXX_STANDARD 17)
+set_target_properties(detector PROPERTIES CXX_STANDARD 20)
 target_link_libraries(detector PUBLIC ${Geant4_LIBRARIES}
         PRIVATE AFRODITE::MeshReader)
 
@@ -90,7 +90,7 @@ add_library(AFRODITE
         source/G4User/SteppingAction.cc)
 
 add_library(AFRODITE::AFRODITE ALIAS AFRODITE)
-set_target_properties(AFRODITE PROPERTIES CXX_STANDARD 17)
+set_target_properties(AFRODITE PROPERTIES CXX_STANDARD 20)
 target_include_directories(AFRODITE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(AFRODITE PUBLIC detector ${Geant4_LIBRARIES} magic_enum::magic_enum)

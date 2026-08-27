@@ -81,35 +81,35 @@ RunAction::RunAction()
     ////////////////////////////////////////////////////
     ////    CLOVER Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER*numberOf_CLOVER_Crystals ; ++n ){
-        sprintf(name, "CLOVER_Energy%d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
+        snprintf(name, sizeof(name), "CLOVER_Energy%d_%c", n/numberOf_CLOVER_Crystals, 'A' + n%numberOf_CLOVER_Crystals);
         analysisManager->CreateNtupleDColumn(0, name);
     }
     
      ////////////////////////////////////////////////////
     ////    BGO Detectors
     for ( G4int n = 0 ; n < numberOf_CLOVER ; ++n ){
-        sprintf(name, "BGO_Energy%d", n);
+        snprintf(name, sizeof(name), "BGO_Energy%d", n);
         analysisManager->CreateNtupleDColumn(0, name);
     }
     
     ////////////////////////////////////////////////////
     ////    OCL LABR Detectors
     for ( G4int n = 0 ; n < numberOf_OCLLaBr3 ; ++n ){
-        sprintf(name, "OCLLABR_Energy%d", n);
+        snprintf(name, sizeof(name), "OCLLABR_Energy%d", n);
         analysisManager->CreateNtupleDColumn(0, name);
     }
 
     ////////////////////////////////////////////////////
     ////    FTA LABR Detectors
     for ( G4int n = 0 ; n < numberOf_FTALaBr3 ; ++n ){
-        sprintf(name, "FTALABR_Energy%d", n);
+        snprintf(name, sizeof(name), "FTALABR_Energy%d", n);
         analysisManager->CreateNtupleDColumn(0, name);
     }
 #if ANALYZE_SI_DETECTORS
     ////////////////////////////////////////////////////
     ////    Delta E Rings
     for ( G4int n = 0 ; n < numberOf_SiRings ; ++n ){
-        sprintf(name, "DeltaE_ring%02d", n);
+        snprintf(name, "DeltaE_ring%02d", n);
         analysisManager->CreateNtupleDColumn(0, name);
     }
 
