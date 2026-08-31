@@ -150,7 +150,8 @@ int main(int argc,char** argv)
     // in the main() program !
     //
     delete visManager;
-    delete runManager;
+    if ( runManager )
+        delete runManager;
     return 0;
 }
 
