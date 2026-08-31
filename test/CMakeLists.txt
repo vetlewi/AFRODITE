@@ -32,7 +32,7 @@ add_executable(AFRODITEtests
         ${CMAKE_CURRENT_LIST_DIR}/source/Slot.cpp)
 
 target_compile_definitions(AFRODITEtests PRIVATE PRIVATE SRC_PATH="${PROJECT_SOURCE_DIR}/../")
-target_link_libraries(AFRODITEtests doctest::doctest AFRODITE::MeshReader AFRODITE::AFRODITE magic_enum::magic_enum)
+target_link_libraries(AFRODITEtests doctest::doctest AFRODITE::MeshReader AFRODITE::AFRODITE AFRODITE::mesh_data magic_enum::magic_enum)
 set_target_properties(AFRODITEtests PROPERTIES CXX_STANDARD 17)
 
 # ---- Add GreeterTests ----

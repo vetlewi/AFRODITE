@@ -76,25 +76,17 @@
 #include "DetectorSetupMessenger.hh"
 #include "Frame/DetectorFrame.hh"
 
-#include <meshreader/incbin.h>
 #include <meshreader/MeshReader.hh>
 
+// Generated at build time by bin2cpp (see cmake/EmbedBinary.cmake) from the
+// corresponding .ply files under Mesh-Models/.
+#include "TargetChamber.mesh.hh"
+#include "DetectorFrame.mesh.hh"
 
 #include <cmath>
 #include <memory>
 #include <fstream>
 #include <string>
-
-#ifndef SRC_PATH
-#define SRC_PATH "../"
-#endif // SRC_PATH
-
-#ifndef PLY_PATH
-#define PLY_PATH SRC_PATH"Mesh-Models"
-#endif // PLY_PATH
-
-INCBIN(TargetChamber, PLY_PATH"/STRUCTURES/MathisTC/target_chamber_new_sealed_fused_10umTolerance.ply");
-INCBIN(DetectorFrame, PLY_PATH"/STRUCTURES/Frame/OuterFrame_100umTolerance.ply");
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -181,8 +173,8 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes()
     // that actually occupy a frame slot.
 
     G4ThreeVector offset_MathisTC = G4ThreeVector(0*cm, 0*cm, 0*cm);
-    MeshReader targetChamber({gTargetChamberData, gTargetChamberSize}, "TargetChamber", offset_MathisTC);
-    MeshReader frameMesh({gDetectorFrameData, gDetectorFrameSize}, "DetectorFrame", offset_MathisTC);
+    MeshReader targetChamber({TargetChamber_data, TargetChamber_size}, "TargetChamber", offset_MathisTC);
+    MeshReader frameMesh({DetectorFrame_data, DetectorFrame_size}, "DetectorFrame", offset_MathisTC);
     
     
     //////////////////////////////////////////////////////////
